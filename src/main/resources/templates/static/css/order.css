@@ -1,0 +1,39 @@
+body{
+    background: #F4F4F4 !important;
+}
+.container{
+    background: white;
+    padding: 0px !important;
+    /*border: #F1F1F1 1px solid;*/
+}
+.header_c{
+    margin: 40px;
+}
+.subject{
+    width:60px;
+    margin: 0px auto;
+    color: #4c4f52;
+}
+.title_c{
+    margin-bottom: 30px;
+    margin-left: 30px;
+    color: #8a8a8a;
+}
+.content_layout{
+    text-align: center;
+}
+.line_color{
+    margin:10px;
+    color: #6e6e6e;
+}
+.footer_c{
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    width: 100%;
+}
+.content_c{
+    width: 290px;
+    margin: 0px auto;
+    text-align: center;
+}

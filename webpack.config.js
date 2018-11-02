@@ -9,6 +9,7 @@ const config = {
         vendor: ['jquery', path.resolve(__dirname, 'src/main/resources/templates/semantic/dist/semantic.js')],
         question : path.resolve(__dirname,"src/main/resources/templates/static/css/question.css"),
         nonLoginUser : path.resolve(__dirname,"src/main/resources/templates/static/css/nonLoginUser.css"),
+        orderTemp : path.resolve(__dirname,"src/main/resources/templates/static/css/order.css"),
         // semantic :  path.resolve(__dirname,"src/main/resources/templates/semantic/dist/semantic.css"),
         // bootstrap: path.resolve(__dirname,"src/main/resources/bootstrap/app.js"),
 

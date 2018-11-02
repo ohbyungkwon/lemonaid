@@ -17,7 +17,7 @@ public class ResultWrite {
     @Column(name = "write_id")
     @Getter
     @Setter
-    private int choice_multi_id;
+    private int write_id;
 
     @Column(name = "text")
     @Getter

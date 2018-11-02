@@ -1,5 +1,6 @@
 package com.demo.lemonaid.demo.Controller;
 
+import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Domain.*;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.Service.QuestionService;
@@ -9,32 +10,29 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.transform.Result;
 import java.util.HashMap;
 import java.util.Map;
-//1. 멀티 질문 fk 설정 및 출력 확인
-//2. 추가정보 js 처리
-//        Page<Question> qTemp  = questionRepository.findAll(PageRequest.of(priority-1, 1, Sort.by(Sort.Direction.DESC, "id")));
-//        List<Question> temp = qTemp.getContent();  -> another method
 
 @Controller
 public class QuestionController {
     private ResultSingleRepository resultSingleRepository;
     private ResultMultiRepository resultMultiRepository;
     private QuestionService questionService;
+    private ResultWriteRepository resultWriteRepository;
 
     @Autowired
     public QuestionController(
             ResultSingleRepository resultSingleRepository,
             ResultMultiRepository resultMultiRepository,
-            QuestionService questionService){
+            QuestionService questionService,
+            ResultWriteRepository resultWriteRepository){
         this.resultSingleRepository = resultSingleRepository;
         this.resultMultiRepository = resultMultiRepository;
+        this.resultWriteRepository = resultWriteRepository;
         this.questionService = questionService;
     }
 
     @GetMapping("/")
-
     @ResponseBody
     public String root(){
         return "hello";
@@ -76,8 +74,12 @@ public class QuestionController {
         Map<String, Object> map = new HashMap<>();
         resultSingle.setUser_id("obk");//임시 값
         if(resultSingleRepository.save(resultSingle) != null){
-            map.put("data","결과 저장 완료");
-        }
+            map.put("question_id",questionService.getSingleQuestionId(resultSingle).getId());
+            map.put("chocie_id",resultSingle.getChoice_single_id());
+            map.put("choices",resultSingle.getChoice());
+            map.put("extra_info",resultSingle.getExtra_info());
+            map.put("state",HttpStatus.OK);
+        }else{ map.put("state",HttpStatus.NOT_FOUND);}
         return map;
     }//single
 
@@ -85,10 +87,10 @@ public class QuestionController {
     @ResponseBody
     public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiTemp){
         Map<String, Object> map = new HashMap<>();
-
-        ResultMulti resultMulti = questionService.MultiAdpater(new ResultMulti(), resultMultiTemp);
+        ResultMulti resultMulti = questionService.MultiAdapter(new ResultMulti(), resultMultiTemp);
 
         if(resultMultiRepository.save(resultMulti) != null){
+            map.put("question_id",resultMulti.getChoice_multi_id());
             map.put("chocie_id",resultMulti.getChoice_multi_id());
             map.put("choices",resultMultiTemp.getChoice());
             map.put("extra_info",resultMulti.getExtra_info());
@@ -96,4 +98,18 @@ public class QuestionController {
         }else{ map.put("state",HttpStatus.NOT_FOUND);}
         return map;
     }//multi
+
+    @PostMapping("/response/write")
+    @ResponseBody
+    public Map<String, Object> saveWriteDB(@RequestBody ResultWrite write){
+        Map<String, Object> map = new HashMap<>();
+        write.setUser_id("obk");//임시 값
+        if(resultWriteRepository.save(write) != null){
+            map.put("write_id",write.getWrite_id());
+            map.put("text",write.getText());
+            map.put("state",HttpStatus.OK);
+        }else{ map.put("state",HttpStatus.NOT_FOUND);}
+
+        return map;
+    }
 }

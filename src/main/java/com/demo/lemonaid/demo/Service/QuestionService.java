@@ -1,9 +1,7 @@
 package com.demo.lemonaid.demo.Service;
 
-import com.demo.lemonaid.demo.Domain.DiseaseService;
-import com.demo.lemonaid.demo.Domain.Question;
-import com.demo.lemonaid.demo.Domain.ResultMulti;
-import com.demo.lemonaid.demo.Domain.ResultMultiAdapter;
+import com.demo.lemonaid.demo.Domain.*;
+import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,13 +10,16 @@ import org.springframework.stereotype.Service;
 public class QuestionService {
     private DiseaseRepository diseaseRepository;
     private QuestionRepository questionRepository;
+    private ChoiceSingleRepository choiceSingleRepository;
 
     @Autowired
     public QuestionService(
             DiseaseRepository diseaseRepository,
-            QuestionRepository questionRepository){
+            QuestionRepository questionRepository,
+            ChoiceSingleRepository choiceSingleRepository){
         this.diseaseRepository = diseaseRepository;
         this.questionRepository = questionRepository;
+        this.choiceSingleRepository = choiceSingleRepository;
     }
 
     public Question SearchQuestion(DiseaseService dTemp, int priority){
@@ -33,7 +34,7 @@ public class QuestionService {
         int total = questionRepository.getCount(dTemp.getId());
         return total;
     }
-    public ResultMulti MultiAdpater(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter){
+    public ResultMulti MultiAdapter(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter){
         String []resultTemp = resultMultiAdapter.getChoice();
         String str="";
 
@@ -48,4 +49,10 @@ public class QuestionService {
 
         return  resultMulti;
     }
+
+    public Question getSingleQuestionId(ResultSingle resultSingle){
+        ChoiceSingle choiceSingle =  choiceSingleRepository.selectChoicesById(resultSingle.getChoice_single_id());
+        return questionRepository.getQuestionById(choiceSingle.getQuestion_id());
+    }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
+//다선지, 주관식도 따로 구현해야함.
 }

@@ -15,9 +15,9 @@ window.onload = function(){
     $("button[name='next']").click(function () {
         var values = document.getElementsByClassName("radio_j");
         var urlTemp;
-
+        var data;
         if(questionType == 'single'){
-            var data = {
+            data = {
                 "choice_single_id" : radio_choice_id,
                 "choice" : radio_choice_priority,
                 "extra_info" : $("#extra_info").val()
@@ -35,7 +35,7 @@ window.onload = function(){
             console.log(checkedRadioId + "선택");
 
             //보기 중 선택한 만큼의 id와 priority를 갖고 있어야한다.
-            var data = {
+            data = {
                 "choice_multi_id" : radio_choice_id,
                 "choice" : checkedRadioId,
                 "extra_info" : $("#extra_info").val()
@@ -43,7 +43,13 @@ window.onload = function(){
             console.log(radio_choice_id);
             urlTemp = "/response/multi/" + $(".hidden-text1").text();
         }else if(questionType == 'write'){
-
+            var Systolic = $("#Systolic").val();
+            var Diastolic = $("#Diastolic").val();
+            data = {
+                "write_id" : 1,
+                "text" : Systolic +";"+Diastolic
+            }
+            urlTemp = "/response/write"
         }else{
 
         }
@@ -56,7 +62,6 @@ window.onload = function(){
             data: JSON.stringify(data),
             success: function(data){
                 if($(".hidden-text1").text() != 30)//마지막 페이지에서는 이동 x
-                    console.log(data.data);
                     window.location.href=Number($(".hidden-text1").text())+1;
             },
             fail: function () {

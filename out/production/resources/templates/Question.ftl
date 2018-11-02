@@ -23,7 +23,7 @@
                 <div class="row justify-content-xl-center">
                 <#--<div class="col col-lg-2">-->
                 <#--</div>-->
-                    <div class="card col align-self-center" style="width: 30rem;">
+                    <div class="card col align-self-xl-center" style="width: 30rem;">
                         <div class="card-body">
                             <h5 class="card-title">[ ${disease_name} ]</h5>
                             <a>${question.priority}.</a> <a class="card-text"> ${question.getContent()}</a>

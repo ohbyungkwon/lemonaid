@@ -1,4 +1,4 @@
-package com.demo.lemonaid.demo.Domain;
+package com.demo.lemonaid.demo.Adapter;
 
 import lombok.Data;
 import lombok.Getter;
