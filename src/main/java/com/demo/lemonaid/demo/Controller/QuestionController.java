@@ -2,14 +2,16 @@ package com.demo.lemonaid.demo.Controller;
 
 import com.demo.lemonaid.demo.Domain.*;
 import com.demo.lemonaid.demo.Repository.*;
+import com.demo.lemonaid.demo.Service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.transform.Result;
 import java.util.HashMap;
 import java.util.Map;
-
 //1. 멀티 질문 fk 설정 및 출력 확인
 //2. 추가정보 js 처리
 //        Page<Question> qTemp  = questionRepository.findAll(PageRequest.of(priority-1, 1, Sort.by(Sort.Direction.DESC, "id")));
@@ -17,24 +19,18 @@ import java.util.Map;
 
 @Controller
 public class QuestionController {
-    private DiseaseRepository diseaseRepository;
-    private QuestionRepository questionRepository;
-    private ChoiceSingleRepository choiceSingleRepository;
     private ResultSingleRepository resultSingleRepository;
     private ResultMultiRepository resultMultiRepository;
+    private QuestionService questionService;
 
     @Autowired
     public QuestionController(
-            DiseaseRepository diseaseRepository,
-            QuestionRepository questionRepository,
-            ChoiceSingleRepository choiceSingleRepository,
             ResultSingleRepository resultSingleRepository,
-            ResultMultiRepository resultMultiRepository){
-        this.diseaseRepository = diseaseRepository;
-        this.questionRepository = questionRepository;
-        this.choiceSingleRepository = choiceSingleRepository;
+            ResultMultiRepository resultMultiRepository,
+            QuestionService questionService){
         this.resultSingleRepository = resultSingleRepository;
         this.resultMultiRepository = resultMultiRepository;
+        this.questionService = questionService;
     }
 
     @GetMapping("/")
@@ -51,10 +47,10 @@ public class QuestionController {
 
     @GetMapping("/question/{disease}/{priority}")
     public String question(Model model, @PathVariable String disease, @PathVariable int priority){
-        DiseaseService dTemp = diseaseRepository.selectFindById(disease);//질병 선택
-        Question qTemp  = questionRepository.selectQuestion(dTemp.getId(), priority);//질병에 달린 질문
+        DiseaseService dTemp = questionService.SearchDisease(disease);
+        Question qTemp  = questionService.SearchQuestion(dTemp, priority);
 
-        model.addAttribute("total_question", questionRepository.getCount(dTemp.getId()));//해당 질병의 마지막 id = 전체 문제 수
+        model.addAttribute("total_question", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
         model.addAttribute("disease_name",dTemp.getDisease_name());
         model.addAttribute("question", qTemp);
 
@@ -90,22 +86,14 @@ public class QuestionController {
     public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiTemp){
         Map<String, Object> map = new HashMap<>();
 
-        String []resultTemp = resultMultiTemp.getChoice();
-        String str="";
-
-        for(int i = 0; i < resultTemp.length; i++){
-            str += resultTemp[i]+';';
-        }
-
-        ResultMulti resultMulti = new ResultMulti();
-        resultMulti.setChoice_multi_id(resultMultiTemp.getChoice_multi_id());
-        resultMulti.setExtra_info(resultMultiTemp.getExtra_info());
-        resultMulti.setUser_id("obk");//임시 값
-        resultMulti.setChoice(str);
+        ResultMulti resultMulti = questionService.MultiAdpater(new ResultMulti(), resultMultiTemp);
 
         if(resultMultiRepository.save(resultMulti) != null){
-            map.put("data","결과 저장 완료");
-        }
+            map.put("chocie_id",resultMulti.getChoice_multi_id());
+            map.put("choices",resultMultiTemp.getChoice());
+            map.put("extra_info",resultMulti.getExtra_info());
+            map.put("state",HttpStatus.OK);
+        }else{ map.put("state",HttpStatus.NOT_FOUND);}
         return map;
     }//multi
 }

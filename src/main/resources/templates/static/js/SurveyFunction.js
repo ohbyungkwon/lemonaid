@@ -33,7 +33,7 @@ window.onload = function(){
 
             console.log($(".hidden-text1").text() + "번 문항");
             console.log(checkedRadioId + "선택");
-            console.log(checkedRadioId + "선택");
+
             //보기 중 선택한 만큼의 id와 priority를 갖고 있어야한다.
             var data = {
                 "choice_multi_id" : radio_choice_id,
