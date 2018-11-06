@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 
 @Entity
 @Table(name = "user")
@@ -14,13 +15,13 @@ public class User {
     @Id
     @Column(name = "id", nullable = false)
     @Getter @Setter
-    private int id;
+    private long id;
 
-    @Column(name = "email")
+    @Column(name = "email",length = 20)
     @Getter @Setter
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", length = 100)
     @Getter @Setter
     private String password;
 
@@ -42,7 +43,15 @@ public class User {
 
     @Column(name = "addr")
     @Getter @Setter
-    private int addr;
+    private String addr;
+
+    //1:수퍼관리자, 2:관리자, 3:사용자
+    @Column(name = "user_type",length = 1, nullable = false)
+    private String userType;
+
+    @Column(name="reg_date", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date regDate = new Date();
 
     @OneToMany(cascade= CascadeType.ALL, targetEntity = ResultMulti.class)
     @JoinColumn(name = "user_id")

@@ -14,6 +14,10 @@ import javax.persistence.Table;
 @Data
 public class ResultSingle {
     @Id
+//    @Column(name = "id")
+//    @Getter
+//    @Setter
+//    private int id;
     @Column(name = "choice_single_id")
     @Getter
     @Setter

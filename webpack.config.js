@@ -7,14 +7,16 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const config = {
     entry: {
         vendor: ['jquery', path.resolve(__dirname, 'src/main/resources/templates/semantic/dist/semantic.js')],
-        question : path.resolve(__dirname,"src/main/resources/templates/static/css/question.css"),
-        nonLoginUser : path.resolve(__dirname,"src/main/resources/templates/static/css/nonLoginUser.css"),
-        orderTemp : path.resolve(__dirname,"src/main/resources/templates/static/css/order.css"),
-        // semantic :  path.resolve(__dirname,"src/main/resources/templates/semantic/dist/semantic.css"),
         // bootstrap: path.resolve(__dirname,"src/main/resources/bootstrap/app.js"),
 
-        survey: path.resolve(__dirname,"src/main/resources/templates/static/js/SurveyFunction.js"),
+        // question : path.resolve(__dirname,"src/main/resources/templates/static/css/question.css"),
+        // nonLoginUser : path.resolve(__dirname,"src/main/resources/templates/static/css/nonLoginUser.css"),
+        // orderTemp : path.resolve(__dirname,"src/main/resources/templates/static/css/order.css"),
+        login: path.resolve(__dirname, "src/main/resources/templates/static/css/login.css"),
+        // semantic :  path.resolve(__dirname,"src/main/resources/templates/semantic/dist/semantic.css"),
 
+        survey: path.resolve(__dirname,"src/main/resources/templates/static/js/SurveyFunction.js"),
+        loginForm: path.resolve(__dirname, "src/main/resources/templates/static/js/login.js")
     },
     output: {
         path: path.resolve(__dirname, 'src/main/resources/static/dist/js'),

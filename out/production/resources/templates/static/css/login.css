@@ -1,0 +1,26 @@
+body{
+    background: #F4F4F4 !important;;
+}
+.container{
+    width: 80% !important;
+    margin: 30px 0px;
+    background: white;
+}
+
+.center_object{
+    text-align: center !important;
+    width: 100%;
+    margin: 30px 0px !important;
+}
+
+a{
+    text-align: center !important;
+    width: 100% ;
+    margin: 30px 0px !important;
+}
+.row{
+    padding: 15px;
+}
+.card-center{
+    width: 100%;
+}

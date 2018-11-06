@@ -7,9 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ChoiceSingleRepository extends JpaRepository<ChoiceSingle, Integer> {
-    @Query("select c from ChoiceSingle c where c.question_id=id")
-    List<ChoiceSingle> selectChoices(int id);
-
-    @Query("select c from ChoiceSingle c where c.id=id")
+    @Query("select c from ChoiceSingle c where c.id=?1")
     ChoiceSingle selectChoicesById(int id);
 }

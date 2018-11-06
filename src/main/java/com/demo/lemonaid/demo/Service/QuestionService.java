@@ -11,15 +11,21 @@ public class QuestionService {
     private DiseaseRepository diseaseRepository;
     private QuestionRepository questionRepository;
     private ChoiceSingleRepository choiceSingleRepository;
+    private ChoiceMultiRepository choiceMultiRepository;
+    private WriteRepository writeRepository;
 
     @Autowired
     public QuestionService(
             DiseaseRepository diseaseRepository,
             QuestionRepository questionRepository,
-            ChoiceSingleRepository choiceSingleRepository){
+            ChoiceSingleRepository choiceSingleRepository,
+            ChoiceMultiRepository choiceMultiRepository,
+            WriteRepository writeRepository){
         this.diseaseRepository = diseaseRepository;
         this.questionRepository = questionRepository;
         this.choiceSingleRepository = choiceSingleRepository;
+        this.choiceMultiRepository = choiceMultiRepository;
+        this.writeRepository = writeRepository;
     }
 
     public Question SearchQuestion(DiseaseService dTemp, int priority){
@@ -50,9 +56,15 @@ public class QuestionService {
         return  resultMulti;
     }
 
-    public Question getSingleQuestionId(ResultSingle resultSingle){
-        ChoiceSingle choiceSingle =  choiceSingleRepository.selectChoicesById(resultSingle.getChoice_single_id());
-        return questionRepository.getQuestionById(choiceSingle.getQuestion_id());
+    public int getSingleQuestionId(ResultSingle resultSingle){
+        return choiceSingleRepository.selectChoicesById(resultSingle.getChoice_single_id()).getQuestion_id();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
-//다선지, 주관식도 따로 구현해야함.
+
+    public int getMultiQuestionId(ResultMulti resultMulti){
+        return choiceMultiRepository.findChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
+    }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
+
+    public int getWriteId(ResultWrite resultWrite){
+        return choiceMultiRepository.findChoiceMulti(resultWrite.getWrite_id()).getQuestion_id();
+    }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 }

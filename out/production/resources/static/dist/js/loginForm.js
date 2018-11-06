@@ -1,0 +1,1 @@
+webpackJsonp([1],{5:function(n,o,c){(function(n){window.onload=function(){n("button[name='button']").click(function(){console.log("click btn"),n("#loginForm").submit()})}}).call(o,c(0))}},[5]);

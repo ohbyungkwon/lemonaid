@@ -72,10 +72,12 @@ public class QuestionController {
     @ResponseBody
     public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingle resultSingle){
         Map<String, Object> map = new HashMap<>();
+
         resultSingle.setUser_id("obk");//임시 값
+
         if(resultSingleRepository.save(resultSingle) != null){
-            map.put("question_id",questionService.getSingleQuestionId(resultSingle).getId());
-            map.put("chocie_id",resultSingle.getChoice_single_id());
+            map.put("question_id",questionService.getSingleQuestionId(resultSingle));
+            map.put("choice_id",resultSingle.getChoice_single_id());
             map.put("choices",resultSingle.getChoice());
             map.put("extra_info",resultSingle.getExtra_info());
             map.put("state",HttpStatus.OK);
@@ -90,8 +92,8 @@ public class QuestionController {
         ResultMulti resultMulti = questionService.MultiAdapter(new ResultMulti(), resultMultiTemp);
 
         if(resultMultiRepository.save(resultMulti) != null){
-            map.put("question_id",resultMulti.getChoice_multi_id());
-            map.put("chocie_id",resultMulti.getChoice_multi_id());
+            map.put("question_id",questionService.getMultiQuestionId(resultMulti));
+            map.put("choice_id",resultMulti.getChoice_multi_id());
             map.put("choices",resultMultiTemp.getChoice());
             map.put("extra_info",resultMulti.getExtra_info());
             map.put("state",HttpStatus.OK);
@@ -109,7 +111,6 @@ public class QuestionController {
             map.put("text",write.getText());
             map.put("state",HttpStatus.OK);
         }else{ map.put("state",HttpStatus.NOT_FOUND);}
-
         return map;
     }
 }
