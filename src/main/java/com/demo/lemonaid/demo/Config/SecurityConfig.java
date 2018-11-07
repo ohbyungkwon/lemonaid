@@ -43,11 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        auth.authenticationProvider(authenticationProvider());
     }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+//    @Bean
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+
 //    @Bean
 //    public DaoAuthenticationProvider authenticationProvider() {
 //        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -56,26 +57,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        return authenticationProvider;
 //    }
 
-//    protected void configure(HttpSecurity http) throws Exception{
-//        http.authorizeRequests()
-//                .antMatchers("/login").authenticated()
-//                .anyRequest().permitAll();
-//
-//        http.formLogin()
-//                .usernameParameter("j_username")
-//                .passwordParameter("j_password")
-//                .loginProcessingUrl("/j_spring_security_check")
-//                .loginPage("/login")
-//                .defaultSuccessUrl("/")
-//                .permitAll()
-//                .and()
-//                .csrf().disable()
-//                .httpBasic();
-//
-//        http.logout()
-//                .permitAll()
-//                .deleteCookies("SESSION")
-//                .logoutUrl("/logOut")
-//                .logoutSuccessUrl("/login");
-//    }
+    protected void configure(HttpSecurity http) throws Exception{
+        http.authorizeRequests()
+                .antMatchers("/login").authenticated()
+                .anyRequest().permitAll();
+
+        http.formLogin()
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
+                .loginProcessingUrl("/j_spring_security_check")
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .permitAll()
+                .and()
+                .csrf().disable()
+                .httpBasic();
+
+        http.logout()
+                .permitAll()
+                .deleteCookies("SESSION")
+                .logoutUrl("/logOut")
+                .logoutSuccessUrl("/login");
+    }
 }
