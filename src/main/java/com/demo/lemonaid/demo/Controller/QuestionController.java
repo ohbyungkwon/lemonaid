@@ -6,10 +6,15 @@ import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.Service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +71,17 @@ public class QuestionController {
         }
 
         return "Question";
+    }
+
+    @GetMapping("/temp")
+    public ModelAndView temp() {
+        String url = "";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal().equals("anonymousUser")){
+            url = "login";
+        }else{ url = "order"; }
+
+        return new ModelAndView(new RedirectView(url, true));
     }
 
     @PostMapping("/response/single/{id}")

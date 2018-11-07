@@ -12,9 +12,11 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin:'application'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
+mainClassName = 'com.demo.lemonaid.demo.DemoApplication'
 group = 'com.demo.lemonaid'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -24,6 +26,16 @@ repositories {
     maven { url 'https://repo.spring.io/snapshot' }
 }
 
+//jar {
+//    manifest {
+//        attributes 'Main-Class': 'com.demo.lemonaid.demo.DemoApplication'
+//    }
+//    from {
+//        configurations.compile.collect {
+//            it.isDirectory() ? it : zipTree(it)
+//        }
+//    }
+//}
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -31,15 +43,15 @@ dependencies {
     compile("mysql:mysql-connector-java")
 
     compile('org.springframework.boot:spring-boot-starter-security')
-    compile 'com.nimbusds:nimbus-jose-jwt:6.0.1'
+//    compile 'com.nimbusds:nimbus-jose-jwt:6.0.1'
     compile('com.auth0:java-jwt:3.1.0')
-    compile('org.springframework.security.oauth:spring-security-oauth2')
+//    compile('org.springframework.security.oauth:spring-security-oauth2')
     compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.BUILD-SNAPSHOT'
 
     compile('org.springframework.boot:spring-boot-starter-aop')
     compile('org.springframework.boot:spring-boot-starter-freemarker')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.projectlombok:lombok')
+    compileOnly('org.projectlombok:lombok')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="/dist/js/bootstrap.css">
         <script src="/dist/js/vendor.js"></script>
         <script src="/dist/js/bootstrap.js"></script>
-        <script src="/dist/js/survey.js"></script>
+        <script src="/dist/js/surveyTemp.js"></script>
     </head>
     <body>
         <div class="container">

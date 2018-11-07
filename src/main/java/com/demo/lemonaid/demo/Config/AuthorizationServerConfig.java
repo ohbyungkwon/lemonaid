@@ -1,6 +1,7 @@
 //package com.demo.lemonaid.demo.Config;
 //
 //import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Qualifier;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,9 @@
 //    @Autowired
 //    private AuthenticationManager authenticationManager;
 //
+//    @Autowired
+//    private DataSource dataSource;
+//
 //    public TokenStore tokenStore(){
 //        return new JwtTokenStore(accessTokenConverter());
 //    }
@@ -57,10 +61,10 @@
 //
 //    @Override
 //    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//        endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager).accessTokenConverter(accessTokenConverter());
+//        endpoints.accessTokenConverter(accessTokenConverter()).authenticationManager(this.authenticationManager);
 //        //토큰을 등록하고 메니저를 등록 후
 //    }
-////endpoint는 컨트롤러와 같은 기능을 한다.
+//
 //    @Bean
 //    @Primary
 //    public JdbcClientDetailsService JdbcClientDetailsService(DataSource dataSource) {

@@ -15,7 +15,7 @@ const config = {
         login: path.resolve(__dirname, "src/main/resources/templates/static/css/login.css"),
         // semantic :  path.resolve(__dirname,"src/main/resources/templates/semantic/dist/semantic.css"),
 
-        survey: path.resolve(__dirname,"src/main/resources/templates/static/js/SurveyFunction.js"),
+        surveyTemp: path.resolve(__dirname,"src/main/resources/templates/static/js/SurveyFunction.js"),
         loginForm: path.resolve(__dirname, "src/main/resources/templates/static/js/login.js")
     },
     output: {
