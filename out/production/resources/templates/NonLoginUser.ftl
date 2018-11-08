@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="/dist/js/bootstrap.css">
     <script src="/dist/js/vendor.js"></script>
     <script src="/dist/js/bootstrap.js"></script>
+    <script src="/dist/js/semanticjs.js"></script>
+
     <script src="/dist/js/survey.js"></script>
 </head>
 <body>

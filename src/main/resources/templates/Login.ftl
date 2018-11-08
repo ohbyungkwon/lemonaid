@@ -10,8 +10,10 @@
     <link rel="stylesheet" type="text/css" href="/dist/js/semantic.css">
     <link rel="stylesheet" type="text/css" href="/dist/js/bootstrap.css">
     <script src="/dist/js/vendor.js"></script>
-    <script src="/dist/js/bootstrap.js"></script>
     <script src="/dist/js/LoginForm.js"></script>
+    <script src="/dist/js/bootstrap.js"></script>
+    <script src="/dist/js/semanticjs.js"></script>
+
 </head>
 <body>
     <div class="container">
