@@ -14,6 +14,8 @@
     <script src="/dist/js/bootstrap.js"></script>
     <script src="/dist/js/semanticjs.js"></script>
 
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 <body>
     <div class="container">
@@ -21,6 +23,7 @@
             <div class="card card-center">
                 <div class="card-body">
                     <form id="loginForm" method="post" action="j_spring_security_check">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <input name="j_username" type="text" class="form-control" placeholder="Email">
                         <input name="j_password" type="password" class="form-control" placeholder="Password">
                     </form>

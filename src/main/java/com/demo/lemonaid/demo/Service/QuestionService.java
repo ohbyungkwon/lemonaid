@@ -3,6 +3,7 @@ package com.demo.lemonaid.demo.Service;
 import com.demo.lemonaid.demo.Domain.*;
 import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Repository.*;
+import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ public class QuestionService {
     private ChoiceSingleRepository choiceSingleRepository;
     private ChoiceMultiRepository choiceMultiRepository;
     private WriteRepository writeRepository;
+    private UserRepository userRepository;
+    private UserIdSession userIdSession;
 
     @Autowired
     public QuestionService(
@@ -20,12 +23,16 @@ public class QuestionService {
             QuestionRepository questionRepository,
             ChoiceSingleRepository choiceSingleRepository,
             ChoiceMultiRepository choiceMultiRepository,
-            WriteRepository writeRepository){
+            WriteRepository writeRepository,
+            UserRepository userRepository,
+            UserIdSession userIdSession){
         this.diseaseRepository = diseaseRepository;
         this.questionRepository = questionRepository;
         this.choiceSingleRepository = choiceSingleRepository;
         this.choiceMultiRepository = choiceMultiRepository;
         this.writeRepository = writeRepository;
+        this.userRepository = userRepository;
+        this.userIdSession = userIdSession;
     }
 
     public Question SearchQuestion(DiseaseService dTemp, int priority){
@@ -40,6 +47,16 @@ public class QuestionService {
         int total = questionRepository.getCount(dTemp.getId());
         return total;
     }
+
+    public void setInfoSingle(ResultSingle resultSingle){
+        resultSingle.setUser_id("obk");//현재 세션에 저장된 id로 변경해야함.
+        resultSingle.setQuestion_id(getSingleQuestionId(resultSingle));
+    }
+    public void setInfoWrite(ResultWrite resultWrite){
+        resultWrite.setUser_id("obk");//임시 값
+        resultWrite.setQuestion_id(7);
+    }
+
     public ResultMulti MultiAdapter(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter){
         String []resultTemp = resultMultiAdapter.getChoice();
         String str="";
@@ -48,10 +65,11 @@ public class QuestionService {
             str += resultTemp[i]+';';
         }
 
-        resultMulti.setChoice_multi_id(resultMultiAdapter.getChoice_multi_id());
-        resultMulti.setExtra_info(resultMultiAdapter.getExtra_info());
-        resultMulti.setUser_id("obk");//임시 값
+        resultMulti.setUser_id("obk");
         resultMulti.setChoice(str);
+        resultMulti.setExtra_info(resultMultiAdapter.getExtra_info());
+        resultMulti.setChoice_multi_id(resultMultiAdapter.getChoice_multi_id());
+        resultMulti.setQuestion_id(getMultiQuestionId(resultMulti));
 
         return  resultMulti;
     }
@@ -61,10 +79,15 @@ public class QuestionService {
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
     public int getMultiQuestionId(ResultMulti resultMulti){
-        return choiceMultiRepository.findChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
+        return choiceMultiRepository.selectChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
-    public int getWriteId(ResultWrite resultWrite){
-        return choiceMultiRepository.findChoiceMulti(resultWrite.getWrite_id()).getQuestion_id();
-    }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
+    public String TempUserValid(User user){
+        if(user.getPersonal_id() == "") return "생년월일을 입력해주세요";
+        else if(user.getGender().indexOf("-1") != -1) return "성별을 골라주세요";
+        else if(user.getGender().indexOf("0") != -1) return "남성만 참여가능합니다";
+        else{
+            return "설문을 시작합니다";
+        }
+    }
 }

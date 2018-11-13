@@ -13,23 +13,18 @@ import java.util.Collection;
 public class Question {
     @Id
     @Column(name = "id", nullable = false)
-    @Getter @Setter
     private int id;
 
     @Column(name = "disease_service_id", nullable = false)
-    @Getter @Setter
     private int disease_service_id;
 
     @Column(name = "content", nullable = false)
-    @Getter @Setter
     private String content;
 
     @Column(name = "type")
-    @Getter @Setter
     private String type;
 
     @Column(name = "priority", nullable = false)
-    @Getter @Setter
     private int priority;
 
     @OneToMany(cascade= CascadeType.ALL, targetEntity = ChoiceSingle.class)

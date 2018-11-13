@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ChoiceMultiRepository extends JpaRepository<ChoiceMulti, Integer> {
     @Query("select c from ChoiceMulti c where c.id=?1")
-    ChoiceMulti findChoiceMulti(int id);
+    ChoiceMulti selectChoiceMulti(int id);
 }

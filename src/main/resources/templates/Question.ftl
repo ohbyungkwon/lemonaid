@@ -12,6 +12,8 @@
         <script src="/dist/js/surveyTemp.js"></script>
         <script src="/dist/js/bootstrap.js"></script>
         <script src="/dist/js/semanticjs.js"></script>
+        <meta name="_csrf" content="${_csrf.token}"/>
+        <meta name="_csrf_header" content="${_csrf.headerName}"/>
     </head>
     <body>
         <div class="container">
@@ -62,6 +64,35 @@
                                         </div>
                                         <div class="ui input focus">
                                             <input id="Diastolic" type="text" placeholder="Diastolic">
+                                        </div>
+                                    </div>
+                                <#else>
+                                    <div class="row">
+                                        <div class="row justify-content-center">
+                                            <div class="col-6 col-sm-4">
+                                                <img src="/dist/js/image/zum.png" alt="..." class="img-thumbnail">
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <img src="/dist/js/image/zum.png" alt="..." class="img-thumbnail">
+                                            </div>
+
+                                            <!-- 다음 컬럼을 강제로 md 중단점에서 새로운 라인으로 나눕니다. -->
+                                            <div class="w-100 d-none d-md-block"></div>
+
+                                            <div class="col-6 col-sm-4">
+                                                <img src="/dist/js/image/zum.png" alt="..." class="img-thumbnail">
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <img src="/dist/js/image/zum.png" alt="..." class="img-thumbnail">
+                                            </div>
+
+                                            <div class="w-100 d-none d-md-block"></div>
+
+                                            <div class="col-6 col-sm-4">
+                                                <img src="/dist/js/image/zum.png" alt="..." class="img-thumbnail">
+                                            </div>
+
+                                            <a style="color:red;">오직 의사만이 진단을 위해 사진을 확인합니다.</a>
                                         </div>
                                     </div>
                                 </#if>

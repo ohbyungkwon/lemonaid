@@ -15,23 +15,15 @@ import javax.persistence.Table;
 @Data
 public class Write {
     @Id
-    @Setter
-    @Getter
     @Column(name = "id", nullable = false)
     private int id;
 
     @Column(name = "question_id", nullable = false)
-    @Setter
-    @Getter
     private int question_id;
 
     @Column(name = "conetent", nullable = false)
-    @Setter
-    @Getter
     private int content;
 
     @Column(name = "text", nullable = false)
-    @Setter
-    @Getter
     private int text;
 }

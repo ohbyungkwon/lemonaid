@@ -7,6 +7,55 @@ window.onload = function(){
 
     var questionType = $(".hidden-text2").text();
 
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+
+
+    // var gender = "-1";
+    // console.log(gender);
+    // $("#womanBtn").click(function () {
+    //     gender = "0";
+    //     console.log("woman");
+    //     $(this).css("background","orange");
+    //     $("#manBtn").css("background","darkgray")
+    // })
+    // $("#manBtn").click(function () {
+    //     gender = "1";
+    //     console.log("man");
+    //     $(this).css("background","orange");
+    //     $("#womanBtn").css("background","darkgray")
+    // })
+    //
+    // $("#nextBtn").click(function () {
+    //     var data = {
+    //         "id" : $("#userID").val(),
+    //         "personal_id" :  $("input[name='birth']").val(),
+    //         "gender" : gender
+    //     };
+    //
+    //     console.log(data);
+    //
+    //     $.ajax({
+    //         url: '/TempUserSet',
+    //         method: 'POST',
+    //         dataType: "json",
+    //         contentType: "application/json; charset=UTF-8",
+    //         data: JSON.stringify(data),
+    //         success: function(data){
+    //             alert(data.comment);
+    //             if(data.comment == "설문을 시작합니다"){
+    //                 window.location.href="/question/발기부전/1";
+    //             }
+    //             else if(data.comment == "남성만 참여가능합니다"){
+    //                 window.location.href="/";
+    //             }
+    //         },
+    //         beforeSend: function(xhr) {
+    //             xhr.setRequestHeader(header, token);
+    //         },
+    //     })
+    // })
+
     $("button[name='pre']").click(function(){
         if($(".hidden-text1").text() != 1)//첫 페이지에서는 이동 x
             window.location.href=Number($(".hidden-text1").text())-1;
@@ -71,7 +120,10 @@ window.onload = function(){
             },
             fail: function () {
                 alert("하나 이상 선택하세요.");
-            }
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
         })//db 저장 후 페이지 이동
 
         // if($(".hidden-text").text() != 30)//마지막 페이지에서는 이동 x

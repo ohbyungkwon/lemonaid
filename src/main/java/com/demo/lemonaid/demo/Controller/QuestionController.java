@@ -4,6 +4,7 @@ import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Domain.*;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.Service.QuestionService;
+import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -24,27 +25,34 @@ public class QuestionController {
     private ResultMultiRepository resultMultiRepository;
     private QuestionService questionService;
     private ResultWriteRepository resultWriteRepository;
+    private UserIdSession userIdSession;
+//    private long NonUserUseID;
 
     @Autowired
     public QuestionController(
             ResultSingleRepository resultSingleRepository,
             ResultMultiRepository resultMultiRepository,
             QuestionService questionService,
-            ResultWriteRepository resultWriteRepository){
+            ResultWriteRepository resultWriteRepository,
+            UserIdSession userIdSession){
         this.resultSingleRepository = resultSingleRepository;
         this.resultMultiRepository = resultMultiRepository;
         this.resultWriteRepository = resultWriteRepository;
         this.questionService = questionService;
+        this.userIdSession = userIdSession;
+//        this.NonUserUseID = 0;
     }
 
     @GetMapping("/")
     @ResponseBody
     public String root(){
         return "hello";
-    } //TEST
+    }//TEST
 
     @GetMapping("/register/NonUser")
     public String nonUser(Model model){
+//        NonUserUseID += 1;
+//        model.addAttribute("userID",NonUserUseID);
         return "NonLoginUser";
     }
 
@@ -89,7 +97,7 @@ public class QuestionController {
     public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingle resultSingle){
         Map<String, Object> map = new HashMap<>();
 
-        resultSingle.setUser_id("obk");//임시 값
+        questionService.setInfoSingle(resultSingle);
 
         if(resultSingleRepository.save(resultSingle) != null){
             map.put("question_id",questionService.getSingleQuestionId(resultSingle));
@@ -105,6 +113,7 @@ public class QuestionController {
     @ResponseBody
     public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiTemp){
         Map<String, Object> map = new HashMap<>();
+
         ResultMulti resultMulti = questionService.MultiAdapter(new ResultMulti(), resultMultiTemp);
 
         if(resultMultiRepository.save(resultMulti) != null){
@@ -121,7 +130,9 @@ public class QuestionController {
     @ResponseBody
     public Map<String, Object> saveWriteDB(@RequestBody ResultWrite write){
         Map<String, Object> map = new HashMap<>();
-        write.setUser_id("obk");//임시 값
+
+        questionService.setInfoWrite(write);
+
         if(resultWriteRepository.save(write) != null){
             map.put("write_id",write.getWrite_id());
             map.put("text",write.getText());
@@ -129,4 +140,15 @@ public class QuestionController {
         }else{ map.put("state",HttpStatus.NOT_FOUND);}
         return map;
     }
+
+//    @PostMapping("/TempUserSet")
+//    @ResponseBody
+//    public Map<String, Object> GiveUserID(@RequestBody User user){
+//        Map<String, Object> map = new HashMap<>();
+//        userIdSession.setTempUser(user);
+//        String comment = questionService.TempUserValid(user);
+//        map.put("comment", comment);
+//
+//        return map;
+//    }
 }

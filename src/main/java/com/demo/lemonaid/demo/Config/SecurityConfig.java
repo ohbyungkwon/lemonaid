@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -65,6 +66,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return authenticationProvider;
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/review",
+                "/disease",
+                "/intro/**",
+                "/receiveId");
+    }
+
     protected void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
                 .antMatchers("/login").authenticated()
@@ -78,7 +87,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(successHandler())
                 .permitAll()
                 .and()
-                .csrf().disable()
+                .csrf()
+                .and()
+//                .csrf().disable()
                 .httpBasic();
 
         http.logout()
@@ -106,8 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 String redirectUrl = (String) session.getAttribute("prev");
                 if (redirectUrl != null) {
                     session.removeAttribute("prev");
-                    if(redirectUrl.indexOf("question") == -1)
-                        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+                    getRedirectStrategy().sendRedirect(request, response, redirectUrl);
                 } else {
                     super.onAuthenticationSuccess(request, response, authentication);
                 }

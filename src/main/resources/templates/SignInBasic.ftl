@@ -13,6 +13,9 @@
         <script src="/dist/js/loginForm.js"></script>
         <script src="/dist/js/bootstrap.js"></script>
         <script src="/dist/js/semanticjs.js"></script>
+
+        <meta name="_csrf" content="${_csrf.token}"/>
+        <meta name="_csrf_header" content="${_csrf.headerName}"/>
     </head>
     <body>
         <div class="container">
@@ -36,12 +39,17 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm">
+                                    <p id="passwordComment" style="color:red;"></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
                                    <input name="password_check" type="password" class="form-control" placeholder="Check Password">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm">
-                                    <p style="block:none;"></p>
+                                    <p id="duplicateComment"style="color:red;"></p>
                                 </div>
                             </div>
                         </form>

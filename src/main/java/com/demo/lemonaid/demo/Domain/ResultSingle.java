@@ -14,28 +14,18 @@ import javax.persistence.Table;
 @Data
 public class ResultSingle {
     @Id
-//    @Column(name = "id")
-//    @Getter
-//    @Setter
-//    private int id;
+    @Column(name = "choice_single_question_id")
+    private int question_id;
+
     @Column(name = "choice_single_id")
-    @Getter
-    @Setter
     private int choice_single_id;
 
     @Column(name = "choice")
-    @Getter
-    @Setter
     private int choice;
 
-    @Column(name = "extra_info"
-    )
-    @Getter
-    @Setter
+    @Column(name = "extra_info")
     private String extra_info;
 
     @Column(name = "user_id")
-    @Getter
-    @Setter
     private String user_id;
 }

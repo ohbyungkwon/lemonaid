@@ -14,18 +14,15 @@ import javax.persistence.Table;
 @Data
 public class ResultWrite {
     @Id
+    @Column(name = "write_question_id")
+    private int question_id;
+
     @Column(name = "write_id")
-    @Getter
-    @Setter
     private int write_id;
 
     @Column(name = "text")
-    @Getter
-    @Setter
     private String text;
 
     @Column(name = "user_id")
-    @Getter
-    @Setter
     private String user_id;
 }

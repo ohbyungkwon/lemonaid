@@ -14,24 +14,19 @@ import javax.persistence.Table;
 @Data
 public class ResultMultiAdapter {
     @Id
+    @Column(name = "choice_multi_question_id")
+    private int question_id;
+
     @Column(name = "choice_multi_id")
-    @Getter
-    @Setter
     private int choice_multi_id;
 
     @Column(name = "choice")
-    @Getter
-    @Setter
     private String []choice;
 
     @Column(name = "extra_info")
-    @Getter
-    @Setter
     private String extra_info;
 
     @Column(name = "user_id")
-    @Getter
-    @Setter
     private String user_id;
 }
 

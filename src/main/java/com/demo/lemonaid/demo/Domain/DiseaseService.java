@@ -15,11 +15,9 @@ import java.util.Collection;
 public class DiseaseService {
     @Id
     @Column(name = "id", nullable = false)
-    @Setter @Getter
     private int id;
 
     @Column(name = "disease_name", nullable=false)
-    @Setter @Getter
     private String disease_name;
 
     @OneToMany(cascade= CascadeType.ALL, targetEntity = Question.class)
