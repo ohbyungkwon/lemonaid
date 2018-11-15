@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+import java.util.List;
 
 public class UserDetail extends User {
     public UserDetail(String username, String password, Collection<? extends GrantedAuthority> authorities){
@@ -19,4 +20,6 @@ public class UserDetail extends User {
     public UserDetail(String username, String password, String s) {
         super(username, password, AuthorityUtils.createAuthorityList(s));
     }
+
+
 }

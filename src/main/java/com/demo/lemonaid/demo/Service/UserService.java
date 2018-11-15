@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 @Service(value = "UserService")
 public class UserService implements UserDetailsService {
     @Autowired
@@ -26,18 +29,38 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(username);
 
-        return new UserDetail(user.getEmail(), user.getPassword(), "2");
+        return createUser(user);
+    }
+
+    private UserDetail createUser(User user) {
+        String author = "";
+        switch (user.getUserType()) {
+            case "3":
+                author = "ROLE_TOCKER";
+                break;
+            case "2":
+                author = "ROLE_ADMIN";
+                break;
+            default:
+                author = "ROLE_USER";
+                break;
+        }
+        UserDetail loginUser = new UserDetail(user.getEmail(), user.getPassword(), author);
+
+        return loginUser;
     }
 
     public String JsonParseUserId(String id){
+        String ParsedID = "";
         try {
             JSONParser jsonParser = new JSONParser();
             JSONObject JsonId = (JSONObject) jsonParser.parse(id);
 
-            userIdSession.setTempUserId(JsonId.get("TempUserId").toString());
+            ParsedID = JsonId.get("TempUserId").toString();
+            System.out.println(ParsedID);
         }catch (Exception e){
             e.printStackTrace();
         }
-        return userIdSession.getTempUserId();
-    }
+        return ParsedID;
+   }
 }

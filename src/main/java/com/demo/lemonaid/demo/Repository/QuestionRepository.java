@@ -15,10 +15,4 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     @Query("select max(q.priority) from Question q where q.disease_service_id=?1")
     Integer getCount(int disease_id);
-
-    @Query("select q from Question q where q.id=?1")
-    Question getQuestionById(int id);
-
-    Page<Question> findAllById(int id, Pageable pageable);
-
 }

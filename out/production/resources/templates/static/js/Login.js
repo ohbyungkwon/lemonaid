@@ -131,6 +131,34 @@ window.onload = function () {
     })
 
 
+    var TelCompany="";
+    var isAuth = false;
+    $("#telCompany").change(function () {
+        TelCompany = $(":selected").text();
+    })
+    
+    $("#auth").click(function (){
+        if($("input[name='tel']").val() != "" && TelCompany != "") {
+            $.ajax({
+                url:"/authRandom",
+                method: "GET",
+                success : function (data) {
+                    $("input[name='authNum']").val(Math.floor(data.num));
+                    isAuth = true;
+                    console.log(isAuth);
+                },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+            })
+            //var num = Math.random() * (99999-1) + 1;
+        }else if($("input[name='tel']").val() == ""){
+            alert("연락처를 입력해주세요.");
+        }else if(TelCompany == ""){
+            alert("통신사를 선택해주세요.");
+        }
+    })
+
     $("#SignedBtn").click(function () {
         data = {
             "name" : $("input[name='name']").val(),
@@ -139,7 +167,7 @@ window.onload = function () {
             "tel" : $("input[name='tel']").val(),
             "addr" : $("input[name='addr']").val(),
             "checkAgree" : $("input[name='agree']").is(":checked"),
-            "isAuth" : isAuth
+            "isAuth" : isAuth,
         };
         $.ajax({
             url: "/done",
@@ -159,32 +187,5 @@ window.onload = function () {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
-
-    var TelCompany="";
-    var isAuth = false;
-    $("#telCompany").change(function () {
-        TelCompany = $(":selected").text();
-    })
-    
-    $("#auth").click(function (){
-        if($("input[name='tel']").val() != "" && TelCompany != "") {
-            $.ajax({
-                url:"/authRandom",
-                method: "GET",
-                success : function (data) {
-                    $("input[name='authNum']").val(Math.floor(data.num));
-                    isAuth = true;
-                },
-                beforeSend: function(xhr) {
-                    xhr.setRequestHeader(header, token);
-                },
-            })
-            //var num = Math.random() * (99999-1) + 1;
-        }else if($("input[name='tel']").val() == ""){
-            alert("연락처를 입력해주세요.");
-        }else if(TelCompany == ""){
-            alert("통신사를 선택해주세요.");
-        }
     })
 }

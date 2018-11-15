@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Transactional
 public class SignInService {
     private UserRepository userRepository;
 
@@ -79,6 +81,8 @@ public class SignInService {
         else if(!mTel.matches()) return "휴대폰번호 형식이 잘못되었습니다";
         else if(!mName.matches()) return "이름 형식이 잘못되었습니다.";
         else if(!mId.matches()) return "주민등록번호 형식이 잘못되었습니다.";
-        else return "가입 완료";
+        else {
+            return "가입 완료";
+        }
     }
 }

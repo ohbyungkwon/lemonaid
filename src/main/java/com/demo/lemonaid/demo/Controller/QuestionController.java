@@ -1,9 +1,12 @@
 package com.demo.lemonaid.demo.Controller;
 
 import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
+import com.demo.lemonaid.demo.Adapter.ResultSingleAdapter;
+import com.demo.lemonaid.demo.Adapter.ResultWriteAdapter;
 import com.demo.lemonaid.demo.Domain.*;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.Service.QuestionService;
+import com.demo.lemonaid.demo.Service.UserService;
 import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,33 +17,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 public class QuestionController {
-    private ResultSingleRepository resultSingleRepository;
-    private ResultMultiRepository resultMultiRepository;
     private QuestionService questionService;
-    private ResultWriteRepository resultWriteRepository;
     private UserIdSession userIdSession;
-//    private long NonUserUseID;
 
     @Autowired
     public QuestionController(
-            ResultSingleRepository resultSingleRepository,
-            ResultMultiRepository resultMultiRepository,
             QuestionService questionService,
-            ResultWriteRepository resultWriteRepository,
             UserIdSession userIdSession){
-        this.resultSingleRepository = resultSingleRepository;
-        this.resultMultiRepository = resultMultiRepository;
-        this.resultWriteRepository = resultWriteRepository;
         this.questionService = questionService;
         this.userIdSession = userIdSession;
-//        this.NonUserUseID = 0;
     }
 
     @GetMapping("/")
@@ -54,20 +44,31 @@ public class QuestionController {
 //        NonUserUseID += 1;
 //        model.addAttribute("userID",NonUserUseID);
         return "NonLoginUser";
-    }
+    }//비로그인에만 출력
 
-    @GetMapping("/question/{disease}/{priority}")
-    public String question(Model model, @PathVariable String disease, @PathVariable int priority){
-        DiseaseService dTemp = questionService.SearchDisease(disease);
-        Question qTemp  = questionService.SearchQuestion(dTemp, priority);
+    @PostMapping("/TempUserSet")
+    @ResponseBody
+    public Map<String, Object> GiveUserID(@RequestBody User user){
+        userIdSession.setTempUser(user);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("comment", questionService.TempUserValid(user));
+
+        return map;
+    }//비로그인에만 출력, 적격판정의 결과 알람
+
+    @GetMapping("/question")
+    public String question(Model model, @RequestParam("disease_name") String disease, @RequestParam("priority") int priority){
+        DiseaseService dTemp = questionService.SearchDisease(disease);//질병 선택
+        Question qTemp  = questionService.SearchQuestion(dTemp, priority);//해당 질병의 id문항을 읽어옴
 
         model.addAttribute("total_question", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
         model.addAttribute("disease_name",dTemp.getDisease_name());
         model.addAttribute("question", qTemp);
 
         if(qTemp.getType().equals("single")){
-            model.addAttribute("choices", qTemp.getChoiceSingle());
-            model.addAttribute("isState",0);
+            model.addAttribute("choices", qTemp.getChoiceSingle());//1대 n관계
+            model.addAttribute("isState",0);//flag
         }else if(qTemp.getType().equals("multi")){
             model.addAttribute("choices",qTemp.getChoiceMulti());
             model.addAttribute("isState",1);
@@ -85,70 +86,31 @@ public class QuestionController {
     public ModelAndView temp() {
         String url = "";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal().equals("anonymousUser")){
+        if(!authentication.isAuthenticated()){
             url = "login";
         }else{ url = "order"; }
 
         return new ModelAndView(new RedirectView(url, true));
-    }
+    }//마지막 문진이 끝날 때 로그인 여부에 따른 리다이렉트
 
     @PostMapping("/response/single/{id}")
     @ResponseBody
-    public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingle resultSingle){
-        Map<String, Object> map = new HashMap<>();
-
-        questionService.setInfoSingle(resultSingle);
-
-        if(resultSingleRepository.save(resultSingle) != null){
-            map.put("question_id",questionService.getSingleQuestionId(resultSingle));
-            map.put("choice_id",resultSingle.getChoice_single_id());
-            map.put("choices",resultSingle.getChoice());
-            map.put("extra_info",resultSingle.getExtra_info());
-            map.put("state",HttpStatus.OK);
-        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-        return map;
-    }//single
+    public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter){
+        ResultSingle resultSingle = questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter);
+        return questionService.returnApiSingle(resultSingle);
+    }//single question's result save
 
     @PostMapping("/response/multi/{id}")
     @ResponseBody
-    public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiTemp){
-        Map<String, Object> map = new HashMap<>();
-
-        ResultMulti resultMulti = questionService.MultiAdapter(new ResultMulti(), resultMultiTemp);
-
-        if(resultMultiRepository.save(resultMulti) != null){
-            map.put("question_id",questionService.getMultiQuestionId(resultMulti));
-            map.put("choice_id",resultMulti.getChoice_multi_id());
-            map.put("choices",resultMultiTemp.getChoice());
-            map.put("extra_info",resultMulti.getExtra_info());
-            map.put("state",HttpStatus.OK);
-        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-        return map;
+    public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter){
+        ResultMulti resultMulti = questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter);
+        return questionService.returnApiMulti(resultMulti);
     }//multi
 
     @PostMapping("/response/write")
     @ResponseBody
-    public Map<String, Object> saveWriteDB(@RequestBody ResultWrite write){
-        Map<String, Object> map = new HashMap<>();
-
-        questionService.setInfoWrite(write);
-
-        if(resultWriteRepository.save(write) != null){
-            map.put("write_id",write.getWrite_id());
-            map.put("text",write.getText());
-            map.put("state",HttpStatus.OK);
-        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-        return map;
-    }
-
-//    @PostMapping("/TempUserSet")
-//    @ResponseBody
-//    public Map<String, Object> GiveUserID(@RequestBody User user){
-//        Map<String, Object> map = new HashMap<>();
-//        userIdSession.setTempUser(user);
-//        String comment = questionService.TempUserValid(user);
-//        map.put("comment", comment);
-//
-//        return map;
-//    }
+    public Map<String, Object> saveWriteDB(@RequestBody ResultWriteAdapter resultWriteAdapter){
+        ResultWrite resultWrite = questionService.setInfoWrite(new ResultWrite(), resultWriteAdapter);
+        return questionService.returnApiWrite(resultWrite);
+    }//write
 }

@@ -11,6 +11,9 @@
     <script src="/dist/js/vendor.js"></script>
     <script src="/dist/js/bootstrap.js"></script>
     <script src="/dist/js/semanticjs.js"></script>
+
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 <body>
     <div class="container">

@@ -9,9 +9,11 @@
         <link rel="stylesheet" type="text/css" href="/dist/js/semantic.css">
         <link rel="stylesheet" type="text/css" href="/dist/js/bootstrap.css">
         <script src="/dist/js/vendor.js"></script>
-        <script src="/dist/js/surveyTemp.js"></script>
+        <script src="/dist/js/survey.js"></script>
+
         <script src="/dist/js/bootstrap.js"></script>
         <script src="/dist/js/semanticjs.js"></script>
+
         <meta name="_csrf" content="${_csrf.token}"/>
         <meta name="_csrf_header" content="${_csrf.headerName}"/>
     </head>
@@ -58,12 +60,21 @@
                                         <hr class="line_color">
                                     </#list>
                                 <#elseIf isState == 2>
-                                    <div class="row justify-content-center">
+                                    <div style="margin-top: 30px;" class="row justify-content-center">
                                         <div class="ui input focus">
                                             <input id="Systolic" type="text" placeholder="Systolic">
                                         </div>
                                         <div class="ui input focus">
                                             <input id="Diastolic" type="text" placeholder="Diastolic">
+                                        </div>
+                                    </div>
+                                    <hr style="margin-top: 30px; margin-bottom: 30px;" class="line_color">
+                                    <div class="row justify-content-center">
+                                        <div class="ui input focus">
+                                            <input id="ReSystolic" type="text" placeholder="Retyping">
+                                        </div>
+                                        <div class="ui input focus">
+                                            <input id="ReDiastolic" type="text" placeholder="Retyping">
                                         </div>
                                     </div>
                                 <#else>
@@ -113,7 +124,11 @@
         <div class="footer_c">
             <div class="row justify-content-xl-around">
                 <button id="1" name="pre" class= "col-xl-1 ui orange button footer_left"> 이전 </button>
-                <button id="2" name="next" class= "col-xl-1 ui orange button footer_right"> 다음 </button>
+                <#if question.priority != 30>
+                    <button id="2" name="next" class= "col-xl-1 ui orange button footer_right"> 다음 </button>
+                <#else>
+                    <button id="2" name="next" class= "col-xl-1 ui orange button footer_right"> 제출하기 </button>
+                </#if>
             </div>
         </div>
     </body>
