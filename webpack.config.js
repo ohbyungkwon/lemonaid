@@ -16,6 +16,7 @@ const config = {
         // nonLoginUser : path.resolve(__dirname,"src/main/resources/templates/static/css/nonLoginUser.css"),
         // orderTemp : path.resolve(__dirname,"src/main/resources/templates/static/css/order.css"),
         login: path.resolve(__dirname, "src/main/resources/templates/static/css/login.css"),
+        cash: path.resolve(__dirname, "src/main/resources/templates/static/css/cash.css"),
         signInBasic : path.resolve(__dirname, "src/main/resources/templates/static/css/signInBasic.css"),
         signInSpec : path.resolve(__dirname, "src/main/resources/templates/static/css/signInSpec.css"),
 

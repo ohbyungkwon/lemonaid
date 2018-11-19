@@ -58,7 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/review",
                 "/disease",
                 "/intro/**",
-                "/receiveId");
+                "/receiveId",
+                "/receiveIdAgain");
     }//크록스도메인이 가능한 url
 
     protected void configure(HttpSecurity http) throws Exception{
@@ -72,6 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("j_password")
                 .loginProcessingUrl("/j_spring_security_check")
                 .loginPage("/login")
+                .defaultSuccessUrl("/order")
                 .successHandler(successHandler())
                 .permitAll()
                 .and()

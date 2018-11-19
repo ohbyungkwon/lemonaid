@@ -8,7 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class OrderController {
     @GetMapping("/order")
-    public String OderView(){
+    public String OrderView(){
         return "Order";
+    }
+
+    @GetMapping("/cash")
+    public String CashView(){
+        return "cash";
     }
 }

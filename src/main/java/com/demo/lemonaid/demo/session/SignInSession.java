@@ -9,6 +9,8 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpSession;
+
 @Component
 @Scope(value ="session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SignInSession {
@@ -39,8 +41,9 @@ public class SignInSession {
         }
     }
 
-    public String done(passwordTemp TempUser){
+    public String done(passwordTemp TempUser, HttpSession session){
         User user = new User();
+        user.setId(session.getAttribute("DeviceId").toString());
         user.setEmail(userEmail);
         user.setPassword(new BCrypt().hashpw(userPassword,BCrypt.gensalt()));
         user.setName(TempUser.getName());

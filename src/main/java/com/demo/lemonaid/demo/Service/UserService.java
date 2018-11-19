@@ -11,17 +11,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 @Service(value = "UserService")
+@Transactional
 public class UserService implements UserDetailsService {
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserIdSession userIdSession;
 
+    @Autowired
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
@@ -50,17 +51,46 @@ public class UserService implements UserDetailsService {
         return loginUser;
     }
 
-    public String JsonParseUserId(String id){
-        String ParsedID = "";
-        try {
-            JSONParser jsonParser = new JSONParser();
-            JSONObject JsonId = (JSONObject) jsonParser.parse(id);
-
-            ParsedID = JsonId.get("TempUserId").toString();
-            System.out.println(ParsedID);
-        }catch (Exception e){
-            e.printStackTrace();
+    public String RandomDeviceId(){
+        StringBuffer temp = new StringBuffer();
+        Random rnd = new Random();
+        for (int i = 0; i < 20; i++) {
+            int rIndex = rnd.nextInt(3);
+            switch (rIndex) {
+                case 0:
+                    // a-z
+                    temp.append((char) ((int) (rnd.nextInt(26)) + 97));
+                    break;
+                case 1:
+                    // A-Z
+                    temp.append((char) ((int) (rnd.nextInt(26)) + 65));
+                    break;
+                case 2:
+                    // 0-9
+                    temp.append((rnd.nextInt(10)));
+                    break;
+            }
         }
-        return ParsedID;
-   }
+        return temp.toString();
+    }
+
+    public Map<String, Object> DeviceIdMap(String DeviceId){
+        Map<String, Object> map = new HashMap<>();
+        if(userRepository.findUserById(DeviceId) == null){
+            User user = new User();
+            user.setId(DeviceId);
+            user.setPersonal_id("temp");
+            user.setGender("-1");
+            if(userRepository.save(user) != null) {
+                map.put("isState", "success");
+                map.put("DeviceId", DeviceId);
+            }else{
+                map.put("isState","fail");
+            }
+        }else{
+            map.put("isState","previous");
+            map.put("DeviceId", DeviceId);
+        }
+        return map;
+    }
 }

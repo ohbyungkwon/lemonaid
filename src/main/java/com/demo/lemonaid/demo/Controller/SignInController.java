@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -74,12 +75,12 @@ public class SignInController {
 
     @PostMapping("/done")
     @ResponseBody
-    public Map<String, Object> done(@RequestBody passwordTemp TempUser){
+    public Map<String, Object> done(@RequestBody passwordTemp TempUser, HttpSession session){
         Map<String, Object> map = new HashMap<>();
         String comment = signInService.done(TempUser);//validate
 
         if(comment.equals("가입 완료"))
-            comment = signInSession.done(TempUser);//save
+            comment = signInSession.done(TempUser, session);//save
 
         map.put("comment", comment);
 

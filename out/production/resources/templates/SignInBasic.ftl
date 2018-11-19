@@ -25,7 +25,7 @@
                         <form id="SignInForm">
                             <div class="row" style="padding-right: 30px;" >
                                 <div class="col-8">
-                                    <input name="username" type="text" class="form-control" placeholder="Email" value="sample">
+                                    <input name="username" type="text" class="form-control" placeholder="Email">
                                 </div>
                                 <div class="col-4"">
                                     <button name="checkDuplicate"class="ui yellow button">check</button>

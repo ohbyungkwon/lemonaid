@@ -37,7 +37,7 @@
             동의합니다.
         </a>
         <button name="button" class="ui orange button center_object">로그인</button>
-        <a href="/firstLogin">회원가입</a>
+        <a href="/SignInBasic">회원가입</a>
     </div>
 </div>
 </body>

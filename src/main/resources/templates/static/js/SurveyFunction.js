@@ -57,9 +57,12 @@ window.onload = function(){
     })
 
     $("button[name='pre']").click(function(){
-        if($(".hidden-text1").text() != 1)//첫 페이지에서는 이동 x
-            var num = Number($(".hidden-text1").text())-1;
-            window.location.href="/question?disease_name="+"발기부전"+"&priority="+ num;
+        if($(".hidden-text1").text() != 1) {//첫 페이지에서는 이동 x
+            var num = Number($(".hidden-text1").text()) - 1;
+            window.location.href = "/question?disease_name=" + "발기부전" + "&priority=" + num + "&isLogin=1";
+        }else{
+            window.location.href="/question?isLogin=0";
+        }
     });//back btn
 
     $("button[name='next']").click(function () {
@@ -114,7 +117,7 @@ window.onload = function(){
                 if($(".hidden-text1").text() != 30) {//마지막 페이지에서는 이동 x
                     console.log("dont");
                     var num = Number($(".hidden-text1").text()) + 1;
-                    window.location.href = "/question?disease_name="+"발기부전"+"&priority="+ num;
+                    window.location.href = "/question?disease_name="+"발기부전"+"&priority="+ num + "&isLogin=1";
                 }else{
                     console.log("access");
                     window.location.href="/temp";
@@ -162,4 +165,8 @@ window.onload = function(){
                 $("input[name="+ radio_choice_id +"]").css("display","block");
         }
     });//radio choice
+
+    $("#goCashView").click(function () {
+        window.location.href="/cash";
+    })
 }

@@ -6,12 +6,16 @@ import com.demo.lemonaid.demo.Controller.UserController;
 import com.demo.lemonaid.demo.Domain.*;
 import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Repository.*;
+import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +31,7 @@ public class QuestionService {
     private ResultSingleRepository resultSingleRepository;
     private ResultMultiRepository resultMultiRepository;
     private ResultWriteRepository resultWriteRepository;
-
-    @Autowired private UserService userService;
-    @Autowired private UserController userController;
+    private UserRepository userRepository;
 
     @Autowired
     public QuestionService(
@@ -39,7 +41,8 @@ public class QuestionService {
             ChoiceMultiRepository choiceMultiRepository,
             ResultSingleRepository resultSingleRepository,
             ResultMultiRepository resultMultiRepository,
-            ResultWriteRepository resultWriteRepository){
+            ResultWriteRepository resultWriteRepository,
+            UserRepository userRepository){
         this.diseaseRepository = diseaseRepository;
         this.questionRepository = questionRepository;
         this.choiceSingleRepository = choiceSingleRepository;
@@ -47,6 +50,7 @@ public class QuestionService {
         this.resultSingleRepository = resultSingleRepository;
         this.resultMultiRepository = resultMultiRepository;
         this.resultWriteRepository = resultWriteRepository;
+        this.userRepository=userRepository;
     }
 
     public Question SearchQuestion(DiseaseService dTemp, int priority){
@@ -63,26 +67,41 @@ public class QuestionService {
         return total;
     }
 
+    public String getPrincipal(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetail userDetail = (UserDetail) authentication.getPrincipal();
+        User user = userRepository.findUserByEmail(userDetail.getUsername());
+        return user.getId();
+    }
 
     //setting
-    public ResultSingle setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter){
+    public ResultSingle setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, HttpSession session){
+        if(session.getAttribute("DeviceId") != null)
+            resultSingle.setUser_id(session.getAttribute("DeviceId").toString());//현재 세션에 저장된 id로 변경해야함.
+        else {
+            resultSingle.setUser_id(getPrincipal());//현재 세션에 저장된 id로 변경해야함.
+        }
         resultSingle.setQuestion_id(getSingleQuestionId(resultSingleAdapter));
         resultSingle.setChoice_single_id(resultSingleAdapter.getChoice_single_id());
-        resultSingle.setUser_id("obk");//현재 세션에 저장된 id로 변경해야함.
         System.out.println();
         resultSingle.setExtra_info(resultSingleAdapter.getExtra_info());
         resultSingle.setChoice(resultSingleAdapter.getChoice());
         return resultSingle;
     }
 
-    public ResultMulti setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter){
+    public ResultMulti setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter,HttpSession session){
         String []resultTemp = resultMultiAdapter.getChoice();
         String str="";
 
         for(int i = 0; i < resultTemp.length; i++) {
             str += resultTemp[i] + ';';
         }
-        resultMulti.setUser_id("obk");
+        if(session.getAttribute("DeviceId") != null)
+            resultMulti.setUser_id(session.getAttribute("DeviceId").toString());//현재 세션에 저장된 id로 변경해야함.
+        else {
+            resultMulti.setUser_id(getPrincipal());//현재 세션에 저장된 id로 변경해야함.
+        }
+
         resultMulti.setChoice(str);
         resultMulti.setExtra_info(resultMultiAdapter.getExtra_info());
         resultMulti.setChoice_multi_id(resultMultiAdapter.getChoice_multi_id());
@@ -91,8 +110,13 @@ public class QuestionService {
         return  resultMulti;
     }
 
-    public ResultWrite setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter){
-        resultWrite.setUser_id("obk");
+    public ResultWrite setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, HttpSession session){
+        if(session.getAttribute("DeviceId") != null)
+            resultWrite.setUser_id(session.getAttribute("DeviceId").toString());//현재 세션에 저장된 id로 변경해야함.
+        else {
+            resultWrite.setUser_id(getPrincipal());//현재 세션에 저장된 id로 변경해야함.
+        }
+
         resultWrite.setQuestion_id(7);
         resultWrite.setText(resultWriteAdapter.getText());
         resultWrite.setWrite_id(resultWriteAdapter.getWrite_id());

@@ -14,7 +14,7 @@ public class passwordTemp{
 	private String tel;
 	private String addr;
 	private boolean checkAgree;
-	private boolean isAuth;
+	private boolean Auth;
 
 	public String getEmail() {
 		return email;
