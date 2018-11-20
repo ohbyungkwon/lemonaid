@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +28,6 @@ public class QuestionController {
     private QuestionService questionService;
     private UserIdSession userIdSession;
     @Autowired HttpSession session;
-
 
     @Autowired
     public QuestionController(
@@ -65,13 +63,14 @@ public class QuestionController {
 
     @GetMapping("/question")
     public String question(Model model,
-                           @RequestParam(value = "disease_name") String disease,
-                           @RequestParam(value = "priority") int priority,
-                           @RequestParam(value = "isLogin") int login){
+                           @RequestParam(value = "disease_name", defaultValue = "", required = false) String disease,
+                           @RequestParam(value = "priority", defaultValue = "1", required = false) int priority,
+                           @RequestParam(value = "isLogin", defaultValue = "0", required = false) int login){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if(authentication.getPrincipal().equals("anonymousUser") && login == 0){
             return "NonLoginUser";
-        }//적격판정 후에는 로그인했다고 가정.
+        }
 
         DiseaseService dTemp = questionService.SearchDisease(disease);//질병 선택
         Question qTemp = questionService.SearchQuestion(dTemp, priority);//해당 질병의 id문항을 읽어옴

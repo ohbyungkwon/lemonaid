@@ -20,14 +20,10 @@
     <body>
         <div class="container">
             <div class="header_c">
-                <#--<div class="row justify-content-xl-center">-->
                 ${question.getPriority()} / ${total_question}
-                <#--</div>-->
             </div>
             <div class="content_c">
                 <div class="row justify-content-xl-center">
-                <#--<div class="col col-lg-2">-->
-                <#--</div>-->
                     <div class="card col align-self-xl-center" style="width: 30rem;">
                         <div class="card-body">
                             <h5 class="card-title">[ ${disease_name} ]</h5>
@@ -40,7 +36,7 @@
                                     <#list choices as choice>
                                         <div class="ui radio checkbox">
                                             <input id="${choice.getPriority()}" class="radio_j" type="radio" name="choice" value="${choice.getId()}">
-                                            <label>${choice.getContent()}</label>
+                                            <label for="${choice.getPriority()}">${choice.getContent()}</label>
                                             <#if choice.is_need_extra() == true>
                                                 <input id="extra_info" name=${choice.getId()} type="text" placeholder="더 자세히 설명해 주세요." style="display: none">
                                             </#if>
@@ -52,7 +48,7 @@
                                     <#list choices as choice>
                                         <div class="ui radio checkbox">
                                             <input id="${choice.getPriority()}" class="radio_j" type="radio" name="choice_${choice.getPriority()}" value="${choice.getId()}">
-                                            <label>${choice.getContent()}</label>
+                                            <label for="${choice.getPriority()}" name="choice_${choice.getPriority()}">${choice.getContent()}</label>
                                             <#if choice.is_need_extra() == true>
                                                     <input name=${choice.getId()} type="text" placeholder="더 자세히 설명해 주세요." style="display: none">
                                             </#if>
@@ -62,19 +58,19 @@
                                 <#elseIf isState == 2>
                                     <div style="margin-top: 30px;" class="row justify-content-center">
                                         <div class="ui input focus">
-                                            <input id="Systolic" type="text" placeholder="Systolic">
+                                            <input id="Systolic" type="number" placeholder="Systolic">
                                         </div>
                                         <div class="ui input focus">
-                                            <input id="Diastolic" type="text" placeholder="Diastolic">
+                                            <input id="Diastolic" type="number" placeholder="Diastolic">
                                         </div>
                                     </div>
                                     <hr style="margin-top: 30px; margin-bottom: 30px;" class="line_color">
                                     <div class="row justify-content-center">
                                         <div class="ui input focus">
-                                            <input id="ReSystolic" type="text" placeholder="Retyping">
+                                            <input id="ReSystolic" type="number" placeholder="Retyping">
                                         </div>
                                         <div class="ui input focus">
-                                            <input id="ReDiastolic" type="text" placeholder="Retyping">
+                                            <input id="ReDiastolic" type="number" placeholder="Retyping">
                                         </div>
                                     </div>
                                 <#else>
@@ -110,27 +106,30 @@
                             </div>
                         </div>
                     </div>
-                <#--<div class="col col-lg-2">-->
-                <#--</div>-->
                 </div>
             </div>
-        <#--<div class="footer_c">-->
-        <#--<div class="row justify-content-xl-around">-->
-        <#--<button id="1" name="pre" class= "col-xl-3 ui orange button footer_left"> 이전 </button>-->
-        <#--<button id="2" name="next" class= "col-xl-3 ui orange button footer_right"> 다음 </button>-->
-        <#--</div>-->
-        <#--</div>-->
-        </div>
-        <div class="footer_c">
-            <div class="row justify-content-xl-around">
-                <button id="1" name="pre" class= "col-xl-1 ui orange button footer_left"> 이전 </button>
-                <#if question.priority != 30>
-                    <button id="2" name="next" class= "col-xl-1 ui orange button footer_right"> 다음 </button>
+            <div class="footer_c">
+                <div class="row justify-content-around">
+                <#if question.priority != 1>
+                    <div class="col col-5">
+                        <button id="1" name="pre" class= "col-xl-1 ui orange button footer_left"> 이전 </button>
+                    </div>
                 <#else>
-                    <button id="2" name="next" class= "col-xl-1 ui orange button footer_right"> 제출하기 </button>
+                    <div class="col col-5">
+                        <button id="1" name="pre" class= "col-xl-1 ui orange button footer_left"> 안내 이동 </button>
+                    </div>
                 </#if>
+                <#if question.priority != 30>
+                    <div class="col col-5">
+                        <button id="2" name="next" class= "col-xl-1 ui orange button footer_right"> 다음 </button>
+                    </div>
+                <#else>
+                    <div class="col col-5">
+                        <button id="2" name="next" class= "col-xl-1 ui orange button footer_right"> 제출하기 </button>
+                    </div>
+                </#if>
+                </div>
             </div>
         </div>
     </body>
-
 </html>

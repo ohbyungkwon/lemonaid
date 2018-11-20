@@ -13,6 +13,13 @@ window.onload = function(){
 
     var gender = "-1";
     console.log(gender);
+
+    // if($(".hidden-text1").text() == 1) {//첫 페이지에서는 이동 x
+    //     $("button[name='pre']").css("display","none");
+    // }else{
+    //     $("button[name='pre']").css("display","block");
+    // }
+
     $("#womanBtn").click(function () {
         gender = "0";
         console.log("woman");
@@ -61,6 +68,7 @@ window.onload = function(){
             var num = Number($(".hidden-text1").text()) - 1;
             window.location.href = "/question?disease_name=" + "발기부전" + "&priority=" + num + "&isLogin=1";
         }else{
+            alert("안내로 이동하시겠습니까?");
             window.location.href="/question?isLogin=0";
         }
     });//back btn
@@ -98,10 +106,25 @@ window.onload = function(){
         }else if(questionType == 'write'){
             var Systolic = $("#Systolic").val();
             var Diastolic = $("#Diastolic").val();
+            console.log(Systolic);
+            console.log(Diastolic);
+            console.log($("#ReSystolic").val());
+            console.log($("#ReDiastolic").val());
+            //
+            // if($("input[name='ReSystolic']").val() != Systolic){
+            //     alert("혈압을 정확히 입력해주세요.");
+            //     return false;
+            // }
+            if(Systolic === '' || Diastolic === ''){
+                alert("혈압을 입력해주세요.");
+                return false;
+            }
+
             data = {
                 "write_id" : 1,
                 "text" : Systolic +";"+Diastolic
-            }
+            };
+
             urlTemp = "/response/write"
         }else{
 
@@ -136,10 +159,6 @@ window.onload = function(){
 
     })//next btn
 
-    $("#extra_info").focus(function () {
-        // alert('1');
-    })
-
 
     $("input[type=radio]").each(function(){
         var chk = $(this).is(":checked");
@@ -154,15 +173,23 @@ window.onload = function(){
 
         radio_choice_id = $(this).val();
         radio_choice_priority = $(this).attr('id');//For ajax
-        console.log(radio_choice_priority);
+        // console.log(radio_choice_priority);
 
+        console.log(name);
+        console.log($("label[name='"+ name +"']").text());
         if(chk == true && pre == $(this).val()){
             $(this).prop('checked',false);
             $("input[name='"+name+"']").data("previous",'');
             $("input[name="+ radio_choice_id +"]").css("display","none");
         }else if(chk == true && pre != $(this).val()){
-                $("input[name='"+name+"']").data("previous",$(this).val());
-                $("input[name="+ radio_choice_id +"]").css("display","block");
+            $("input[name='"+name+"']").data("previous",$(this).val());
+            $("input[name="+ radio_choice_id +"]").css("display","block");
+        }
+        if($("label[name='"+ name +"']").text() == "해당사항 없음"){
+            for(var i = 1; i < radio_choice_priority; i++){
+                var temp = "choice_"+i;
+                $("input[name='"+temp+"']").prop('checked',false);
+            }
         }
     });//radio choice
 

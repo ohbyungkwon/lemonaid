@@ -2,7 +2,6 @@ package com.demo.lemonaid.demo.Service;
 
 import com.demo.lemonaid.demo.Adapter.ResultSingleAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultWriteAdapter;
-import com.demo.lemonaid.demo.Controller.UserController;
 import com.demo.lemonaid.demo.Domain.*;
 import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyMulti;
@@ -10,7 +9,6 @@ import com.demo.lemonaid.demo.Domain.Embeded.ResultKeySingle;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyWrite;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
-import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -136,7 +134,6 @@ public class QuestionService {
 
         return resultWrite;
     }
-
 
     //find a question' id
     public int getSingleQuestionId(ResultSingleAdapter resultSingle){

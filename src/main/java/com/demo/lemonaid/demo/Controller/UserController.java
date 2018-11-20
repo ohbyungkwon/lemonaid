@@ -40,6 +40,13 @@ public class UserController {
         return map;
     }//이 후 방문 클라이언트로 부터 받은 header값을 sesseion에 저장
 
+    @GetMapping("/checkLogin")
+    @ResponseBody
+    public Map<String, Object> firstLogin(){
+        Map<String, Object> map = userService.loginInfoMap();
+        return map;
+    }//check if the login.
+
     @GetMapping("/login")
     public String login(){
         return "Login";

@@ -23,9 +23,10 @@ body{
     color: #6e6e6e;
 }
 .footer_c{
-    position: fixed;
+    /*position: fixed;*/
+    position: absolute;
     width:100%;
-    bottom: 30px;
+    bottom: -50px;
 }
 .footer_left{
     position: fixed;
