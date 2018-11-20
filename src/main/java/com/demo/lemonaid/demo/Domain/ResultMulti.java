@@ -1,21 +1,18 @@
 package com.demo.lemonaid.demo.Domain;
 
+import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyMulti;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "result_multi")
 @Data
 public class ResultMulti {
-    @Id
-    @Column(name = "choice_multi_question_id")
-    private int question_id;
+    @EmbeddedId
+    private ResultKeyMulti id;
 
     @Column(name = "choice_multi_id")
     private int choice_multi_id;
@@ -25,7 +22,4 @@ public class ResultMulti {
 
     @Column(name = "extra_info")
     private String extra_info;
-
-    @Column(name = "user_id")
-    private String user_id;
 }

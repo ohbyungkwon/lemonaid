@@ -65,38 +65,32 @@ public class QuestionController {
 
     @GetMapping("/question")
     public String question(Model model,
-                           @RequestParam(value = "disease_name", defaultValue = "", required = false) String disease,
-                           @RequestParam(value = "priority", defaultValue = "1", required = false) int priority,
+                           @RequestParam(value = "disease_name") String disease,
+                           @RequestParam(value = "priority") int priority,
                            @RequestParam(value = "isLogin") int login){
-        if(login == 0){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal().equals("anonymousUser") && login == 0){
             return "NonLoginUser";
-        }
-        else if(login >= 1){
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if(!authentication.getPrincipal().equals("annoymousUser")){
-                return "NonLoginUser";
-            }
+        }//적격판정 후에는 로그인했다고 가정.
 
-            DiseaseService dTemp = questionService.SearchDisease(disease);//질병 선택
-            Question qTemp = questionService.SearchQuestion(dTemp, priority);//해당 질병의 id문항을 읽어옴
+        DiseaseService dTemp = questionService.SearchDisease(disease);//질병 선택
+        Question qTemp = questionService.SearchQuestion(dTemp, priority);//해당 질병의 id문항을 읽어옴
 
-            model.addAttribute("total_question", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
-            model.addAttribute("disease_name", dTemp.getDisease_name());
-            model.addAttribute("question", qTemp);
+        model.addAttribute("total_question", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
+        model.addAttribute("disease_name", dTemp.getDisease_name());
+        model.addAttribute("question", qTemp);
 
-            if (qTemp.getType().equals("single")) {
-                model.addAttribute("choices", qTemp.getChoiceSingle());//1대 n관계
-                model.addAttribute("isState", 0);//flag
-            } else if (qTemp.getType().equals("multi")) {
-                model.addAttribute("choices", qTemp.getChoiceMulti());
-                model.addAttribute(
-                        "isState", 1);
-            } else if (qTemp.getType().equals("write")) {
-                model.addAttribute("choices", qTemp.getWrite());
-                model.addAttribute("isState", 2);
-            } else {
-                model.addAttribute("isState", 3);
-            }
+        if (qTemp.getType().equals("single")) {
+            model.addAttribute("choices", qTemp.getChoiceSingle());//1대 n관계
+            model.addAttribute("isState", 0);//flag
+        } else if (qTemp.getType().equals("multi")) {
+            model.addAttribute("choices", qTemp.getChoiceMulti());
+            model.addAttribute("isState", 1);
+        } else if (qTemp.getType().equals("write")) {
+            model.addAttribute("choices", qTemp.getWrite());
+            model.addAttribute("isState", 2);
+        } else {
+            model.addAttribute("isState", 3);
         }
         return "Question";
     }

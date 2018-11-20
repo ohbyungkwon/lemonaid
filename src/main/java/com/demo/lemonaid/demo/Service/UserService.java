@@ -7,6 +7,8 @@ import com.demo.lemonaid.demo.session.UserIdSession;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -51,7 +53,7 @@ public class UserService implements UserDetailsService {
         return loginUser;
     }
 
-    public String RandomDeviceId(){
+    public String randomDeviceId(){
         StringBuffer temp = new StringBuffer();
         Random rnd = new Random();
         for (int i = 0; i < 20; i++) {
@@ -74,7 +76,7 @@ public class UserService implements UserDetailsService {
         return temp.toString();
     }
 
-    public Map<String, Object> DeviceIdMap(String DeviceId){
+    public Map<String, Object> deviceIdMap(String DeviceId){
         Map<String, Object> map = new HashMap<>();
         if(userRepository.findUserById(DeviceId) == null){
             User user = new User();
@@ -91,6 +93,17 @@ public class UserService implements UserDetailsService {
             map.put("isState","previous");
             map.put("DeviceId", DeviceId);
         }
+        return map;
+    }
+
+    public Map<String, Object> loginInfoMap(){
+        Map<String, Object> map = new HashMap<>();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal().equals("anonymousUser"))
+            map.put("isLogin","0");
+        else
+            map.put("isLogin","1");
         return map;
     }
 }

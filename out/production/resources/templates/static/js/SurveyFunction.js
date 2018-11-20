@@ -44,7 +44,7 @@ window.onload = function(){
             success: function(data){
                 alert(data.comment);
                 if(data.comment == "설문을 시작합니다"){
-                    window.location.href="/question/발기부전/1";
+                    window.location.href="/question?disease_name=발기부전&priority=1&isLogin=1";
                 }
                 else if(data.comment == "남성만 참여가능합니다"){
                     window.location.href="/";
