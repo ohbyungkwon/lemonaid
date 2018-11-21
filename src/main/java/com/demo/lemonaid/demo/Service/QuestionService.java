@@ -79,10 +79,12 @@ public class QuestionService {
     public ResultSingle setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, HttpSession session){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
 
+        System.out.println(session.getAttribute("DeviceId").toString());
+
         if(session.getAttribute("DeviceId") != null)
-            resultKeySingle.setUser_id(session.getAttribute("DeviceId").toString());//현재 세션에 저장된 id로 변경해야함.
+            resultKeySingle.setUser_id(session.getAttribute("DeviceId").toString());
         else {
-            resultKeySingle.setUser_id(getPrincipal());//현재 세션에 저장된 id로 변경해야함.
+            resultKeySingle.setUser_id(getPrincipal());
         }
         resultKeySingle.setQuestion_id(getSingleQuestionId(resultSingleAdapter));
 
@@ -195,4 +197,14 @@ public class QuestionService {
             return "설문을 시작합니다";
         }
     }
+
+    public String eligibility(String username){
+        User user = userRepository.findUserByEmail(username);
+        String state = "fail";
+        if(user.getGender().equals("1") || user.getGender().equals("-1")){
+            state = "success";
+        }
+        return state;
+    }
+
 }

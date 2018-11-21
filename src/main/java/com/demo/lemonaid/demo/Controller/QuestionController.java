@@ -63,13 +63,19 @@ public class QuestionController {
 
     @GetMapping("/question")
     public String question(Model model,
-                           @RequestParam(value = "disease_name", defaultValue = "", required = false) String disease,
-                           @RequestParam(value = "priority", defaultValue = "1", required = false) int priority,
+                           @RequestParam(value = "disease_name") String disease,
+                           @RequestParam(value = "priority") int priority,
                            @RequestParam(value = "isLogin", defaultValue = "0", required = false) int login){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication.getPrincipal().equals("anonymousUser") && login == 0){
             return "NonLoginUser";
+        }
+        else if(!authentication.getPrincipal().equals("anonymousUser") && priority == 1){
+            UserDetail userDetail = (UserDetail)authentication.getPrincipal();
+            String state = questionService.eligibility(userDetail.getUsername());
+            if(state.equals("fail"))
+                return "WrongUser";
         }
 
         DiseaseService dTemp = questionService.SearchDisease(disease);//질병 선택

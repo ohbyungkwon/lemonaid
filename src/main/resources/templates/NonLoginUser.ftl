@@ -43,12 +43,16 @@
         </div>
         <hr class="line_color">
         <hr>
-    </div>
-    <div class="footer_c">
-        <div class="row justify-content-xl-around">
-            <button id="prevBtn" class="col-xl-1 ui orange button">이전</button>
-            <button id="nextBtn" class="col-xl-1 ui orange button">다음</button>
-        </div>
+            <div class="footer_c">
+                <div class="row justify-content-around">
+                    <div class="col col-5">
+                        <button id="prevBtn" class="col-xl-1 ui orange button">안내 이동</button>
+                    </div>
+                    <div class="col col-5">
+                        <button id="nextBtn" class="col-xl-1 ui orange button">설문 시작</button>
+                    </div>
+                </div>
+            </div>
     </div>
 </body>
 </html>
