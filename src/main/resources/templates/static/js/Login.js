@@ -117,15 +117,15 @@ window.onload = function () {
         })
     })
 
-    var gender = "-1";
+    var gender = null;
     $("#womanBtn").click(function () {
-        gender = "0";
+        gender = "WOMAN";
         console.log("woman");
         $(this).css("background", "orange");
         $("#manBtn").css("background", "darkgray")
     })
     $("#manBtn").click(function () {
-        gender = "1";
+        gender = "MAN";
         console.log("man");
         $(this).css("background", "orange");
         $("#womanBtn").css("background", "darkgray")

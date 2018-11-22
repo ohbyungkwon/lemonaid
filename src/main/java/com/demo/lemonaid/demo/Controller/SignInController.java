@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,10 @@ public class SignInController {
     }
 
     @GetMapping("/SignInBasic")
-    public String signin1(){ return "SignInBasic"; }
+    public String signin1(HttpServletResponse response){
+        response.setHeader("Location", "signIn");
+        return "SignInBasic";
+    }
 
     @GetMapping("/SignInSpec")
     public String signin2(){ return "SignInSpec"; }

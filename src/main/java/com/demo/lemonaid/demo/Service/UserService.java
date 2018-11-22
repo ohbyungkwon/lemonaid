@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.Cookie;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -84,13 +85,13 @@ public class UserService implements UserDetailsService {
             user.setPersonal_id("temp");
             user.setGender("-1");
             if(userRepository.save(user) != null) {
-                map.put("isState", "success");
+                map.put("isState", 1);
                 map.put("DeviceId", DeviceId);
             }else{
-                map.put("isState","fail");
+                map.put("isState",-1);
             }
         }else{
-            map.put("isState","previous");
+            map.put("isState",0);
             map.put("DeviceId", DeviceId);
         }
         return map;

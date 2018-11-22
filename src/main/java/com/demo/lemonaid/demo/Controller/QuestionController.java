@@ -4,13 +4,12 @@ import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultSingleAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultWriteAdapter;
 import com.demo.lemonaid.demo.Domain.*;
-import com.demo.lemonaid.demo.Repository.*;
+import com.demo.lemonaid.demo.Error.ApiDtoSingle;
 import com.demo.lemonaid.demo.Service.QuestionService;
-import com.demo.lemonaid.demo.Service.UserService;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +66,8 @@ public class QuestionController {
     public String question(Model model,
                            @RequestParam(value = "disease_name") String disease,
                            @RequestParam(value = "priority") int priority,
-                           @RequestParam(value = "isLogin", defaultValue = "0", required = false) int login){
+                           @RequestParam(value = "isLogin", defaultValue = "0", required = false) int login,
+                           HttpServletResponse response){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication.getPrincipal().equals("anonymousUser") && login == 0){
@@ -73,9 +75,8 @@ public class QuestionController {
         }
         else if(!authentication.getPrincipal().equals("anonymousUser") && priority == 1){
             UserDetail userDetail = (UserDetail)authentication.getPrincipal();
-            String state = questionService.eligibility(userDetail.getUsername());
-            if(state.equals("fail"))
-                return "WrongUser";
+            boolean state = questionService.eligibility(userDetail.getUsername());
+            if(state) return "WrongUser";
         }
 
         DiseaseService dTemp = questionService.SearchDisease(disease);//질병 선택
@@ -97,6 +98,9 @@ public class QuestionController {
         } else {
             model.addAttribute("isState", 3);
         }
+
+        response.setHeader("Location","survey");
+
         return "Question";
     }
 
@@ -113,22 +117,19 @@ public class QuestionController {
 
     @PostMapping("/response/single/{id}")
     @ResponseBody
-    public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpSession session){
-        ResultSingle resultSingle = questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, session);
-        return questionService.returnApiSingle(resultSingle);
+    public ResponseEntity<ApiDtoSingle> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpServletRequest request){
+        return questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, request.getCookies());
     }//single question's result save
 
     @PostMapping("/response/multi/{id}")
     @ResponseBody
-    public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter, HttpSession session){
-        ResultMulti resultMulti = questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter, session);
-        return questionService.returnApiMulti(resultMulti);
+    public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter,  HttpServletRequest request){
+        return questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter, request.getCookies());
     }//multi
 
     @PostMapping("/response/write")
     @ResponseBody
-    public Map<String, Object> saveWriteDB(@RequestBody ResultWriteAdapter resultWriteAdapter, HttpSession session){
-        ResultWrite resultWrite = questionService.setInfoWrite(new ResultWrite(), resultWriteAdapter, session);
-        return questionService.returnApiWrite(resultWrite);
+    public Map<String, Object> saveWriteDB(@RequestBody ResultWriteAdapter resultWriteAdapter,  HttpServletRequest request){
+        return questionService.setInfoWrite(new ResultWrite(), resultWriteAdapter, request.getCookies());
     }//write
 }

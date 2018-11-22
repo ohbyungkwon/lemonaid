@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/dist/js/semantic.css">
     <link rel="stylesheet" type="text/css" href="/dist/js/bootstrap.css">
     <script src="/dist/js/vendor.js"></script>
+    <script src="/dist/js/survey.js"></script>
     <script src="/dist/js/bootstrap.js"></script>
     <script src="/dist/js/semanticjs.js"></script>
 
@@ -53,7 +54,7 @@
 </div>
 <div class="footer_c">
     <div class="row justify-content-xl-around">
-        <button class="col-xl-1 ui orange button">결제완료</button>
+        <button id="goEndView" class="col-xl-1 ui orange button">결제완료</button>
     </div>
 </div>
 </body>

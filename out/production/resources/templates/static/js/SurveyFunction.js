@@ -11,7 +11,7 @@ window.onload = function(){
     var header = $("meta[name='_csrf_header']").attr("content");
 
 
-    var gender = "-1";
+    var gender = null;
     console.log(gender);
 
     // if($(".hidden-text1").text() == 1) {//첫 페이지에서는 이동 x
@@ -21,13 +21,13 @@ window.onload = function(){
     // }
 
     $("#womanBtn").click(function () {
-        gender = "0";
+        gender = "WOMAN";
         console.log("woman");
         $(this).css("background","orange");
         $("#manBtn").css("background","darkgray")
     })
     $("#manBtn").click(function () {
-        gender = "1";
+        gender = "MAN";
         console.log("man");
         $(this).css("background","orange");
         $("#womanBtn").css("background","darkgray")
@@ -54,7 +54,7 @@ window.onload = function(){
                     window.location.href="/question?disease_name=발기부전&priority=1&isLogin=1";
                 }
                 else if(data.comment == "남성만 참여가능합니다"){
-                    window.location.href="/";
+                    window.location.href="/WrongUser";
                 }
             },
             beforeSend: function(xhr) {
@@ -149,9 +149,9 @@ window.onload = function(){
             fail: function () {
                 alert("하나 이상 선택하세요.");
             },
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader(header, token);
-            },
+            // beforeSend: function(xhr) {
+            //     xhr.setRequestHeader(header, token);
+            // },
         })//db 저장 후 페이지 이동
 
         // if($(".hidden-text").text() != 30)//마지막 페이지에서는 이동 x
@@ -195,5 +195,9 @@ window.onload = function(){
 
     $("#goCashView").click(function () {
         window.location.href="/cash";
+    })
+
+    $("#goEndView").click(function () {
+        window.location.href="/end";
     })
 }

@@ -73,7 +73,7 @@ public class SignInService {
 
         if(temp.getName() == "") return "이름을 입력하세요";
         else if(temp.getPersonalId() == "") return "주민등록번호를 입력하세요";
-        else if(temp.getGender().indexOf("-1") != -1) return "성별을 선택하세요";
+        else if(temp.getGender() == null) return "성별을 선택하세요";
         else if(temp.getTel() == "") return "핸드폰번호를 입력하세요";
         else if(temp.getAddr() == "") return "주소를 입력하세요";
         else if(!temp.isCheckAgree()) return "동의 여부를 체크해주세요";
