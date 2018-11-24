@@ -3,7 +3,7 @@ package com.demo.lemonaid.demo.Domain;
 import lombok.Data;
 
 @Data
-public class passwordTemp{
+public class PasswordTemp {
 	private String email;
 	private String password;
 	private String checkDuplicate;

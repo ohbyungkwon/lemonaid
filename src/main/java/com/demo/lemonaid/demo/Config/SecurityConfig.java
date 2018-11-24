@@ -59,13 +59,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/disease",
                 "/intro/**",
                 "/receiveId",
-                "/receiveIdAgain");
+                "/receiveIdAgain",
+                "/checkLogin",
+                "/saveMapLocation");
     }//크록스도메인이 가능한 url
 
     protected void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
                 .antMatchers("/order").authenticated()
                 .antMatchers("/cash").authenticated()
+//                .antMatchers("/saveMapLocation").hasRole("USER")
                 .anyRequest().permitAll();
 
         http.formLogin()

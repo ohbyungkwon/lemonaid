@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,7 +88,7 @@ public class QuestionService {
         return deviceId;
     }
     //setting
-    public ResponseEntity<ApiDtoSingle> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
+    public Map<String, Object> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -107,17 +106,17 @@ public class QuestionService {
         resultSingle.setExtra_info(resultSingleAdapter.getExtra_info());
         resultSingle.setChoice(resultSingleAdapter.getChoice());
 
-        ApiDtoSingle api;
+        Map<String, Object> map = new HashMap<>();
 
         if(resultSingleRepository.save(resultSingle) != null){
-            api = new ApiDtoSingle(resultSingle.getId().getQuestion_id(),
-                    resultSingle.getChoice_single_id(),
-                    resultSingle.getChoice(),
-                    resultSingle.getExtra_info());
-            return new ResponseEntity<ApiDtoSingle>(api, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<ApiDtoSingle>(HttpStatus.EXPECTATION_FAILED);
-        }
+            map.put("question_id",resultSingle.getId().getQuestion_id());
+            map.put("choice_id",resultSingle.getChoice_single_id());
+            map.put("choices",resultSingle.getChoice());
+            map.put("extra_info",resultSingle.getExtra_info());
+            map.put("state",HttpStatus.OK);
+        }else{ map.put("state",HttpStatus.NOT_FOUND);}
+
+        return map;
     }
 
     public Map<String, Object> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie []cookies){
@@ -146,7 +145,7 @@ public class QuestionService {
         Map<String, Object> map = new HashMap<>();
 
         if(resultMultiRepository.save(resultMulti) != null){
-            map.put("question_id",resultMulti.getId());
+            map.put("question_id",resultMulti.getId().getQuestion_id());
             map.put("choice_id",resultMulti.getChoice_multi_id());
             map.put("choices",resultMulti.getChoice());
             map.put("extra_info",resultMulti.getExtra_info());
@@ -176,7 +175,7 @@ public class QuestionService {
         Map<String, Object> map = new HashMap<>();
 
         if(resultWriteRepository.save(resultWrite) != null){
-            map.put("question_id", resultWrite.getId());
+            map.put("question_id", resultWrite.getId().getQuestion_id());
             map.put("write_id",resultWrite.getWrite_id());
             map.put("text",resultWrite.getText());
             map.put("state",HttpStatus.OK);

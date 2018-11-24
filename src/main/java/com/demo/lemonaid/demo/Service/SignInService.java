@@ -1,17 +1,11 @@
 package com.demo.lemonaid.demo.Service;
 
-import com.demo.lemonaid.demo.Domain.User;
-import com.demo.lemonaid.demo.Domain.passwordTemp;
+import com.demo.lemonaid.demo.Domain.PasswordTemp;
 import com.demo.lemonaid.demo.Repository.UserRepository;
-import com.demo.lemonaid.demo.session.SignInSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +41,7 @@ public class SignInService {
         else{ return ""; }
     }
 
-    public String isSamePassword(passwordTemp temp){
+    public String isSamePassword(PasswordTemp temp){
         if(temp.getPassword().length() >= 6) {
             if (temp.getPassword().equals(temp.getCheckDuplicate())) {
                 return "비밀번호가 같습니다.";
@@ -58,7 +52,7 @@ public class SignInService {
         }else{ return ""; }
     }
 
-    public String done(passwordTemp temp){
+    public String done(PasswordTemp temp){
         String telReg = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}";
         String nameReg = ".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*";
         String idReg = "\\d{6}[1-4]\\d{6}";

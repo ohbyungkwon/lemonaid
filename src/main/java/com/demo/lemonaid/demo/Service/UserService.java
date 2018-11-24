@@ -1,11 +1,10 @@
 package com.demo.lemonaid.demo.Service;
 
+import com.demo.lemonaid.demo.Domain.Pharmacy;
 import com.demo.lemonaid.demo.Domain.User;
+import com.demo.lemonaid.demo.Repository.PharmacyRepository;
 import com.demo.lemonaid.demo.Repository.UserRepository;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
-import com.demo.lemonaid.demo.session.UserIdSession;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.Cookie;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -24,10 +22,12 @@ import java.util.Random;
 @Transactional
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
+    private PharmacyRepository pharmacyRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, PharmacyRepository pharmacyRepository){
         this.userRepository = userRepository;
+        this.pharmacyRepository = pharmacyRepository;
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -40,13 +40,13 @@ public class UserService implements UserDetailsService {
         String author = "";
         switch (user.getUserType()) {
             case "3":
-                author = "ROLE_TOCKER";
+                author = "ADMIN";
                 break;
             case "2":
-                author = "ROLE_ADMIN";
+                author = "MASTER_USER";
                 break;
             default:
-                author = "ROLE_USER";
+                author = "USER";
                 break;
         }
         UserDetail loginUser = new UserDetail(user.getEmail(), user.getPassword(), author);
@@ -106,5 +106,16 @@ public class UserService implements UserDetailsService {
         else
             map.put("isLogin","1");
         return map;
+    }
+
+    public boolean savePharmacy(String deviceId, Pharmacy pharmacy){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetail userDetail = (UserDetail) authentication.getPrincipal();
+        User user = userRepository.findUserByEmail(userDetail.getUsername());
+        if(deviceId.equals(user.getId())){
+            if(pharmacyRepository.save(pharmacy) != null){
+                return true;
+            }else{ return false; }
+        }else return false;
     }
 }

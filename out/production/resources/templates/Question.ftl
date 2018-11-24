@@ -26,7 +26,7 @@
                 <div class="row justify-content-xl-center">
                     <div class="card col align-self-xl-center" style="width: 30rem;">
                         <div class="card-body">
-                            <h5 class="card-title">[ ${disease_name} ]</h5>
+                            <h5 class="card-title">${disease_name}</h5>
                             <a>${question.priority}.</a> <a class="card-text"> ${question.getContent()}</a>
                             <p class="hidden-text1" style="display: none">${question.priority}</p>
                             <p class="hidden-text2" style="display: none">${question.type}</p>

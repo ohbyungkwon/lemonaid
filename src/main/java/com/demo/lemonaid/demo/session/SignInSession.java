@@ -1,7 +1,7 @@
 package com.demo.lemonaid.demo.session;
 
 import com.demo.lemonaid.demo.Domain.User;
-import com.demo.lemonaid.demo.Domain.passwordTemp;
+import com.demo.lemonaid.demo.Domain.PasswordTemp;
 import com.demo.lemonaid.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -24,7 +24,7 @@ public class SignInSession {
         this.userRepository = userRepository;
     }
 
-    public String redirectNext(passwordTemp TempUser){
+    public String redirectNext(PasswordTemp TempUser){
         if(TempUser.getPassword().indexOf(" ") != -1) {
             return "공백은 불가합니다.";
         }else if(TempUser.getPassword().indexOf(" ") == -1 && TempUser.getPassword().length() < 6){
@@ -41,7 +41,7 @@ public class SignInSession {
         }
     }
 
-    public String done(passwordTemp TempUser, HttpSession session){
+    public String done(PasswordTemp TempUser, HttpSession session){
         User user = new User();
         user.setId(session.getAttribute("DeviceId").toString());
         user.setEmail(userEmail);

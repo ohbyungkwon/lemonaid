@@ -1,6 +1,6 @@
 window.onload = function(){
     var radio_choice_id;
-    var radio_choice_priority;
+    var radio_choice_priority = null;
 
     var checkedRadioId=[];
     var checkedRadioPriority=[];
@@ -49,8 +49,12 @@ window.onload = function(){
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(data),
             success: function(data){
+                var link = document.location.href;
                 alert(data.comment);
-                if(data.comment == "설문을 시작합니다"){
+                console.log(link);
+                if(data.comment == "설문을 시작합니다" && link.indexOf("%ED%83%88%EB%AA%A8") != -1){
+                    window.location.href="/question?disease_name=탈모&priority=1&isLogin=1";
+                }else if(data.comment == "설문을 시작합니다" && link.indexOf("%EB%B0%9C%EA%B8%B0%EB%B6%80%EC%A0%84") != -1){
                     window.location.href="/question?disease_name=발기부전&priority=1&isLogin=1";
                 }
                 else if(data.comment == "남성만 참여가능합니다"){
@@ -66,7 +70,7 @@ window.onload = function(){
     $("button[name='pre']").click(function(){
         if($(".hidden-text1").text() != 1) {//첫 페이지에서는 이동 x
             var num = Number($(".hidden-text1").text()) - 1;
-            window.location.href = "/question?disease_name=" + "발기부전" + "&priority=" + num + "&isLogin=1";
+            window.location.href = "/question?disease_name=" + $(".card-title").text() + "&priority=" + num + "&isLogin=1";
         }else{
             alert("안내로 이동하시겠습니까?");
             window.location.href="/question?isLogin=0";
@@ -84,6 +88,7 @@ window.onload = function(){
                 "extra_info" : $("#extra_info").val()
             };
             urlTemp = "/response/single/" + $(".hidden-text1").text();
+            if(data.choice == null){ return false;}
         }else if(questionType == 'multi'){
             for(var i=0; i<values.length; i++){
                 if(values[i].checked){
@@ -101,6 +106,9 @@ window.onload = function(){
                 "choice" : checkedRadioId,
                 "extra_info" : $("#extra_info").val()
             };
+
+            if(data.choice == null){ return false;}
+
             console.log(radio_choice_id);
             urlTemp = "/response/multi/" + $(".hidden-text1").text();
         }else if(questionType == 'write'){
@@ -140,7 +148,7 @@ window.onload = function(){
                 if($(".hidden-text1").text() != 30) {//마지막 페이지에서는 이동 x
                     console.log("dont");
                     var num = Number($(".hidden-text1").text()) + 1;
-                    window.location.href = "/question?disease_name="+"발기부전"+"&priority="+ num + "&isLogin=1";
+                    window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
                 }else{
                     console.log("access");
                     window.location.href="/temp";

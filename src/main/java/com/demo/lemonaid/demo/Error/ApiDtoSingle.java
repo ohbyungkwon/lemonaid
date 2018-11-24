@@ -1,11 +1,6 @@
 package com.demo.lemonaid.demo.Error;
 
-import com.demo.lemonaid.demo.Domain.Embeded.ResultKeySingle;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 
 @Data
 public class ApiDtoSingle {

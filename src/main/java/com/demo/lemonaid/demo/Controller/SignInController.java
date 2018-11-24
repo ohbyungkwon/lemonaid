@@ -1,9 +1,7 @@
 package com.demo.lemonaid.demo.Controller;
 
-import com.demo.lemonaid.demo.Domain.passwordTemp;
-import com.demo.lemonaid.demo.Repository.UserRepository;
+import com.demo.lemonaid.demo.Domain.PasswordTemp;
 import com.demo.lemonaid.demo.Service.SignInService;
-import com.demo.lemonaid.demo.Service.UserService;
 import com.demo.lemonaid.demo.session.SignInSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +37,7 @@ public class SignInController {
 
     @PostMapping("/checkEmail")
     @ResponseBody
-    public Map<String, Object> checkEmail(@RequestBody passwordTemp user){
+    public Map<String, Object> checkEmail(@RequestBody PasswordTemp user){
         Map<String,Object> map = new HashMap<>();
         String comment = signInService.findDuplicate(user.getEmail());
         map.put("comment",comment);
@@ -48,7 +46,7 @@ public class SignInController {
 
     @PostMapping("/checkPwd")
     @ResponseBody
-    public Map<String, Object> checkPwd(@RequestBody passwordTemp user){
+    public Map<String, Object> checkPwd(@RequestBody PasswordTemp user){
         Map<String,Object> map = new HashMap<>();
 
         String comment = signInService.findPasswordReg(user.getPassword());
@@ -59,7 +57,7 @@ public class SignInController {
 
     @PostMapping("/checkDuplicate")
     @ResponseBody
-    public Map<String, Object> checkDuplicate(@RequestBody passwordTemp user){
+    public Map<String, Object> checkDuplicate(@RequestBody PasswordTemp user){
         Map<String,Object> map = new HashMap<>();
         String comment = signInService.isSamePassword(user);
         map.put("comment",comment);
@@ -69,7 +67,7 @@ public class SignInController {
 
     @PostMapping("/redirectNext")
     @ResponseBody
-    public Map<String, Object> redirectNext(@RequestBody passwordTemp TempUser){
+    public Map<String, Object> redirectNext(@RequestBody PasswordTemp TempUser){
         Map<String,Object> map = new HashMap<>();
         String comment = signInSession.redirectNext(TempUser);
         map.put("comment",comment);
@@ -79,7 +77,7 @@ public class SignInController {
 
     @PostMapping("/done")
     @ResponseBody
-    public Map<String, Object> done(@RequestBody passwordTemp TempUser, HttpSession session){
+    public Map<String, Object> done(@RequestBody PasswordTemp TempUser, HttpSession session){
         Map<String, Object> map = new HashMap<>();
         String comment = signInService.done(TempUser);//validate
 

@@ -1,20 +1,24 @@
 package com.demo.lemonaid.demo.Controller;
 
+import com.demo.lemonaid.demo.Domain.Pharmacy;
+import com.demo.lemonaid.demo.Repository.UserRepository;
 import com.demo.lemonaid.demo.Service.UserService;
-import com.demo.lemonaid.demo.session.UserIdSession;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 public class UserController {
     private UserService userService;
-    @Autowired private UserIdSession userIdSession;
 
     @Autowired
     UserController(UserService userService){
@@ -35,6 +39,12 @@ public class UserController {
     @ResponseBody
     public Map<String, Object> secondVisit(HttpServletRequest request, HttpSession session){
         String DeviceId = request.getHeader("DeviceId");
+
+        Cookie [] cookies = request.getCookies();
+        for(int i = 0; i < cookies.length; i++){
+            System.out.println(cookies[i].getValue());
+        }
+
         session.setAttribute("DeviceId",DeviceId);
 
         Map<String, Object> map = userService.deviceIdMap(DeviceId);
@@ -52,4 +62,19 @@ public class UserController {
     public String login(HttpServletResponse response, HttpServletRequest request) {
         return "Login";
     }//access to survey
+
+    @PostMapping("/saveMapLocation")
+    @ResponseBody
+    public Map<String, Object> saveMapLocation(@RequestBody Pharmacy pharmacy, HttpServletRequest request){
+        Map<String, Object> map = new HashMap<>();
+
+        String deviceId = request.getHeader("Authorization");
+        //현재 로그인한 유저와 디바이스 아이디를 비교 후 같다면 디비 저장
+        if(userService.savePharmacy(deviceId, pharmacy)){
+            map.put("isSave",true);
+        }else {
+            map.put("isSave", false);
+        }
+        return map;
+    }
 }

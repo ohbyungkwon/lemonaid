@@ -18,7 +18,7 @@ public class OrderController {
     @GetMapping("/cash")
     public String CashView(HttpServletResponse response){
         response.setHeader("Location", "cash");
-        return "cash";
+        return "Cash";
     }
 
     @GetMapping("/end")

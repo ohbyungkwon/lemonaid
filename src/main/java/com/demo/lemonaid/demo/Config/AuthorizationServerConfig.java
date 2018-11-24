@@ -1,12 +1,11 @@
 package com.demo.lemonaid.demo.Config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -21,8 +20,8 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
-import javax.validation.Valid;
 import java.security.KeyPair;
+
 
 @Configuration
 @EnableAuthorizationServer
@@ -44,13 +43,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
 
         // resource / auth 서버에서 동일하다면... 운영상황인 경우는 지양.
-        converter.setSigningKey("secret");//비밀키 설정 후 return.
+        //converter.setSigningKey("secret");//비밀키 설정 후 return.
+//        try {
+//            Resource resource = new ClassPathResource("server.jks");
+//            System.out.println(resource.getURI().getPath().substring(1));
+//        }catch (Exception e){e.printStackTrace();}
 
-// TODO: resource / auth 서버가 분리되어있는 경우. 암호화 복호화 keypair 사용
-// TODO: keytool로 keypair 생성시 사용했던 password, alias에 따라 아래 설정을 변경하면 됩니다.
-//        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("server.jks"), "spassword".toCharArray())
-//                .getKeyPair("jwt", "kpassword".toCharArray());
-//        converter.setKeyPair(keyPair);
+        // TODO: resource / auth 서버가 분리되어있는 경우. 암호화 복호화 keypair 사용
+        // TODO: keytool로 keypair 생성시 사용했던 password, alias에 따라 아래 설정을 변경하면 됩니다.
+        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("server.jks"), "spassword".toCharArray())
+                .getKeyPair("jwt", "kpassword".toCharArray());
+        converter.setKeyPair(keyPair);
         return converter;
     }
 
@@ -72,47 +75,22 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 //  TODO: oauth_client_details 테이블로 앱 시크릿 관리하고 싶은경우 주석제거
 
-//    @Bean
-//    @Primary
-//    public JdbcClientDetailsService JdbcClientDetailsService(DataSource dataSource) {
-//        return new JdbcClientDetailsService(dataSource);
-//    }
-//
-//    private ClientDetailsService clientDetailsService;
-//
-//    @Autowired
-//    public void setClientDetailsService(ClientDetailsService clientDetailsService) {
-//        this.clientDetailsService = clientDetailsService;
-//    }
+    @Bean
+    @Primary
+    public JdbcClientDetailsService JdbcClientDetailsService(DataSource dataSource) {
+        return new JdbcClientDetailsService(dataSource);
+    }
 
-    private static final String APPNAME = "testapp";
-    private static final String APPKEY = "$2a$10$EHqL/a.q50N2tTtSbMt3d.wAeJ7WvZwC4fomp9qKoFTiJu.zYwRZm";
+    private ClientDetailsService clientDetailsService;
+
+    @Autowired
+    public void setClientDetailsService(ClientDetailsService clientDetailsService) {
+        this.clientDetailsService = clientDetailsService;
+    }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-
         // TODO: oauth_client_details 테이블로 앱 시크릿 관리하고 싶은경우 사용
-//        clients.withClientDetails(clientDetailsService);
-
-        // 인메모리 프로퍼티 처리 등.
-        clients.inMemory()
-
-                // 클라이언트(앱) 의 식별명, 비밀키
-                .withClient(APPNAME).secret(APPKEY)
-
-                // 인증 유형
-                .authorizedGrantTypes("password", "authorization_code", "implicit", "refresh_token")
-
-                // 클라이언트가 가질 role
-                .authorities("ROLE_YOUR_CLIENT")
-
-                // 허가할 스코프 유형
-                .scopes("read", "write")
-
-                // 허가할 리소스 (resource 서버 설정 참조)
-                .resourceIds("tocker-resource")
-
-                // 토큰 유효기간 (초)
-                .accessTokenValiditySeconds(36000);
+        clients.withClientDetails(clientDetailsService);
     }
 }

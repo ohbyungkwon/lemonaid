@@ -2,8 +2,6 @@ package com.demo.lemonaid.demo.Domain;
 
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyWrite;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 

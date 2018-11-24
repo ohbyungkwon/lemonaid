@@ -3,7 +3,6 @@ package com.demo.lemonaid.demo.Domain;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
 
 @Entity

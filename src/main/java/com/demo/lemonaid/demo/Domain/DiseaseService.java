@@ -1,10 +1,6 @@
 package com.demo.lemonaid.demo.Domain;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Collection;

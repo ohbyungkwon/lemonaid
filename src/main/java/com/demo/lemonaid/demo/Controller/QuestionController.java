@@ -28,7 +28,6 @@ import java.util.Map;
 public class QuestionController {
     private QuestionService questionService;
     private UserIdSession userIdSession;
-    @Autowired HttpSession session;
 
     @Autowired
     public QuestionController(
@@ -76,9 +75,9 @@ public class QuestionController {
         else if(!authentication.getPrincipal().equals("anonymousUser") && priority == 1){
             UserDetail userDetail = (UserDetail)authentication.getPrincipal();
             boolean state = questionService.eligibility(userDetail.getUsername());
-            if(state) return "WrongUser";
+            if(!state) return "WrongUser";
         }
-
+//        System.out.println(authentication.getPrincipal());
         DiseaseService dTemp = questionService.SearchDisease(disease);//질병 선택
         Question qTemp = questionService.SearchQuestion(dTemp, priority);//해당 질병의 id문항을 읽어옴
 
@@ -117,7 +116,7 @@ public class QuestionController {
 
     @PostMapping("/response/single/{id}")
     @ResponseBody
-    public ResponseEntity<ApiDtoSingle> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpServletRequest request){
+    public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpServletRequest request){
         return questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, request.getCookies());
     }//single question's result save
 
