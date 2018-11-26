@@ -9,6 +9,8 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Component
@@ -41,9 +43,17 @@ public class SignInSession {
         }
     }
 
-    public String done(PasswordTemp TempUser, HttpSession session){
+    public String done(PasswordTemp TempUser, HttpServletRequest request){
         User user = new User();
-        user.setId(session.getAttribute("DeviceId").toString());
+
+        Cookie []cookies = request.getCookies();
+        String deviceId = null;
+        for(int i = 0; i< cookies.length; i++){
+            if(cookies[i].getName().equals("DeviceId"))
+                deviceId = cookies[i].getValue();
+        }
+
+        user.setId(deviceId);
         user.setEmail(userEmail);
         user.setPassword(new BCrypt().hashpw(userPassword,BCrypt.gensalt()));
         user.setName(TempUser.getName());
@@ -51,6 +61,7 @@ public class SignInSession {
         user.setPersonal_id(TempUser.getPersonalId());
         user.setTel(TempUser.getTel());
         user.setAddr(TempUser.getAddr());
+        user.setUserType("1");
 
         if(userRepository.save(user) != null){
             return "가입 완료";

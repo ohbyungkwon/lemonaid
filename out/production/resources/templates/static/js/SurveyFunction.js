@@ -143,11 +143,20 @@ window.onload = function(){
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(data),
             success: function(data){
-                if($(".hidden-text1").text() != 30) {//마지막 페이지에서는 이동 x
-                    var num = Number($(".hidden-text1").text()) + 1;
-                    window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
-                }else{
-                    window.location.href="/temp";
+                if($(".card-title").text() == "발기부전"){
+                    if($(".hidden-text1").text() != 30) {//마지막 페이지에서는 이동 x
+                        var num = Number($(".hidden-text1").text()) + 1;
+                        window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
+                    }else{
+                        window.location.href="/temp";
+                    }
+                }else {
+                    if($(".hidden-text1").text() != 2) {//마지막 페이지에서는 이동 x
+                        var num = Number($(".hidden-text1").text()) + 1;
+                        window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
+                    }else{
+                        window.location.href="/temp";
+                    }
                 }
             },
             fail: function () {

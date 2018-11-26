@@ -64,7 +64,9 @@ public class UserController {
 
     @GetMapping("/login")
     public String login(HttpServletResponse response) {
-        Cookie cookie = new Cookie("state","1111");
+        response.setHeader("Location", "login");
+
+        Cookie cookie = new Cookie("state","login");
         cookie.setMaxAge(60*60*24);
         response.addCookie(cookie);
         return "Login";
@@ -74,6 +76,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<ApiSavePharmacy> saveMapLocation(@RequestBody Pharmacy pharmacy, HttpServletRequest request){
         String deviceId = request.getHeader("Authorization");
+        pharmacy.setDeviceId(deviceId);
         //현재 로그인한 유저와 디바이스 아이디를 비교 후 같다면 디비 저장
         ApiSavePharmacy api;
         if(userService.savePharmacy(deviceId, pharmacy)){
@@ -81,9 +84,9 @@ public class UserController {
                     .name(pharmacy.getName())
                     .lat(pharmacy.getLat())
                     .lon(pharmacy.getLon())
-                    .email(pharmacy.getEmail())
+                    .deviceId(deviceId)
                     .build();
-            return new ResponseEntity<ApiSavePharmacy>(api, HttpStatus.OK);
+            return ResponseEntity.ok().build();
         }else {
             return ResponseEntity.badRequest().build();
         }

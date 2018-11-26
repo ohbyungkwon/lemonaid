@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
@@ -12,6 +13,9 @@ public class OrderController {
     public String OrderView(HttpServletResponse response){
         response.setHeader("isLogin","onLogin");
         response.setHeader("Location", "order");
+        Cookie cookie = new Cookie("state","order");
+        cookie.setMaxAge(60*60*24);
+        response.addCookie(cookie);
         return "Order";
     }
 

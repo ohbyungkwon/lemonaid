@@ -4,24 +4,24 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Table(name = "Pharmacy")
+@Table(name = "pharmacy")
 @Entity
 @Data
 public class Pharmacy {
     @Id
     @Column(nullable = false)
-    @GeneratedValue
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column
     private String name;
 
     @Column
-    private String lat;
+    private double lat;
 
     @Column
-    private String lon;
+    private double lon;
 
-    @Column
-    private String email;
+    @Column(name = "device_id")
+    private String deviceId;
 }

@@ -31,14 +31,9 @@ public class SignInController {
     @GetMapping("/SignInBasic")
     public String signin1(HttpServletResponse response, HttpServletRequest request){
         response.setHeader("Location", "signIn");
-        Cookie []cookie = request.getCookies();
-        for(int i = 0; i < cookie.length; i++){
-            if(cookie[i].getName().equals("state")){
-                cookie[i].setValue("2222");
-                response.addCookie(cookie[i]);
-            }
-            System.out.println(cookie[i].getName());
-        }
+        Cookie cookie = new Cookie("state","signIn");
+        cookie.setMaxAge(60*60*24);
+        response.addCookie(cookie);
         return "SignInBasic";
     }
 
@@ -87,12 +82,12 @@ public class SignInController {
 
     @PostMapping("/done")
     @ResponseBody
-    public Map<String, Object> done(@RequestBody PasswordTemp TempUser, HttpSession session){
+    public Map<String, Object> done(@RequestBody PasswordTemp TempUser, HttpServletRequest request){
         Map<String, Object> map = new HashMap<>();
         String comment = signInService.done(TempUser);//validate
 
         if(comment.equals("가입 완료"))
-            comment = signInSession.done(TempUser, session);//save
+            comment = signInSession.done(TempUser, request);//save
 
         map.put("comment", comment);
 

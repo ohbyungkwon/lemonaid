@@ -13,8 +13,9 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiSavePharmacy {
+    private int id;
     private String name;
-    private String lat;
-    private String lon;
-    private String email;
+    private double lat;
+    private double lon;
+    private String deviceId;
 }

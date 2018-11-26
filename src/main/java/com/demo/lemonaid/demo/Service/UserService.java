@@ -110,24 +110,20 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean savePharmacy(String deviceId, Pharmacy pharmacy){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetail userDetail = (UserDetail) authentication.getPrincipal();
-        User user = userRepository.findUserByEmail(userDetail.getUsername());
+        User user = userRepository.findUserById(deviceId);
         if(user == null){
             throw new CantFindUser("해당 유저는 존재하지 않음");
         }
         else {
-            if(deviceId.equals(user.getId())){
-                if(pharmacyRepository.save(pharmacy) != null){
-                    return true;
-                }else{ return false; }
-            }else return false;
+            if(pharmacyRepository.save(pharmacy) != null){
+                return true;
+            }else{ return false; }
         }
     }
 
     public boolean findDuplicate(String DeviceId){
         if(userRepository.findUserById(DeviceId) != null){
-            return false;
-        }else return true;
+            return true;
+        }else return false;
     }
 }
