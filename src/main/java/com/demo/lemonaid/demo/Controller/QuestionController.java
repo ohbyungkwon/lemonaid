@@ -4,7 +4,9 @@ import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultSingleAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultWriteAdapter;
 import com.demo.lemonaid.demo.Domain.*;
+import com.demo.lemonaid.demo.Error.ApiDtoMulti;
 import com.demo.lemonaid.demo.Error.ApiDtoSingle;
+import com.demo.lemonaid.demo.Error.ApiDtoWrite;
 import com.demo.lemonaid.demo.Service.QuestionService;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
@@ -114,21 +116,33 @@ public class QuestionController {
         return new ModelAndView(new RedirectView(url, true));
     }//마지막 문진이 끝날 때 로그인 여부에 따른 리다이렉트
 
+//    @PostMapping("/response/single/{id}")
+//    @ResponseBody
+//    public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpSession session){
+//        return questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, session);
+//    }//single question's result save
+//
+//    @PostMapping("/response/multi/{id}")
+//    @ResponseBody
+//    public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter, HttpSession session){
+//        return questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter, session);
+//    }//multi
+
     @PostMapping("/response/single/{id}")
     @ResponseBody
-    public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpServletRequest request){
+    public ResponseEntity<?> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpServletRequest request){
         return questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, request.getCookies());
     }//single question's result save
 
     @PostMapping("/response/multi/{id}")
     @ResponseBody
-    public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter,  HttpServletRequest request){
+    public ResponseEntity<?> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter, HttpServletRequest request){
         return questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter, request.getCookies());
     }//multi
 
     @PostMapping("/response/write")
     @ResponseBody
-    public Map<String, Object> saveWriteDB(@RequestBody ResultWriteAdapter resultWriteAdapter,  HttpServletRequest request){
+    public ResponseEntity<?> saveWriteDB(@RequestBody ResultWriteAdapter resultWriteAdapter, HttpServletRequest request){
         return questionService.setInfoWrite(new ResultWrite(), resultWriteAdapter, request.getCookies());
     }//write
 }

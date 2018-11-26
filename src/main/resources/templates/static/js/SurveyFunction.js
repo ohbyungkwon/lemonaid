@@ -88,17 +88,20 @@ window.onload = function(){
                 "extra_info" : $("#extra_info").val()
             };
             urlTemp = "/response/single/" + $(".hidden-text1").text();
-            if(data.choice == null){ return false;}
-        }else if(questionType == 'multi'){
-            for(var i=0; i<values.length; i++){
-                if(values[i].checked){
-                    checkedRadioId.push(Number($("input[name='choice_"+i+"']").attr("id"))+1);//다중 선택
-                    // checkedRadioPriority.push(Number($("input[name='choice_"+i+"']").val()));
-                };
+            console.log(data.choice);
+            if(radio_choice_priority == null){ return false;}
+        } else if(questionType == 'multi') {
+            checkedRadioId.length = [];
+            for (var i = 0; i < values.length; i++) {
+                if (values[i].checked) {
+                    checkedRadioId.push(Number($("input[name='choice_" + i + "']").attr("id")) + 1);//다중 선택
+                }
             }//어떤 radio가 선택되었는지
 
-            console.log($(".hidden-text1").text() + "번 문항");
-            console.log(checkedRadioId + "선택");
+            // for (var i = 0; i < checkedRadioId.length; i++) {
+            //     console.log($(".hidden-text1").text() + "번 문항");
+            //     console.log(checkedRadioId[i] + "선택");
+            // }
 
             //보기 중 선택한 만큼의 id와 priority를 갖고 있어야한다.
             data = {
@@ -106,36 +109,30 @@ window.onload = function(){
                 "choice" : checkedRadioId,
                 "extra_info" : $("#extra_info").val()
             };
-
-            if(data.choice == null){ return false;}
-
-            console.log(radio_choice_id);
+            console.log(data.choice);
+            if(data.choice.length == 0){return false;}
             urlTemp = "/response/multi/" + $(".hidden-text1").text();
-        }else if(questionType == 'write'){
+        }else if(questionType == 'write') {
             var Systolic = $("#Systolic").val();
             var Diastolic = $("#Diastolic").val();
             console.log(Systolic);
             console.log(Diastolic);
             console.log($("#ReSystolic").val());
             console.log($("#ReDiastolic").val());
-            //
-            // if($("input[name='ReSystolic']").val() != Systolic){
-            //     alert("혈압을 정확히 입력해주세요.");
-            //     return false;
-            // }
-            if(Systolic === '' || Diastolic === ''){
+
+            if (Systolic === '' || Diastolic === '') {
                 alert("혈압을 입력해주세요.");
                 return false;
+            } else if (Systolic !== $("#ReSystolic").val() && Diastolic !== $("#ReDiastolic")) {
+                alert("혈압을 확인해주세요.");
+                return false;
             }
-
             data = {
                 "write_id" : 1,
                 "text" : Systolic +";"+Diastolic
             };
 
             urlTemp = "/response/write"
-        }else{
-
         }
 
         $.ajax({
@@ -146,11 +143,9 @@ window.onload = function(){
             data: JSON.stringify(data),
             success: function(data){
                 if($(".hidden-text1").text() != 30) {//마지막 페이지에서는 이동 x
-                    console.log("dont");
                     var num = Number($(".hidden-text1").text()) + 1;
                     window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
                 }else{
-                    console.log("access");
                     window.location.href="/temp";
                 }
             },
@@ -161,10 +156,6 @@ window.onload = function(){
                 xhr.setRequestHeader(header, token);
             },
         })//db 저장 후 페이지 이동
-
-        // if($(".hidden-text").text() != 30)//마지막 페이지에서는 이동 x
-        //     window.location.href=Number($(".hidden-text").text())+1;
-
     })//next btn
 
 
@@ -187,6 +178,8 @@ window.onload = function(){
         console.log($("label[name='"+ name +"']").text());
         if(chk == true && pre == $(this).val()){
             $(this).prop('checked',false);
+            checkedRadioId.pop();
+            radio_choice_priority = null
             $("input[name='"+name+"']").data("previous",'');
             $("input[name="+ radio_choice_id +"]").css("display","none");
         }else if(chk == true && pre != $(this).val()){

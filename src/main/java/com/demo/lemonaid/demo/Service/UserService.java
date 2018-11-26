@@ -2,6 +2,7 @@ package com.demo.lemonaid.demo.Service;
 
 import com.demo.lemonaid.demo.Domain.Pharmacy;
 import com.demo.lemonaid.demo.Domain.User;
+import com.demo.lemonaid.demo.Exception.CantFindUser;
 import com.demo.lemonaid.demo.Repository.PharmacyRepository;
 import com.demo.lemonaid.demo.Repository.UserRepository;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
@@ -112,10 +113,21 @@ public class UserService implements UserDetailsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetail userDetail = (UserDetail) authentication.getPrincipal();
         User user = userRepository.findUserByEmail(userDetail.getUsername());
-        if(deviceId.equals(user.getId())){
-            if(pharmacyRepository.save(pharmacy) != null){
-                return true;
-            }else{ return false; }
-        }else return false;
+        if(user == null){
+            throw new CantFindUser("해당 유저는 존재하지 않음");
+        }
+        else {
+            if(deviceId.equals(user.getId())){
+                if(pharmacyRepository.save(pharmacy) != null){
+                    return true;
+                }else{ return false; }
+            }else return false;
+        }
+    }
+
+    public boolean findDuplicate(String DeviceId){
+        if(userRepository.findUserById(DeviceId) != null){
+            return false;
+        }else return true;
     }
 }

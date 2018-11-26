@@ -6,12 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ApiDtoSingle {
+public class ApiDtoMulti {
     private int question_id;
     private int choice_id;
-    private int choices;
+    private String choices;
     private String extra_info;
 }

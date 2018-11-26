@@ -1,7 +1,10 @@
 package com.demo.lemonaid.demo.Domain;
 
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeySingle;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 

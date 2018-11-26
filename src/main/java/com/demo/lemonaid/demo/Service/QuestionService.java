@@ -8,7 +8,9 @@ import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyMulti;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeySingle;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyWrite;
 import com.demo.lemonaid.demo.Domain.Enums.Gender;
+import com.demo.lemonaid.demo.Error.ApiDtoMulti;
 import com.demo.lemonaid.demo.Error.ApiDtoSingle;
+import com.demo.lemonaid.demo.Error.ApiDtoWrite;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Column;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,7 +92,7 @@ public class QuestionService {
         return deviceId;
     }
     //setting
-    public Map<String, Object> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
+    public ResponseEntity<?> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -106,20 +110,22 @@ public class QuestionService {
         resultSingle.setExtra_info(resultSingleAdapter.getExtra_info());
         resultSingle.setChoice(resultSingleAdapter.getChoice());
 
-        Map<String, Object> map = new HashMap<>();
+        ApiDtoSingle api;
 
         if(resultSingleRepository.save(resultSingle) != null){
-            map.put("question_id",resultSingle.getId().getQuestion_id());
-            map.put("choice_id",resultSingle.getChoice_single_id());
-            map.put("choices",resultSingle.getChoice());
-            map.put("extra_info",resultSingle.getExtra_info());
-            map.put("state",HttpStatus.OK);
-        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-
-        return map;
+            api = ApiDtoSingle.builder()
+                    .question_id(resultSingle.getId().getQuestion_id())
+                    .choice_id(resultSingle.getChoice_single_id())
+                    .choices(resultSingle.getChoice())
+                    .extra_info(resultSingle.getExtra_info())
+                    .build();
+            return new ResponseEntity<ApiDtoSingle>(api, HttpStatus.OK);
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    public Map<String, Object> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie []cookies){
+    public ResponseEntity<?> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie[] cookies){
         ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -144,18 +150,85 @@ public class QuestionService {
 
         Map<String, Object> map = new HashMap<>();
 
-        if(resultMultiRepository.save(resultMulti) != null){
-            map.put("question_id",resultMulti.getId().getQuestion_id());
-            map.put("choice_id",resultMulti.getChoice_multi_id());
-            map.put("choices",resultMulti.getChoice());
-            map.put("extra_info",resultMulti.getExtra_info());
-            map.put("state",HttpStatus.OK);
-        }else{ map.put("state",HttpStatus.NOT_FOUND);}
+        ApiDtoMulti api;
 
-        return map;
+        if(resultMultiRepository.save(resultMulti) != null){
+            api = ApiDtoMulti.builder()
+                    .question_id(resultMulti.getId().getQuestion_id())
+                    .choice_id(resultMulti.getChoice_multi_id())
+                    .choices(resultMulti.getChoice())
+                    .extra_info(resultMulti.getExtra_info())
+                    .build();
+            return new ResponseEntity<ApiDtoMulti>(api, HttpStatus.OK);
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    public Map<String, Object> setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
+
+//    public Map<String, Object> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, HttpSession session){
+//        ResultKeySingle resultKeySingle = new ResultKeySingle();
+//        if(session != null)
+//            resultKeySingle.setUser_id(session.getAttribute("DeviceId").toString());//현재 세션에 저장된 id로 변경해야함.
+//        else {
+//            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//            resultKeySingle.setUser_id(user.getId());//현재 세션에 저장된 id로 변경해야함.
+//        }
+//        resultKeySingle.setQuestion_id(getSingleQuestionId(resultSingleAdapter));
+//
+//        resultSingle.setId(resultKeySingle);
+//        resultSingle.setChoice_single_id(resultSingleAdapter.getChoice_single_id());
+//        resultSingle.setExtra_info(resultSingleAdapter.getExtra_info());
+//        resultSingle.setChoice(resultSingleAdapter.getChoice());
+//
+//        Map<String, Object> map = new HashMap<>();
+//
+//        if(resultSingleRepository.save(resultSingle) != null){
+//            map.put("question_id",resultSingle.getId().getQuestion_id());
+//            map.put("choice_id",resultSingle.getChoice_single_id());
+//            map.put("choices",resultSingle.getChoice());
+//            map.put("extra_info",resultSingle.getExtra_info());
+//            map.put("state", HttpStatus.OK);
+//        }else{ map.put("state",HttpStatus.NOT_FOUND);}
+//
+//        return map;
+//    }
+//
+//    public Map<String, Object> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, HttpSession session){
+//        String []resultTemp = resultMultiAdapter.getChoice();
+//        ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
+//        String str="";
+//
+//        for(int i = 0; i < resultTemp.length; i++) {
+//            str += resultTemp[i] + ';';
+//        }
+//        if(session != null)
+//            resultKeyMulti.setUser_id(session.getAttribute("DeviceId").toString());//현재 세션에 저장된 id로 변경해야함.
+//        else {
+//            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//            resultKeyMulti.setUser_id(user.getId());//현재 세션에 저장된 id로 변경해야함.
+//        }
+//
+//        resultMulti.setChoice(str);
+//        resultMulti.setExtra_info(resultMultiAdapter.getExtra_info());
+//        resultMulti.setChoice_multi_id(resultMultiAdapter.getChoice_multi_id());
+//        resultKeyMulti.setQuestion_id(getMultiQuestionId(resultMulti));
+//        resultMulti.setId(resultKeyMulti);
+//
+//        Map<String, Object> map = new HashMap<>();
+//
+//        if(resultMultiRepository.save(resultMulti) != null){
+//            map.put("question_id",resultMulti.getId().getQuestion_id());
+//            map.put("choice_id",resultMulti.getChoice_multi_id());
+//            map.put("choices",resultMulti.getChoice());
+//            map.put("extra_info",resultMulti.getExtra_info());
+//            map.put("state",HttpStatus.OK);
+//        }else{ map.put("state",HttpStatus.NOT_FOUND);}
+//
+//        return map;
+//    }
+
+    public ResponseEntity<?> setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
         ResultKeyWrite resultKeyWrite = new ResultKeyWrite();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -174,14 +247,15 @@ public class QuestionService {
 
         Map<String, Object> map = new HashMap<>();
 
+        ApiDtoWrite api;
         if(resultWriteRepository.save(resultWrite) != null){
-            map.put("question_id", resultWrite.getId().getQuestion_id());
-            map.put("write_id",resultWrite.getWrite_id());
-            map.put("text",resultWrite.getText());
-            map.put("state",HttpStatus.OK);
-        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-
-        return map;
+            api = ApiDtoWrite.builder()
+                    .question_id(resultWrite.getId().getQuestion_id())
+                    .write_id(resultWrite.getWrite_id())
+                    .text(resultWrite.getText())
+                    .build();
+            return new ResponseEntity<ApiDtoWrite>(api, HttpStatus.OK);
+        }else{ return ResponseEntity.badRequest().build(); }
     }
 
     //find a question' id
@@ -192,49 +266,6 @@ public class QuestionService {
     public int getMultiQuestionId(ResultMulti resultMulti){
         return choiceMultiRepository.selectChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
-
-
-    //api
-//    public Map<String, Object> returnApiSingle(ResultSingle resultSingle){
-//        Map<String, Object> map = new HashMap<>();
-//
-//        if(resultSingleRepository.save(resultSingle) != null){
-//            map.put("question_id",resultSingle.getId());
-//            map.put("choice_id",resultSingle.getChoice_single_id());
-//            map.put("choices",resultSingle.getChoice());
-//            map.put("extra_info",resultSingle.getExtra_info());
-//            map.put("state", HttpStatus.OK);
-//        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-//
-//        return map;
-//    }
-
-//    public Map<String, Object> returnApiMulti(ResultMulti resultMulti){
-//        Map<String, Object> map = new HashMap<>();
-//
-//        if(resultMultiRepository.save(resultMulti) != null){
-//            map.put("question_id",resultMulti.getId());
-//            map.put("choice_id",resultMulti.getChoice_multi_id());
-//            map.put("choices",resultMulti.getChoice());
-//            map.put("extra_info",resultMulti.getExtra_info());
-//            map.put("state",HttpStatus.OK);
-//        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-//
-//        return map;
-//    }
-
-//    public Map<String, Object> returnApiWrite(ResultWrite resultWrite){
-//        Map<String, Object> map = new HashMap<>();
-//
-//        if(resultWriteRepository.save(resultWrite) != null){
-//            map.put("question_id", resultWrite.getId());
-//            map.put("write_id",resultWrite.getWrite_id());
-//            map.put("text",resultWrite.getText());
-//            map.put("state",HttpStatus.OK);
-//        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-//
-//        return map;
-//    }
 
     public String TempUserValid(User user){
         if(user.getPersonal_id() == "") return "생년월일을 입력해주세요";

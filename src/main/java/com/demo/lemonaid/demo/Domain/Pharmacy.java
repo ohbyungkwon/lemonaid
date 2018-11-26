@@ -2,10 +2,7 @@ package com.demo.lemonaid.demo.Domain;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Table(name = "Pharmacy")
 @Entity
@@ -13,6 +10,7 @@ import javax.persistence.Table;
 public class Pharmacy {
     @Id
     @Column(nullable = false)
+    @GeneratedValue
     private String id;
 
     @Column

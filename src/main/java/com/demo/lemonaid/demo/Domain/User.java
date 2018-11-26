@@ -40,7 +40,7 @@ public class User {
     @Column(name="reg_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date regDate = new Date();
-//
+
 //    @OneToMany(cascade= CascadeType.ALL, targetEntity = ResultMulti.class)
 //    @JoinColumn(name = "user_id")
 //    private Collection<ChoiceSingle> user_single;
