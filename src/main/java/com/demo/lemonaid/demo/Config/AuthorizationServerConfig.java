@@ -42,13 +42,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
 
-        // resource / auth 서버에서 동일하다면... 운영상황인 경우는 지양.
-        //converter.setSigningKey("secret");//비밀키 설정 후 return.
-//        try {
-//            Resource resource = new ClassPathResource("server.jks");
-//            System.out.println(resource.getURI().getPath().substring(1));
-//        }catch (Exception e){e.printStackTrace();}
-
         // TODO: resource / auth 서버가 분리되어있는 경우. 암호화 복호화 keypair 사용
         // TODO: keytool로 keypair 생성시 사용했던 password, alias에 따라 아래 설정을 변경하면 됩니다.
         KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("server.jks"), "spassword".toCharArray())
