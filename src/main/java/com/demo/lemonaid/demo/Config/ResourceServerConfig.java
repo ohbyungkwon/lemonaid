@@ -44,11 +44,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         return defaultTokenServices;
     }
 
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN", "TOCKER");
-    }
+//    @Override
+//    public void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests()
+//                .antMatchers("/api/**").hasAnyRole("ADMIN", "MASTER_USER", "USER");
+//    }
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {

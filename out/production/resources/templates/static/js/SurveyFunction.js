@@ -116,6 +116,7 @@ window.onload = function(){
             var Systolic = $("#Systolic").val();
             var Diastolic = $("#Diastolic").val();
             console.log(Systolic);
+            console.log(Systolic);
             console.log(Diastolic);
             console.log($("#ReSystolic").val());
             console.log($("#ReDiastolic").val());
@@ -179,7 +180,7 @@ window.onload = function(){
         if(chk == true && pre == $(this).val()){
             $(this).prop('checked',false);
             checkedRadioId.pop();
-            radio_choice_priority = null
+            radio_choice_priority = null;
             $("input[name='"+name+"']").data("previous",'');
             $("input[name="+ radio_choice_id +"]").css("display","none");
         }else if(chk == true && pre != $(this).val()){

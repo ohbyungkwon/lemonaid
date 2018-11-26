@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-public class introController {
+public class IntroController {
     @GetMapping("/disease")
     @ResponseBody
     public Map<String, Object> disease(){

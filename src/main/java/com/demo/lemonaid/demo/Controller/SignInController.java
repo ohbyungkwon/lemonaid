@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -27,8 +29,16 @@ public class SignInController {
     }
 
     @GetMapping("/SignInBasic")
-    public String signin1(HttpServletResponse response){
+    public String signin1(HttpServletResponse response, HttpServletRequest request){
         response.setHeader("Location", "signIn");
+        Cookie []cookie = request.getCookies();
+        for(int i = 0; i < cookie.length; i++){
+            if(cookie[i].getName().equals("state")){
+                cookie[i].setValue("2222");
+                response.addCookie(cookie[i]);
+            }
+            System.out.println(cookie[i].getName());
+        }
         return "SignInBasic";
     }
 

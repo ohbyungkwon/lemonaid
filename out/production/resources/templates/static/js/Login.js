@@ -9,6 +9,13 @@ window.onload = function () {
     var TelCompany = "";
     var isAuth = false;
 
+    // var link = document.location.href;
+    // if(link.indexOf("login")){
+    //     window.webInterface.responseData("login");
+    // }else if(link.indexOf("SignInBasic") || link.indexOf("SignInSpec")){
+    //     window.webInterface.responseData("signIn");
+    // }
+
     $("button[name='button']").click(function () {
         console.log("click btn");
         $("#loginForm").submit();

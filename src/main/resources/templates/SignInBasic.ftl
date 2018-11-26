@@ -23,6 +23,7 @@
                 <div class="card card-center">
                     <div class="card-body">
                         <form id="SignInForm">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <div class="row" style="padding-right: 30px;" >
                                 <div class="col-8">
                                     <input name="username" type="text" class="form-control" placeholder="Email">

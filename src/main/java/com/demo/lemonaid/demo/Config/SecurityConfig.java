@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,7 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/review",
+        web.ignoring().antMatchers(
+                "/review",
                 "/disease",
                 "/intro/**",
                 "/receiveId",
@@ -68,7 +70,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/order").authenticated()
                 .antMatchers("/cash").authenticated()
-//                .antMatchers("/saveMapLocation").hasRole("USER")
                 .anyRequest().permitAll();
 
         http.formLogin()
@@ -78,8 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .defaultSuccessUrl("/order")
                 .successHandler(successHandler())
-                .permitAll()
-                .and()
+                    .and()
                 .csrf()
                     .and()
                 .httpBasic()

@@ -3,9 +3,7 @@ package com.demo.lemonaid.demo.Controller;
 import com.demo.lemonaid.demo.Domain.Pharmacy;
 import com.demo.lemonaid.demo.Error.ApiSavePharmacy;
 import com.demo.lemonaid.demo.Exception.DuplicateUserId;
-import com.demo.lemonaid.demo.Repository.UserRepository;
 import com.demo.lemonaid.demo.Service.UserService;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +14,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -67,7 +63,10 @@ public class UserController {
     }//check if the login.
 
     @GetMapping("/login")
-    public String login(HttpServletResponse response, HttpServletRequest request) {
+    public String login(HttpServletResponse response) {
+        Cookie cookie = new Cookie("state","1111");
+        cookie.setMaxAge(60*60*24);
+        response.addCookie(cookie);
         return "Login";
     }//access to survey
 
