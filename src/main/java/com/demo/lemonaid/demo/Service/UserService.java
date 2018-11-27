@@ -2,7 +2,7 @@ package com.demo.lemonaid.demo.Service;
 
 import com.demo.lemonaid.demo.Domain.Pharmacy;
 import com.demo.lemonaid.demo.Domain.User;
-import com.demo.lemonaid.demo.Exception.CantFindUser;
+import com.demo.lemonaid.demo.Exception.CantFindUserException;
 import com.demo.lemonaid.demo.Repository.PharmacyRepository;
 import com.demo.lemonaid.demo.Repository.UserRepository;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
@@ -41,13 +41,13 @@ public class UserService implements UserDetailsService {
         String author = "";
         switch (user.getUserType()) {
             case "3":
-                author = "ADMIN";
+                author = "ROLE_ADMIN";
                 break;
             case "2":
-                author = "MASTER_USER";
+                author = "ROLE_MASTER_USER";
                 break;
             default:
-                author = "USER";
+                author = "ROLE_USER";
                 break;
         }
         UserDetail loginUser = new UserDetail(user.getEmail(), user.getPassword(), author);
@@ -112,7 +112,7 @@ public class UserService implements UserDetailsService {
     public boolean savePharmacy(String deviceId, Pharmacy pharmacy){
         User user = userRepository.findUserById(deviceId);
         if(user == null){
-            throw new CantFindUser("해당 유저는 존재하지 않음");
+            throw new CantFindUserException("해당 유저는 존재하지 않음");
         }
         else {
             if(pharmacyRepository.save(pharmacy) != null){

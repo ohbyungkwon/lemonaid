@@ -42,11 +42,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
 
+        converter.setSigningKey("secret");
         // TODO: resource / auth 서버가 분리되어있는 경우. 암호화 복호화 keypair 사용
         // TODO: keytool로 keypair 생성시 사용했던 password, alias에 따라 아래 설정을 변경하면 됩니다.
-        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("server.jks"), "spassword".toCharArray())
-                .getKeyPair("jwt", "kpassword".toCharArray());
-        converter.setKeyPair(keyPair);
+//        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("server.jks"), "spassword".toCharArray())
+//                .getKeyPair("jwt", "kpassword".toCharArray());
+//        converter.setKeyPair(keyPair);
         return converter;
     }
 
@@ -68,22 +69,32 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 //  TODO: oauth_client_details 테이블로 앱 시크릿 관리하고 싶은경우 주석제거
 
-    @Bean
-    @Primary
-    public JdbcClientDetailsService JdbcClientDetailsService(DataSource dataSource) {
-        return new JdbcClientDetailsService(dataSource);
-    }
+//    @Bean
+//    @Primary
+//    public JdbcClientDetailsService JdbcClientDetailsService(DataSource dataSource) {
+//        return new JdbcClientDetailsService(dataSource);
+//    }
 
-    private ClientDetailsService clientDetailsService;
-
-    @Autowired
-    public void setClientDetailsService(ClientDetailsService clientDetailsService) {
-        this.clientDetailsService = clientDetailsService;
-    }
+//    private ClientDetailsService clientDetailsService;
+//
+//    @Autowired
+//    public void setClientDetailsService(ClientDetailsService clientDetailsService) {
+//        this.clientDetailsService = clientDetailsService;
+//    }
+    private static final String APPNAME = "testapp";
+    private static final String APPKEY = "$2a$10$EHqL/a.q50N2tTtSbMt3d.wAeJ7WvZwC4fomp9qKoFTiJu.zYwRZm";
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         // TODO: oauth_client_details 테이블로 앱 시크릿 관리하고 싶은경우 사용
-        clients.withClientDetails(clientDetailsService);
+        clients.inMemory()
+                .withClient(APPNAME).secret(APPKEY)
+                .authorizedGrantTypes("password", "authorization_code", "implicit", "refresh_token")
+                .authorities("ROLE_YOUR_CLIENT")
+                .scopes("read", "write")
+                .resourceIds("obk-resource")
+                .accessTokenValiditySeconds(36000);
+
+//        clients.withClientDetails(clientDetailsService);
     }
 }

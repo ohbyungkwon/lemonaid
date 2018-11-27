@@ -54,23 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(
-                "/review",
-                "/disease",
-                "/intro/**",
-                "/receiveId",
-                "/receiveIdAgain",
-                "/checkLogin",
-                "/saveMapLocation");
-    }//크록스도메인이 가능한 url
-
     protected void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
                 .antMatchers("/order").authenticated()
                 .antMatchers("/cash").authenticated()
-                .antMatchers("/api/**").hasAnyRole("ADMIN", "MASTER_USER", "USER")
                 .anyRequest().permitAll();
 
         http.formLogin()
@@ -82,6 +69,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(successHandler())
                     .and()
                 .csrf()
+                .ignoringAntMatchers(
+                        "/api/**"
+                )
                     .and()
                 .httpBasic()
                    .and()

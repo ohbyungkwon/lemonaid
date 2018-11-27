@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Controller
 public class IntroController {
-    @GetMapping("/disease")
+    @GetMapping("/api/disease")
     @ResponseBody
     public Map<String, Object> disease(){
         Map<String, Object> map = new HashMap<>();
@@ -24,7 +24,7 @@ public class IntroController {
         return map;
     }
 
-    @GetMapping("/intro")
+    @GetMapping("/api/intro")
     @ResponseBody
     public Map<String, Object> disease_choice(@RequestParam String disease_name){
         Map<String, Object> map = new HashMap<>();
@@ -122,7 +122,7 @@ public class IntroController {
         return map;
     }
 
-    @GetMapping("/review")
+    @GetMapping("/api/review")
     @ResponseBody
     public Map<String, Object> review(){
         Map<String, Object> map = new HashMap<>();

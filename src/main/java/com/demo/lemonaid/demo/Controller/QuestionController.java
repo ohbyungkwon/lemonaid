@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -46,9 +47,7 @@ public class QuestionController {
     }//TEST
 
     @GetMapping("/register/NonUser")
-    public String nonUser(Model model){
-//        NonUserUseID += 1;
-//        model.addAttribute("userID",NonUserUseID);
+    public String nonUser(){
         return "NonLoginUser";
     }//비로그인에만 출력
 
@@ -70,6 +69,11 @@ public class QuestionController {
                            @RequestParam(value = "isLogin", defaultValue = "0", required = false) int login,
                            HttpServletResponse response){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        response.setHeader("Location","survey");
+        Cookie cookie = new Cookie("state","survey");
+        cookie.setMaxAge(60*60*24);
+        response.addCookie(cookie);
 
         if(authentication.getPrincipal().equals("anonymousUser") && login == 0){
             return "NonLoginUser";
@@ -99,8 +103,6 @@ public class QuestionController {
         } else {
             model.addAttribute("isState", 3);
         }
-
-        response.setHeader("Location","survey");
 
         return "Question";
     }
