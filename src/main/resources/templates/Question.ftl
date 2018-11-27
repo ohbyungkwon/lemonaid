@@ -58,7 +58,7 @@
                                 <#elseIf isState == 2>
                                     <div style="margin-top: 30px;" class="row justify-content-center">
                                         <div class="ui input focus">
-                                            <input id="Systolic" type="number" placeholder="Systolic">
+                                            <input id="Systolic" type="number" placeholder="Systolic" autofocus>
                                         </div>
                                         <div class="ui input focus">
                                             <input id="Diastolic" type="number" placeholder="Diastolic">
@@ -113,10 +113,6 @@
                 <#if question.priority != 1>
                     <div class="col col-5">
                         <button id="1" name="pre" class= "col-xl-1 ui orange button footer_left"> 이전 </button>
-                    </div>
-                <#else>
-                    <div class="col col-5">
-                        <button id="1" name="pre" class= "col-xl-1 ui orange button footer_left"> 안내 이동 </button>
                     </div>
                 </#if>
                 <#if question.priority != 30>

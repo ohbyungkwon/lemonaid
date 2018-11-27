@@ -39,29 +39,6 @@ public class UserController {
         return map;
     }//첫 방문
 
-//    @PostMapping("/api/receiveIdAgain")
-//    @ResponseBody
-//    public Map<String, Object> secondVisit(HttpServletRequest request, HttpSession session){
-//        String DeviceId = request.getHeader("DeviceId");
-//
-//        Cookie [] cookies = request.getCookies();
-//        for(int i = 0; i < cookies.length; i++){
-//            System.out.println(cookies[i].getValue());
-//        }
-//
-//        session.setAttribute("DeviceId",DeviceId);
-//
-//        Map<String, Object> map = userService.deviceIdMap(DeviceId);
-//        return map;
-//    }//이 후 방문 클라이언트로 부터 받은 header값을 sesseion에 저장
-
-//    @GetMapping("/api/checkLogin")
-//    @ResponseBody
-//    public Map<String, Object> firstLogin(){
-//        Map<String, Object> map = userService.loginInfoMap();
-//        return map;
-//    }//check if the login.
-
     @GetMapping("/login")
     public String login(HttpServletResponse response) {
         response.setHeader("Location", "login");

@@ -5,26 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -66,11 +56,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/j_spring_security_check")
                 .loginPage("/login")
                 .defaultSuccessUrl("/order")
-                .successHandler(successHandler())
                     .and()
                 .csrf()
                 .ignoringAntMatchers(
-                        "/api/**"
+                        "/api/**",
+                        "jwt/**"
                 )
                     .and()
                 .httpBasic()
@@ -78,33 +68,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/login")
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"));//기본적으로 시큐리티의 로그아웃은 포스트만 지원을한다. 그렇기 때문에 마지막 줄을 추가하여 get을 지원하게함.
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return new CustomLoginSuccessHandler("/order");
-    }
-
-    public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
-        public CustomLoginSuccessHandler(String defaultTargetUrl) {
-            setDefaultTargetUrl(defaultTargetUrl);
-        }
-
-        @Override
-        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                            Authentication authentication) throws ServletException, IOException {
-            HttpSession session = request.getSession();
-            if (session != null) {
-                String redirectUrl = (String) session.getAttribute("prev");
-                if (redirectUrl != null) {
-                    session.removeAttribute("prev");
-                    getRedirectStrategy().sendRedirect(request, response, redirectUrl);
-                } else {
-                    super.onAuthenticationSuccess(request, response, authentication);
-                }
-            } else {
-                super.onAuthenticationSuccess(request, response, authentication);
-            }
-        }//접근 주소에 따른 이후 페이지 결정(리다이렉트).
     }
 }

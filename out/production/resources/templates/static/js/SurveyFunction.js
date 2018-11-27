@@ -14,12 +14,6 @@ window.onload = function(){
     var gender = null;
     console.log(gender);
 
-    // if($(".hidden-text1").text() == 1) {//첫 페이지에서는 이동 x
-    //     $("button[name='pre']").css("display","none");
-    // }else{
-    //     $("button[name='pre']").css("display","block");
-    // }
-
     $("#womanBtn").click(function () {
         gender = "WOMAN";
         console.log("woman");
@@ -89,7 +83,10 @@ window.onload = function(){
             };
             urlTemp = "/response/single/" + $(".hidden-text1").text();
             console.log(data.choice);
-            if(radio_choice_priority == null){ return false;}
+            if(radio_choice_priority == null){
+                alert("해당 문진을 완료해주세요.");
+                return false;
+            }
         } else if(questionType == 'multi') {
             checkedRadioId.length = [];
             for (var i = 0; i < values.length; i++) {
@@ -110,7 +107,10 @@ window.onload = function(){
                 "extra_info" : $("#extra_info").val()
             };
             console.log(data.choice);
-            if(data.choice.length == 0){return false;}
+            if(data.choice.length == 0){
+                alert("해당 문진을 완료해주세요.");
+                return false;
+            }
             urlTemp = "/response/multi/" + $(".hidden-text1").text();
         }else if(questionType == 'write') {
             var Systolic = $("#Systolic").val();
@@ -172,7 +172,9 @@ window.onload = function(){
     $("input[type=radio]").each(function(){
         var chk = $(this).is(":checked");
         var name = $(this).attr('name');
-        if(chk == true) $("input[name='"+name+"']").data("previous",$(this).val());
+        if(chk == true) {
+            $("input[name='" + name + "']").data("previous", $(this).val());
+        }
     });//init
 
     $("input[type=radio]").click(function(){
@@ -184,8 +186,9 @@ window.onload = function(){
         radio_choice_priority = $(this).attr('id');//For ajax
         // console.log(radio_choice_priority);
 
-        console.log(name);
-        console.log($("label[name='"+ name +"']").text());
+        // console.log(name);
+        // console.log(radio_choice_id);
+        // console.log($("label[name='"+ name +"']").text());
         if(chk == true && pre == $(this).val()){
             $(this).prop('checked',false);
             checkedRadioId.pop();
@@ -196,6 +199,7 @@ window.onload = function(){
             $("input[name='"+name+"']").data("previous",$(this).val());
             $("input[name="+ radio_choice_id +"]").css("display","block");
         }
+
         if($("label[name='"+ name +"']").text() == "해당사항 없음"){
             for(var i = 1; i < radio_choice_priority; i++){
                 var temp = "choice_"+i;

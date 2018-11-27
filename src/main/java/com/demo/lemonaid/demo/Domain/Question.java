@@ -26,14 +26,14 @@ public class Question {
     private int priority;
 
     @OneToMany(cascade= CascadeType.ALL, targetEntity = ChoiceSingle.class)
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Collection<ChoiceSingle> choiceSingle;
 
     @OneToMany(cascade= CascadeType.ALL, targetEntity = ChoiceMulti.class)
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Collection<ChoiceMulti> choiceMulti;
 
     @OneToMany(cascade= CascadeType.ALL, targetEntity = Write.class)
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Collection<Write> write;
 }

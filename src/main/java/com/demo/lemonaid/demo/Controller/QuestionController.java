@@ -4,9 +4,6 @@ import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultSingleAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultWriteAdapter;
 import com.demo.lemonaid.demo.Domain.*;
-import com.demo.lemonaid.demo.Error.ApiDtoMulti;
-import com.demo.lemonaid.demo.Error.ApiDtoSingle;
-import com.demo.lemonaid.demo.Error.ApiDtoWrite;
 import com.demo.lemonaid.demo.Service.QuestionService;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
@@ -23,7 +20,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,17 +35,6 @@ public class QuestionController {
         this.questionService = questionService;
         this.userIdSession = userIdSession;
     }
-
-    @GetMapping("/")
-    @ResponseBody
-    public String root(){
-        return "hello";
-    }//TEST
-
-    @GetMapping("/register/NonUser")
-    public String nonUser(){
-        return "NonLoginUser";
-    }//비로그인에만 출력
 
     @PostMapping("/TempUserSet")
     @ResponseBody
@@ -78,14 +63,14 @@ public class QuestionController {
         if(authentication.getPrincipal().equals("anonymousUser") && login == 0){
             return "NonLoginUser";
         }
-        else if(!authentication.getPrincipal().equals("anonymousUser") && priority == 1){
+        else if(!authentication.getPrincipal().equals("anonymousUser") && priority >= 1){
             UserDetail userDetail = (UserDetail)authentication.getPrincipal();
             boolean state = questionService.eligibility(userDetail.getUsername());
             if(!state) return "WrongUser";
         }
-//        System.out.println(authentication.getPrincipal());
-        DiseaseService dTemp = questionService.SearchDisease(disease);//질병 선택
-        Question qTemp = questionService.SearchQuestion(dTemp, priority);//해당 질병의 id문항을 읽어옴
+
+        DiseaseService dTemp = questionService.searchDisease(disease);//질병 선택
+        Question qTemp = questionService.searchQuestion(dTemp, priority);//해당 질병의 id문항을 읽어옴
 
         model.addAttribute("total_question", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
         model.addAttribute("disease_name", dTemp.getDisease_name());
@@ -117,18 +102,6 @@ public class QuestionController {
 
         return new ModelAndView(new RedirectView(url, true));
     }//마지막 문진이 끝날 때 로그인 여부에 따른 리다이렉트
-
-//    @PostMapping("/response/single/{id}")
-//    @ResponseBody
-//    public Map<String, Object> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpSession session){
-//        return questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, session);
-//    }//single question's result save
-//
-//    @PostMapping("/response/multi/{id}")
-//    @ResponseBody
-//    public Map<String, Object> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter, HttpSession session){
-//        return questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter, session);
-//    }//multi
 
     @PostMapping("/response/single/{id}")
     @ResponseBody

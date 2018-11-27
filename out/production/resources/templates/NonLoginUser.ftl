@@ -41,12 +41,8 @@
             </div>
         </div>
         <hr class="line_color">
-        <hr>
             <div class="footer_c">
                 <div class="row justify-content-around">
-                    <div class="col col-5">
-                        <button id="prevBtn" class="col-xl-1 ui orange button">안내 이동</button>
-                    </div>
                     <div class="col col-5">
                         <button id="nextBtn" class="col-xl-1 ui orange button">설문 시작</button>
                     </div>

@@ -21,9 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Column;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,12 +59,12 @@ public class QuestionService {
         this.userRepository=userRepository;
     }
 
-    public Question SearchQuestion(DiseaseService dTemp, int priority){
+    public Question searchQuestion(DiseaseService dTemp, int priority){
         Question qTemp  = questionRepository.selectQuestion(dTemp.getId(), priority);//질병에 달린 질문
         return  qTemp;
     }
 
-    public DiseaseService SearchDisease(String disease){
+    public DiseaseService searchDisease(String disease){
         DiseaseService dTemp = diseaseRepository.selectFindById(disease);//질병 선택
         return  dTemp;
     }
@@ -76,7 +74,6 @@ public class QuestionService {
     }
 
     public String getPrincipalCustom(Authentication authentication){
-        //System.out.println(authentication.getPrincipal().getClass().getCanonicalName());
         UserDetail userDetail = (UserDetail) authentication.getPrincipal();
         User user = userRepository.findUserByEmail(userDetail.getUsername());
         return user.getId();
@@ -95,6 +92,10 @@ public class QuestionService {
     public ResponseEntity<?> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        for(int i=0; i< cookies.length; i++){
+            System.out.println(cookies[i].getValue());
+        }
 
         if(authentication.getPrincipal().equals("anonymousUser")) {
             String deviceId = findDeviceId(cookies);
@@ -165,69 +166,6 @@ public class QuestionService {
         }
     }
 
-
-//    public Map<String, Object> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, HttpSession session){
-//        ResultKeySingle resultKeySingle = new ResultKeySingle();
-//        if(session != null)
-//            resultKeySingle.setUser_id(session.getAttribute("DeviceId").toString());//현재 세션에 저장된 id로 변경해야함.
-//        else {
-//            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//            resultKeySingle.setUser_id(user.getId());//현재 세션에 저장된 id로 변경해야함.
-//        }
-//        resultKeySingle.setQuestion_id(getSingleQuestionId(resultSingleAdapter));
-//
-//        resultSingle.setId(resultKeySingle);
-//        resultSingle.setChoice_single_id(resultSingleAdapter.getChoice_single_id());
-//        resultSingle.setExtra_info(resultSingleAdapter.getExtra_info());
-//        resultSingle.setChoice(resultSingleAdapter.getChoice());
-//
-//        Map<String, Object> map = new HashMap<>();
-//
-//        if(resultSingleRepository.save(resultSingle) != null){
-//            map.put("question_id",resultSingle.getId().getQuestion_id());
-//            map.put("choice_id",resultSingle.getChoice_single_id());
-//            map.put("choices",resultSingle.getChoice());
-//            map.put("extra_info",resultSingle.getExtra_info());
-//            map.put("state", HttpStatus.OK);
-//        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-//
-//        return map;
-//    }
-//
-//    public Map<String, Object> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, HttpSession session){
-//        String []resultTemp = resultMultiAdapter.getChoice();
-//        ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
-//        String str="";
-//
-//        for(int i = 0; i < resultTemp.length; i++) {
-//            str += resultTemp[i] + ';';
-//        }
-//        if(session != null)
-//            resultKeyMulti.setUser_id(session.getAttribute("DeviceId").toString());//현재 세션에 저장된 id로 변경해야함.
-//        else {
-//            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//            resultKeyMulti.setUser_id(user.getId());//현재 세션에 저장된 id로 변경해야함.
-//        }
-//
-//        resultMulti.setChoice(str);
-//        resultMulti.setExtra_info(resultMultiAdapter.getExtra_info());
-//        resultMulti.setChoice_multi_id(resultMultiAdapter.getChoice_multi_id());
-//        resultKeyMulti.setQuestion_id(getMultiQuestionId(resultMulti));
-//        resultMulti.setId(resultKeyMulti);
-//
-//        Map<String, Object> map = new HashMap<>();
-//
-//        if(resultMultiRepository.save(resultMulti) != null){
-//            map.put("question_id",resultMulti.getId().getQuestion_id());
-//            map.put("choice_id",resultMulti.getChoice_multi_id());
-//            map.put("choices",resultMulti.getChoice());
-//            map.put("extra_info",resultMulti.getExtra_info());
-//            map.put("state",HttpStatus.OK);
-//        }else{ map.put("state",HttpStatus.NOT_FOUND);}
-//
-//        return map;
-//    }
-
     public ResponseEntity<?> setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
         ResultKeyWrite resultKeyWrite = new ResultKeyWrite();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -282,6 +220,7 @@ public class QuestionService {
         if(user.getGender().equals(Gender.MAN.toString()) || user.getGender() == null){
             state = true;
         }
+        System.out.println(state);
         return state;
     }
 }

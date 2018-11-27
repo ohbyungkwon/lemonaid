@@ -16,7 +16,7 @@ public class DiseaseService {
     @Column(name = "disease_name", nullable=false)
     private String disease_name;
 
-    @OneToMany(cascade= CascadeType.ALL, targetEntity = Question.class)
-    @JoinColumn(name = "disease_service_id")
-    private Collection<Question> question;
+//    @OneToMany(cascade= CascadeType.ALL, targetEntity = Question.class)
+//    @JoinColumn(name = "disease_service_id", referencedColumnName = "id")
+//    private Collection<Question> question;
 }
