@@ -98,17 +98,6 @@ public class UserService implements UserDetailsService {
         return map;
     }
 
-    public Map<String, Object> loginInfoMap(){
-        Map<String, Object> map = new HashMap<>();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal().equals("anonymousUser"))
-            map.put("isLogin","0");
-        else
-            map.put("isLogin","1");
-        return map;
-    }
-
     public boolean savePharmacy(String deviceId, Pharmacy pharmacy){
         User user = userRepository.findUserById(deviceId);
         if(user == null){

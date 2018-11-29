@@ -41,13 +41,13 @@
             </div>
         </div>
         <hr class="line_color">
-            <div class="footer_c">
-                <div class="row justify-content-around">
-                    <div class="col col-5">
-                        <button id="nextBtn" class="col-xl-1 ui orange button">설문 시작</button>
-                    </div>
+        <div class="footer_c">
+            <div class="row justify-content-around">
+                <div class="col col-5">
+                    <button id="nextBtn" class="col-xl-1 ui orange button">설문 시작</button>
                 </div>
             </div>
+        </div>
     </div>
 </body>
 </html>

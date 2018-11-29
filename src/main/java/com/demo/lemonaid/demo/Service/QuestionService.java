@@ -93,10 +93,6 @@ public class QuestionService {
         ResultKeySingle resultKeySingle = new ResultKeySingle();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        for(int i=0; i< cookies.length; i++){
-            System.out.println(cookies[i].getValue());
-        }
-
         if(authentication.getPrincipal().equals("anonymousUser")) {
             String deviceId = findDeviceId(cookies);
             resultKeySingle.setUser_id(deviceId);
@@ -220,7 +216,6 @@ public class QuestionService {
         if(user.getGender().equals(Gender.MAN.toString()) || user.getGender() == null){
             state = true;
         }
-        System.out.println(state);
         return state;
     }
 }

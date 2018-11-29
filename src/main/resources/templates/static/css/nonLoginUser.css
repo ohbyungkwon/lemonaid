@@ -4,6 +4,7 @@ body{
 .container{
     background: white;
     padding: 0px !important;
+    position: relative;
     /*border: #F1F1F1 1px solid;*/
 }
 .header_c{
@@ -28,7 +29,7 @@ body{
 }
 .footer_c{
     position: absolute;
-    bottom: 0px;
+    /*bottom: -50px;*/
     text-align: center;
     width: 100%;
 }

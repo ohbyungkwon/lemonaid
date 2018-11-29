@@ -19,10 +19,13 @@ public class SignInSession {
     private String userPassword;
 
     private UserRepository userRepository;
+    private SignInSession signInSession;
 
     @Autowired
-    SignInSession(UserRepository userRepository){
+    SignInSession(UserRepository userRepository,
+                  SignInSession signInSession){
         this.userRepository = userRepository;
+        this.signInSession = signInSession;
     }
 
     public String redirectNext(PasswordTemp TempUser){
@@ -30,6 +33,8 @@ public class SignInSession {
             return "공백은 불가합니다.";
         }else if(TempUser.getPassword().indexOf(" ") == -1 && TempUser.getPassword().length() < 6){
             return "6자 이상 입력해주세요.";
+        }else if(!TempUser.isEmailCheck()){
+            return "이메일 중복 확인해주세요.";
         }else{
             if(TempUser.getCheckDuplicate().equals(TempUser.getPassword())){
                 this.userEmail = TempUser.getEmail();

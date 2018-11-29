@@ -8,6 +8,7 @@ window.onload = function () {
     var header = $("meta[name='_csrf_header']").attr("content");
     var TelCompany = "";
     var isAuth = false;
+    var flag = false;
 
     // var link = document.location.href;
     // if(link.indexOf("login")){
@@ -35,6 +36,12 @@ window.onload = function () {
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
             success: function (data) {
+                if(data.comment == "사용 가능한 아이디입니다."){
+                    flag = true;
+                }else flag = false;
+
+                console.log(flag);
+
                 alert(data.comment);
             },
             beforeSend: function (xhr) {
@@ -99,7 +106,8 @@ window.onload = function () {
         data = {
             "email": email,
             "password": pwd,
-            "checkDuplicate": DuplicatePwd
+            "checkDuplicate": DuplicatePwd,
+            "emailCheck" : flag
         };
 
         console.log(data);
@@ -111,7 +119,7 @@ window.onload = function () {
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
             success: function (data) {
-                if (data.comment == "다음으로 이동합니다.") {
+                if (data.comment == "다음으로 이동합니다." && flag == true) {
                     alert(data.comment);
                     window.location.href = "/SignInSpec";
                 } else {

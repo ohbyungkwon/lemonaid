@@ -15,4 +15,5 @@ public class PasswordTemp {
 	private String addr;
 	private boolean checkAgree;
 	private boolean Auth;
+	private boolean emailCheck;
 }

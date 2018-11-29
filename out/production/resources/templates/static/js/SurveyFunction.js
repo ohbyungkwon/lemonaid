@@ -50,8 +50,7 @@ window.onload = function(){
                     window.location.href="/question?disease_name=탈모&priority=1&isLogin=1";
                 }else if(data.comment == "설문을 시작합니다" && link.indexOf("%EB%B0%9C%EA%B8%B0%EB%B6%80%EC%A0%84") != -1){
                     window.location.href="/question?disease_name=발기부전&priority=1&isLogin=1";
-                }
-                else if(data.comment == "남성만 참여가능합니다"){
+                }else if(data.comment == "남성만 참여가능합니다"){
                     window.location.href="/WrongUser";
                 }
             },

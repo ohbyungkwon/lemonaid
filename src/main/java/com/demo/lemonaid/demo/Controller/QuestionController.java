@@ -36,6 +36,11 @@ public class QuestionController {
         this.userIdSession = userIdSession;
     }
 
+    @GetMapping("/WrongUser")
+    public String WrongUser(){
+        return "WrongUser";
+    }
+
     @PostMapping("/TempUserSet")
     @ResponseBody
     public Map<String, Object> GiveUserID(@RequestBody User user){
@@ -70,7 +75,7 @@ public class QuestionController {
         }
 
         DiseaseService dTemp = questionService.searchDisease(disease);//질병 선택
-        Question qTemp = questionService.searchQuestion(dTemp, priority);//해당 질병의 id문항을 읽어옴
+        Question qTemp = questionService.searchQuestion(dTemp, priority);//해당 질병의 문항 번호를 읽어옴
 
         model.addAttribute("total_question", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
         model.addAttribute("disease_name", dTemp.getDisease_name());

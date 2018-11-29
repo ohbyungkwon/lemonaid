@@ -25,11 +25,11 @@
                         <form id="SignInForm">
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <div class="row" style="padding-right: 30px;" >
-                                <div class="col-8">
+                                <div class="col-7">
                                     <input name="username" type="text" class="form-control" placeholder="Email">
                                 </div>
-                                <div class="col-4"">
-                                    <button name="checkDuplicate"class="ui yellow button">check</button>
+                                <div class="col-5"">
+                                    <button name="checkDuplicate"class="ui yellow button">확인</button>
                                 </div>
                             </div>
 
@@ -55,7 +55,7 @@
                             </div>
                         </form>
                     </div>
-                    <button id="continueBtn" class="ui orange button">continue</button>
+                    <button id="continueBtn" class="ui orange button">계속</button>
                 </div>
             </div>
         </div>

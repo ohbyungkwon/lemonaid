@@ -13,7 +13,7 @@ const config = {
         // semanticjs : path.resolve(__dirname, 'src/main/resources/templates/semantic/dist/semantic.js'),
 
         question : path.resolve(__dirname,"src/main/resources/templates/static/css/question.css"),
-        // nonLoginUser : path.resolve(__dirname,"src/main/resources/templates/static/css/nonLoginUser.css"),
+        nonLoginUser : path.resolve(__dirname,"src/main/resources/templates/static/css/nonLoginUser.css"),
         // orderTemp : path.resolve(__dirname,"src/main/resources/templates/static/css/order.css"),
         login: path.resolve(__dirname, "src/main/resources/templates/static/css/login.css"),
         cash: path.resolve(__dirname, "src/main/resources/templates/static/css/cash.css"),
