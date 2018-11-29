@@ -35,6 +35,6 @@ public class OrderController {
         Cookie cookie = new Cookie("state","end");
         cookie.setMaxAge(60*60*24);
         response.addCookie(cookie);
-        return "<h2>End Page</h2>";
+        return "";
     }
 }
