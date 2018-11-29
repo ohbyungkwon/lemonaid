@@ -1,4 +1,4 @@
-package com.demo.lemonaid.demo.Domain;
+package com.demo.lemonaid.demo.Dto;
 
 import lombok.Builder;
 import lombok.Data;

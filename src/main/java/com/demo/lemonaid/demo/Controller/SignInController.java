@@ -1,6 +1,6 @@
 package com.demo.lemonaid.demo.Controller;
 
-import com.demo.lemonaid.demo.Domain.PasswordTemp;
+import com.demo.lemonaid.demo.Dto.SiginInDto;
 import com.demo.lemonaid.demo.Service.SignInService;
 import com.demo.lemonaid.demo.session.SignInSession;
 import org.springframework.stereotype.Controller;
@@ -41,7 +41,7 @@ public class SignInController {
 
     @PostMapping("/checkEmail")
     @ResponseBody
-    public Map<String, Object> checkEmail(@RequestBody PasswordTemp user){
+    public Map<String, Object> checkEmail(@RequestBody SiginInDto user){
         Map<String,Object> map = new HashMap<>();
         String comment = signInService.findDuplicate(user.getEmail());
         map.put("comment",comment);
@@ -50,7 +50,7 @@ public class SignInController {
 
     @PostMapping("/checkPwd")
     @ResponseBody
-    public Map<String, Object> checkPwd(@RequestBody PasswordTemp user){
+    public Map<String, Object> checkPwd(@RequestBody SiginInDto user){
         Map<String,Object> map = new HashMap<>();
 
         String comment = signInService.findPasswordReg(user.getPassword());
@@ -61,7 +61,7 @@ public class SignInController {
 
     @PostMapping("/checkDuplicate")
     @ResponseBody
-    public Map<String, Object> checkDuplicate(@RequestBody PasswordTemp user){
+    public Map<String, Object> checkDuplicate(@RequestBody SiginInDto user){
         Map<String,Object> map = new HashMap<>();
         String comment = signInService.isSamePassword(user);
         map.put("comment",comment);
@@ -71,7 +71,7 @@ public class SignInController {
 
     @PostMapping("/redirectNext")
     @ResponseBody
-    public Map<String, Object> redirectNext(@RequestBody PasswordTemp TempUser){
+    public Map<String, Object> redirectNext(@RequestBody SiginInDto TempUser){
         Map<String,Object> map = new HashMap<>();
         String comment = signInSession.redirectNext(TempUser);
         map.put("comment",comment);
@@ -81,7 +81,7 @@ public class SignInController {
 
     @PostMapping("/done")
     @ResponseBody
-    public Map<String, Object> done(@RequestBody PasswordTemp TempUser, HttpServletRequest request){
+    public Map<String, Object> done(@RequestBody SiginInDto TempUser, HttpServletRequest request){
         Map<String, Object> map = new HashMap<>();
         String comment = signInService.done(TempUser);//validate
 

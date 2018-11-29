@@ -1,19 +1,21 @@
 package com.demo.lemonaid.demo.session;
 
 import com.demo.lemonaid.demo.Domain.User;
-import com.demo.lemonaid.demo.Domain.PasswordTemp;
+import com.demo.lemonaid.demo.Dto.SiginInDto;
 import com.demo.lemonaid.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
 @Scope(value ="session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Transactional
 public class SignInSession {
     private String userEmail;
     private String userPassword;
@@ -28,7 +30,7 @@ public class SignInSession {
         this.signInSession = signInSession;
     }
 
-    public String redirectNext(PasswordTemp TempUser){
+    public String redirectNext(SiginInDto TempUser){
         if(TempUser.getPassword().indexOf(" ") != -1) {
             return "공백은 불가합니다.";
         }else if(TempUser.getPassword().indexOf(" ") == -1 && TempUser.getPassword().length() < 6){
@@ -47,7 +49,7 @@ public class SignInSession {
         }
     }
 
-    public String done(PasswordTemp TempUser, HttpServletRequest request){
+    public String done(SiginInDto TempUser, HttpServletRequest request){
         User user = new User();
 
         Cookie []cookies = request.getCookies();

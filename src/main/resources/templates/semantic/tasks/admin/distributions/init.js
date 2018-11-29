@@ -105,7 +105,7 @@ module.exports = function(callback) {
       console.info('Initializing repository for ' + component);
       git.init(gitOptions, function(error) {
         if(error) {
-          console.error('Error initializing repo', error);
+          console.error('Dto initializing repo', error);
         }
         addRemote();
       });

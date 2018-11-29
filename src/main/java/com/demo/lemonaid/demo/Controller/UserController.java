@@ -1,7 +1,7 @@
 package com.demo.lemonaid.demo.Controller;
 
 import com.demo.lemonaid.demo.Domain.Pharmacy;
-import com.demo.lemonaid.demo.Error.ApiSavePharmacy;
+import com.demo.lemonaid.demo.Dto.ApiSavePharmacy;
 import com.demo.lemonaid.demo.Exception.DuplicateUserIdException;
 import com.demo.lemonaid.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

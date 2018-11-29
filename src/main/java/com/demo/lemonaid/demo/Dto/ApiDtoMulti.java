@@ -1,4 +1,4 @@
-package com.demo.lemonaid.demo.Error;
+package com.demo.lemonaid.demo.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

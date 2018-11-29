@@ -1,9 +1,9 @@
-package com.demo.lemonaid.demo.Domain;
+package com.demo.lemonaid.demo.Dto;
 
 import lombok.Data;
 
 @Data
-public class PasswordTemp {
+public class SiginInDto {
 	private String email;
 	private String password;
 	private String checkDuplicate;

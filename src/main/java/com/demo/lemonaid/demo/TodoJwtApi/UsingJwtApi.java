@@ -1,7 +1,7 @@
 package com.demo.lemonaid.demo.TodoJwtApi;
 
 import com.demo.lemonaid.demo.Domain.Pharmacy;
-import com.demo.lemonaid.demo.Error.ApiSavePharmacy;
+import com.demo.lemonaid.demo.Dto.ApiSavePharmacy;
 import com.demo.lemonaid.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

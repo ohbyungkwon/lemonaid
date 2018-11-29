@@ -1,4 +1,4 @@
-package com.demo.lemonaid.demo.Error;
+package com.demo.lemonaid.demo.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApiDtoSingle {
+public class ApiDtoWrite {
     private int question_id;
-    private int choice_id;
-    private int choices;
-    private String extra_info;
+    private int write_id;
+    private String text;
 }

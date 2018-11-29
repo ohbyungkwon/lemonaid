@@ -1,6 +1,6 @@
 package com.demo.lemonaid.demo.Service;
 
-import com.demo.lemonaid.demo.Domain.PasswordTemp;
+import com.demo.lemonaid.demo.Dto.SiginInDto;
 import com.demo.lemonaid.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class SignInService {
     private UserRepository userRepository;
 
@@ -41,7 +41,7 @@ public class SignInService {
         else{ return ""; }
     }
 
-    public String isSamePassword(PasswordTemp temp){
+    public String isSamePassword(SiginInDto temp){
         if(temp.getPassword().length() >= 6) {
             if (temp.getPassword().equals(temp.getCheckDuplicate())) {
                 return "비밀번호가 같습니다.";
@@ -52,7 +52,7 @@ public class SignInService {
         }else{ return ""; }
     }
 
-    public String done(PasswordTemp temp){
+    public String done(SiginInDto temp){
         String telReg = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}";
         String nameReg = ".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*";
         String idReg = "\\d{6}[1-4]\\d{6}";
@@ -65,11 +65,11 @@ public class SignInService {
         Matcher mName = patternName.matcher(temp.getName());
         Matcher mId = patternId.matcher(temp.getPersonalId());
 
-        if(temp.getName() == "") return "이름을 입력하세요";
-        else if(temp.getPersonalId() == "") return "주민등록번호를 입력하세요";
+        if(temp.getName().equals("")) return "이름을 입력하세요";
+        else if(temp.getPersonalId().equals("")) return "주민등록번호를 입력하세요";
         else if(temp.getGender() == null) return "성별을 선택하세요";
-        else if(temp.getTel() == "") return "핸드폰번호를 입력하세요";
-        else if(temp.getAddr() == "") return "주소를 입력하세요";
+        else if(temp.getTel().equals("")) return "핸드폰번호를 입력하세요";
+        else if(temp.getAddr().equals("")) return "주소를 입력하세요";
         else if(!temp.isCheckAgree()) return "동의 여부를 체크해주세요";
         else if(!temp.isAuth()) return "인증을 진행해주세요";
         else if(!mTel.matches()) return "휴대폰번호 형식이 잘못되었습니다";

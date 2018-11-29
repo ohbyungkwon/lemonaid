@@ -160,7 +160,7 @@
 }
 
 /*--------------------
-        Error
+        Dto
 ---------------------*/
 
 .ui.input.error > input {
@@ -171,7 +171,7 @@
           box-shadow: none;
 }
 
-/* Error Placeholder */
+/* Dto Placeholder */
 .ui.input.error > input::-webkit-input-placeholder {
   color: #e7bdbc;
 }
@@ -182,7 +182,7 @@
   color: #e7bdbc !important;
 }
 
-/* Focused Error Placeholder */
+/* Focused Dto Placeholder */
 .ui.input.error > input:focus::-webkit-input-placeholder {
   color: #da9796;
 }

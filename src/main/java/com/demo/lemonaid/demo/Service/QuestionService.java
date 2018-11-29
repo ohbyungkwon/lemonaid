@@ -8,9 +8,9 @@ import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyMulti;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeySingle;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyWrite;
 import com.demo.lemonaid.demo.Domain.Enums.Gender;
-import com.demo.lemonaid.demo.Error.ApiDtoMulti;
-import com.demo.lemonaid.demo.Error.ApiDtoSingle;
-import com.demo.lemonaid.demo.Error.ApiDtoWrite;
+import com.demo.lemonaid.demo.Dto.ApiDtoMulti;
+import com.demo.lemonaid.demo.Dto.ApiDtoSingle;
+import com.demo.lemonaid.demo.Dto.ApiDtoWrite;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Transactional
 public class QuestionService {
     private DiseaseRepository diseaseRepository;
     private QuestionRepository questionRepository;
@@ -59,25 +58,32 @@ public class QuestionService {
         this.userRepository=userRepository;
     }
 
+
+    @Transactional(readOnly = true)
     public Question searchQuestion(DiseaseService dTemp, int priority){
         Question qTemp  = questionRepository.selectQuestion(dTemp.getId(), priority);//질병에 달린 질문
         return  qTemp;
     }
 
+    @Transactional(readOnly = true)
     public DiseaseService searchDisease(String disease){
         DiseaseService dTemp = diseaseRepository.selectFindById(disease);//질병 선택
         return  dTemp;
     }
+
+    @Transactional(readOnly = true)
     public int totalQuestion(DiseaseService dTemp){
         int total = questionRepository.getCount(dTemp.getId());
         return total;
     }
 
+    @Transactional(readOnly = true)
     public String getPrincipalCustom(Authentication authentication){
         UserDetail userDetail = (UserDetail) authentication.getPrincipal();
         User user = userRepository.findUserByEmail(userDetail.getUsername());
         return user.getId();
     }
+
 
     public String findDeviceId(Cookie[] cookies){
         String deviceId = null;
@@ -88,7 +94,10 @@ public class QuestionService {
         }
         return deviceId;
     }
+
     //setting
+
+    @Transactional
     public ResponseEntity<?> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -122,6 +131,7 @@ public class QuestionService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie[] cookies){
         ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -162,6 +172,7 @@ public class QuestionService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
         ResultKeyWrite resultKeyWrite = new ResultKeyWrite();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -193,10 +204,12 @@ public class QuestionService {
     }
 
     //find a question' id
+    @Transactional(readOnly = true)
     public int getSingleQuestionId(ResultSingleAdapter resultSingle){
         return choiceSingleRepository.selectChoicesById(resultSingle.getChoice_single_id()).getQuestion_id();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
+    @Transactional(readOnly = true)
     public int getMultiQuestionId(ResultMulti resultMulti){
         return choiceMultiRepository.selectChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
@@ -210,6 +223,7 @@ public class QuestionService {
         }
     }
 
+    @Transactional(readOnly = true)
     public boolean eligibility(String username){
         User user = userRepository.findUserByEmail(username);
         boolean state = false;
