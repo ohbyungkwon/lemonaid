@@ -3,7 +3,6 @@ window.onload = function(){
     var radio_choice_priority = null;
 
     var checkedRadioId=[];
-    var checkedRadioPriority=[];
 
     var questionType = $(".hidden-text2").text();
 
@@ -12,7 +11,6 @@ window.onload = function(){
 
 
     var gender = null;
-    console.log(gender);
 
     $("#womanBtn").click(function () {
         gender = "WOMAN";
@@ -30,27 +28,29 @@ window.onload = function(){
     $("#nextBtn").click(function () {
         var data = {
             "id" : $("#userID").val(),
-            "personal_id" :  $("input[name='birth']").val(),
+            "personalId" :  $("input[name='birth']").val(),
             "gender" : gender
         };
-
-        console.log(data);
+        var link = document.location.href;
+        var disease;
+        if(link.indexOf("%ED%83%88%EB%AA%A8") !== -1){
+            disease = "탈모";
+        }else disease="발기부전";
 
         $.ajax({
-            url: '/TempUserSet',
+            url: '/TempUserSet?disease_name='+disease,
             method: 'POST',
             dataType: "json",
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(data),
             success: function(data){
-                var link = document.location.href;
                 alert(data.comment);
                 console.log(link);
-                if(data.comment == "설문을 시작합니다" && link.indexOf("%ED%83%88%EB%AA%A8") != -1){
+                if(data.comment === "설문을 시작합니다" && disease === "탈모"){
                     window.location.href="/question?disease_name=탈모&priority=1&isLogin=1";
-                }else if(data.comment == "설문을 시작합니다" && link.indexOf("%EB%B0%9C%EA%B8%B0%EB%B6%80%EC%A0%84") != -1){
+                }else if(data.comment === "설문을 시작합니다" && disease === "발기부전"){
                     window.location.href="/question?disease_name=발기부전&priority=1&isLogin=1";
-                }else if(data.comment == "남성만 참여가능합니다"){
+                }else if(data.comment === "남성만 참여가능합니다"){
                     window.location.href="/WrongUser";
                 }
             },
@@ -61,7 +61,7 @@ window.onload = function(){
     })
 
     $("button[name='pre']").click(function(){
-        if($(".hidden-text1").text() != 1) {//첫 페이지에서는 이동 x
+        if($(".hidden-text1").text() !== 1) {//첫 페이지에서는 이동 x
             var num = Number($(".hidden-text1").text()) - 1;
             window.location.href = "/question?disease_name=" + $(".card-title").text() + "&priority=" + num + "&isLogin=1";
         }else{
@@ -74,7 +74,7 @@ window.onload = function(){
         var values = document.getElementsByClassName("radio_j");
         var urlTemp;
         var data;
-        if(questionType == 'single'){
+        if(questionType === 'single'){
             data = {
                 "choice_single_id" : radio_choice_id,
                 "choice" : radio_choice_priority,
@@ -86,7 +86,7 @@ window.onload = function(){
                 alert("해당 문진을 완료해주세요.");
                 return false;
             }
-        } else if(questionType == 'multi') {
+        } else if(questionType === 'multi') {
             checkedRadioId.length = [];
             for (var i = 0; i < values.length; i++) {
                 if (values[i].checked) {
@@ -94,24 +94,19 @@ window.onload = function(){
                 }
             }//어떤 radio가 선택되었는지
 
-            // for (var i = 0; i < checkedRadioId.length; i++) {
-            //     console.log($(".hidden-text1").text() + "번 문항");
-            //     console.log(checkedRadioId[i] + "선택");
-            // }
-
             //보기 중 선택한 만큼의 id와 priority를 갖고 있어야한다.
             data = {
                 "choice_multi_id" : radio_choice_id,
                 "choice" : checkedRadioId,
                 "extra_info" : $("#extra_info").val()
             };
-            console.log(data.choice);
-            if(data.choice.length == 0){
+
+            if(data.choice.length === 0){
                 alert("해당 문진을 완료해주세요.");
                 return false;
             }
             urlTemp = "/response/multi/" + $(".hidden-text1").text();
-        }else if(questionType == 'write') {
+        }else if(questionType === 'write') {
             var Systolic = $("#Systolic").val();
             var Diastolic = $("#Diastolic").val();
             console.log(Systolic);
@@ -142,15 +137,15 @@ window.onload = function(){
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(data),
             success: function(data){
-                if($(".card-title").text() == "발기부전"){
-                    if($(".hidden-text1").text() != 30) {//마지막 페이지에서는 이동 x
+                if($(".card-title").text() === "발기부전"){
+                    if($(".hidden-text1").text() !== "30") {//마지막 페이지에서는 이동 x
                         var num = Number($(".hidden-text1").text()) + 1;
                         window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
                     }else{
                         window.location.href="/temp";
                     }
                 }else {
-                    if($(".hidden-text1").text() != 2) {//마지막 페이지에서는 이동 x
+                    if($(".hidden-text1").text() !== "2") {//마지막 페이지에서는 이동 x
                         var num = Number($(".hidden-text1").text()) + 1;
                         window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
                     }else{
@@ -171,7 +166,7 @@ window.onload = function(){
     $("input[type=radio]").each(function(){
         var chk = $(this).is(":checked");
         var name = $(this).attr('name');
-        if(chk == true) {
+        if(chk === true) {
             $("input[name='" + name + "']").data("previous", $(this).val());
         }
     });//init
@@ -183,23 +178,19 @@ window.onload = function(){
 
         radio_choice_id = $(this).val();
         radio_choice_priority = $(this).attr('id');//For ajax
-        // console.log(radio_choice_priority);
 
-        // console.log(name);
-        // console.log(radio_choice_id);
-        // console.log($("label[name='"+ name +"']").text());
-        if(chk == true && pre == $(this).val()){
+        if(chk === true && pre === $(this).val()){
             $(this).prop('checked',false);
             checkedRadioId.pop();
             radio_choice_priority = null;
             $("input[name='"+name+"']").data("previous",'');
             $("input[name="+ radio_choice_id +"]").css("display","none");
-        }else if(chk == true && pre != $(this).val()){
+        }else if(chk === true && pre !== $(this).val()){
             $("input[name='"+name+"']").data("previous",$(this).val());
             $("input[name="+ radio_choice_id +"]").css("display","block");
         }
 
-        if($("label[name='"+ name +"']").text() == "해당사항 없음"){
+        if($("label[name='"+ name +"']").text() === "해당사항 없음"){
             for(var i = 1; i < radio_choice_priority; i++){
                 var temp = "choice_"+i;
                 $("input[name='"+temp+"']").prop('checked',false);

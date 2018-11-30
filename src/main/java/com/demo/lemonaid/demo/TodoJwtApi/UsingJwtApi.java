@@ -28,7 +28,7 @@ public class UsingJwtApi {
 
         pharmacy.setDeviceId(deviceId);
 
-        if(userService.savePharmacy(deviceId, pharmacy)){
+        if(userService.savePharmacy(deviceId, pharmacy) != null){
             ApiSavePharmacy api =  ApiSavePharmacy.builder()
                     .name(pharmacy.getName())
                     .lat(pharmacy.getLat())

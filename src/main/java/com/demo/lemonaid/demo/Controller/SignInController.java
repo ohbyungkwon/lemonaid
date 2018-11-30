@@ -2,7 +2,6 @@ package com.demo.lemonaid.demo.Controller;
 
 import com.demo.lemonaid.demo.Dto.SiginInDto;
 import com.demo.lemonaid.demo.Service.SignInService;
-import com.demo.lemonaid.demo.session.SignInSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -19,20 +19,17 @@ import java.util.Random;
 @Controller
 public class SignInController {
     private SignInService signInService;
-    private SignInSession signInSession;
 
-    SignInController(SignInService signInService,
-                     SignInSession signInSession){
+    SignInController(SignInService signInService){
         this.signInService = signInService;
-        this.signInSession = signInSession;
     }
 
     @GetMapping("/SignInBasic")
     public String signin1(HttpServletResponse response, HttpServletRequest request){
         response.setHeader("Location", "signIn");
         Cookie cookie = new Cookie("state","signIn");
-        cookie.setMaxAge(60*60*24);
         response.addCookie(cookie);
+
         return "SignInBasic";
     }
 
@@ -71,11 +68,12 @@ public class SignInController {
 
     @PostMapping("/redirectNext")
     @ResponseBody
-    public Map<String, Object> redirectNext(@RequestBody SiginInDto TempUser){
+    public Map<String, Object> redirectNext(@RequestBody SiginInDto TempUser, HttpSession session){
         Map<String,Object> map = new HashMap<>();
-        String comment = signInSession.redirectNext(TempUser);
-        map.put("comment",comment);
 
+        String comment = signInService.redirectNext(TempUser, session);
+
+        map.put("comment",comment);
         return map;
     }
 
@@ -83,13 +81,9 @@ public class SignInController {
     @ResponseBody
     public Map<String, Object> done(@RequestBody SiginInDto TempUser, HttpServletRequest request){
         Map<String, Object> map = new HashMap<>();
-        String comment = signInService.done(TempUser);//validate
-
-        if(comment.equals("가입 완료"))
-            comment = signInSession.done(TempUser, request);//save
+        String comment = signInService.doneAndValidate(TempUser,request);//validate
 
         map.put("comment", comment);
-
         return map;
     }
 

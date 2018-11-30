@@ -28,15 +28,14 @@ public class UserController {
     @PostMapping("/api/receiveId")
     @ResponseBody
     public Map<String, Object> firstVisit(HttpSession session){
-        String DeviceId = userService.randomDeviceId();
+        String deviceId = userService.randomDeviceId();
 
-        if(userService.findDuplicate(DeviceId)){
+        if(userService.findDuplicate(deviceId) != null){
             throw new DuplicateUserIdException("유저 아이디가 겹칩니다.");
         }
 
-        session.setAttribute("DeviceId",DeviceId);
-        Map<String, Object> map = userService.deviceIdMap(DeviceId);
-        return map;
+        session.setAttribute("deviceId",deviceId);
+        return userService.deviceIdMap(deviceId);
     }//첫 방문
 
     @GetMapping("/login")
@@ -59,7 +58,7 @@ public class UserController {
         pharmacy.setDeviceId(deviceId);
         //현재 로그인한 유저와 디바이스 아이디를 비교 후 같다면 디비 저장
 
-        if(userService.savePharmacy(deviceId, pharmacy)){
+        if(userService.savePharmacy(deviceId, pharmacy) != null){
             ApiSavePharmacy api =  ApiSavePharmacy.builder()
                     .name(pharmacy.getName())
                     .lat(pharmacy.getLat())

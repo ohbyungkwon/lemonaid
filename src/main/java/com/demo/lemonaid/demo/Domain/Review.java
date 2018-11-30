@@ -1,6 +1,5 @@
 package com.demo.lemonaid.demo.Domain;
 
-import com.sun.javafx.beans.IDProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,6 +15,6 @@ public class Review {
     @Column
     private String comment;
 
-    @Column
-    private String reg_time;
+    @Column(name = "reg_time")
+    private String regTime;
 }

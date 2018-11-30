@@ -1,6 +1,5 @@
 window.onload = function () {
     var email, pwd, DuplicatePwd;
-
     var method;
     var url;
     var data;
@@ -10,12 +9,6 @@ window.onload = function () {
     var isAuth = false;
     var flag = false;
 
-    // var link = document.location.href;
-    // if(link.indexOf("login")){
-    //     window.webInterface.responseData("login");
-    // }else if(link.indexOf("SignInBasic") || link.indexOf("SignInSpec")){
-    //     window.webInterface.responseData("signIn");
-    // }
 
     $("button[name='button']").click(function () {
         console.log("click btn");
@@ -36,7 +29,7 @@ window.onload = function () {
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
             success: function (data) {
-                if(data.comment == "사용 가능한 아이디입니다."){
+                if(data.comment === "사용 가능한 아이디입니다."){
                     flag = true;
                 }else flag = false;
 
@@ -53,8 +46,10 @@ window.onload = function () {
 
     $("input[name='password']").keyup(function () {
         pwd = $("input[name='password']").val();
+
         method = "POST";
         url = "/checkPwd";
+
         data = {"password": pwd};
 
         $.ajax({
@@ -119,7 +114,7 @@ window.onload = function () {
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
             success: function (data) {
-                if (data.comment == "다음으로 이동합니다." && flag == true) {
+                if (data.comment === "다음으로 이동합니다." && flag === true) {
                     alert(data.comment);
                     window.location.href = "/SignInSpec";
                 } else {
@@ -152,7 +147,7 @@ window.onload = function () {
     })
 
     $("#auth").click(function () {
-        if ($("input[name='tel']").val() != "" && TelCompany != "") {
+        if ($("input[name='tel']").val() !== "" && TelCompany !== "") {
             $.ajax({
                 url: "/authRandom",
                 method: "GET",
@@ -165,9 +160,9 @@ window.onload = function () {
                     xhr.setRequestHeader(header, token);
                 },
             })
-        } else if ($("input[name='tel']").val() == "") {
+        } else if ($("input[name='tel']").val() === "") {
             alert("연락처를 입력해주세요.");
-        } else if (TelCompany == "") {
+        } else if (TelCompany === "") {
             alert("통신사를 선택해주세요.");
         }
     })
@@ -190,7 +185,7 @@ window.onload = function () {
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
             success: function (data) {
-                if (data.comment == "가입 완료") {
+                if (data.comment === "가입 완료") {
                     alert(data.comment);
                     window.location.href = "/login";
                 } else {

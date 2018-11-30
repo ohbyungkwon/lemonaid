@@ -37,9 +37,9 @@ public class IntroController {
 
     @GetMapping("/api/intro")
     @ResponseBody
-    public ResponseEntity<?> disease_choice(@RequestParam String disease_name){
+    public ResponseEntity<?> diseaseChoice(@RequestParam String disease_name){
         Intro intro = introService.findByDiseaseName(disease_name);
-        String []tokens = intro.getExceptService().split(";");
+        String[] tokens = intro.getExceptService().split(";");
 
         IntroDto introDto = IntroDto.builder()
                 .name(disease_name)

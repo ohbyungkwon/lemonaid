@@ -14292,7 +14292,7 @@ img.ui.bordered.image {
 }
 
 /*--------------------
-        Error
+        Dto
 ---------------------*/
 
 .ui.input.error > input {
@@ -14303,7 +14303,7 @@ img.ui.bordered.image {
   box-shadow: none;
 }
 
-/* Error Placeholder */
+/* Dto Placeholder */
 
 .ui.input.error > input::-webkit-input-placeholder {
   color: #e7bdbc;
@@ -14317,7 +14317,7 @@ img.ui.bordered.image {
   color: #e7bdbc !important;
 }
 
-/* Focused Error Placeholder */
+/* Focused Dto Placeholder */
 
 .ui.input.error > input:focus::-webkit-input-placeholder {
   color: #da9796;
@@ -20446,7 +20446,7 @@ ol.ui.horizontal.list li:before,
   border-color: #D5C315 !important;
 }
 
-/* Error */
+/* Dto */
 
 .ui.form .error.error input:-webkit-autofill {
   -webkit-box-shadow: 0px 0px 0px 100px #FFFAF0 inset !important;
@@ -20484,7 +20484,7 @@ ol.ui.horizontal.list li:before,
   color: rgba(115, 115, 115, 0.87);
 }
 
-/* Error Placeholder */
+/* Dto Placeholder */
 
 .ui.form .error ::-webkit-input-placeholder {
   color: #e7bdbc;
@@ -20585,7 +20585,7 @@ ol.ui.horizontal.list li:before,
 }
 
 /*--------------------
-        Error
+        Dto
 ---------------------*/
 
 /* On Form */
@@ -20684,7 +20684,7 @@ ol.ui.horizontal.list li:before,
 }
 
 /*------------------
-    Dropdown Error
+    Dropdown Dto
 --------------------*/
 
 .ui.form .fields.error .field .ui.dropdown,
@@ -20739,7 +20739,7 @@ ol.ui.horizontal.list li:before,
 }
 
 /*--------------------
-    Checkbox Error
+    Checkbox Dto
 ---------------------*/
 
 .ui.form .fields.error .field .checkbox:not(.toggle):not(.slider) label,
@@ -26278,7 +26278,7 @@ Floated Menu / Item
   color: #794B02;
 }
 
-/* Error */
+/* Dto */
 
 .ui.error.message {
   background-color: #FFF6F6;
@@ -26857,7 +26857,7 @@ Floated Menu / Item
 }
 
 /*--------------
-      Error
+      Dto
 ---------------*/
 
 .ui.table tr.error,
@@ -33114,7 +33114,7 @@ select.ui.dropdown {
 }
 
 /*--------------------
-        Error
+        Dto
 ----------------------*/
 
 .ui.dropdown.error,
@@ -35842,7 +35842,7 @@ a.ui.nag {
 }
 
 /*--------------
-     Error
+     Dto
 ---------------*/
 
 .ui.progress.error .bar {

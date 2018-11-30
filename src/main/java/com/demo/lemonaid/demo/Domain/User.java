@@ -23,7 +23,7 @@ public class User {
     private String name;
 
     @Column(name = "personal_id")
-    private String personal_id;
+    private String personalId;
 
     @Column(name = "gender", nullable = false)
     private String gender;
@@ -40,16 +40,4 @@ public class User {
     @Column(name="reg_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date regDate = new Date();
-
-//    @OneToMany(cascade= CascadeType.ALL, targetEntity = ResultMulti.class)
-//    @JoinColumn(name = "user_id")
-//    private Collection<ChoiceSingle> user_single;
-//
-//    @OneToMany(cascade= CascadeType.ALL, targetEntity = ResultSingle.class)
-//    @JoinColumn(name = "user_id")
-//    private Collection<ChoiceMulti> user_multi;
-//
-//    @OneToMany(cascade= CascadeType.ALL, targetEntity = Write.class)
-//    @JoinColumn(name = "user_id")
-//    private Collection<Write> user_write;
 }

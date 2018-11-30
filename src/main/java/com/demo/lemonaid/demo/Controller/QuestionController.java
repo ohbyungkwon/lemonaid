@@ -4,13 +4,13 @@ import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultSingleAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultWriteAdapter;
 import com.demo.lemonaid.demo.Domain.*;
+import com.demo.lemonaid.demo.Dto.ApiDtoMulti;
+import com.demo.lemonaid.demo.Dto.ApiDtoSingle;
+import com.demo.lemonaid.demo.Dto.ApiDtoWrite;
 import com.demo.lemonaid.demo.Service.QuestionService;
-import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,12 +43,9 @@ public class QuestionController {
 
     @PostMapping("/TempUserSet")
     @ResponseBody
-    public Map<String, Object> GiveUserID(@RequestBody User user){
-        userIdSession.setTempUser(user);
-
+    public Map<String, Object> GiveUserID(@RequestBody User user, @RequestParam(value = "disease_name") String disease){
         Map<String, Object> map = new HashMap<>();
         map.put("comment", questionService.TempUserValid(user));
-
         return map;
     }//비로그인에만 출력, 적격판정의 결과 알람
 
@@ -58,19 +55,15 @@ public class QuestionController {
                            @RequestParam(value = "priority") int priority,
                            @RequestParam(value = "isLogin", defaultValue = "0", required = false) int login,
                            HttpServletResponse response){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        response.setHeader("Location","survey");//For IOS
 
-        response.setHeader("Location","survey");
         Cookie cookie = new Cookie("state","survey");
-        cookie.setMaxAge(60*60*24);
-        response.addCookie(cookie);
+        response.addCookie(cookie);//For Android
 
-        if(authentication.getPrincipal().equals("anonymousUser") && login == 0){
+        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS") && login == 0){
             return "NonLoginUser";
-        }
-        else if(!authentication.getPrincipal().equals("anonymousUser") && priority >= 1){
-            UserDetail userDetail = (UserDetail)authentication.getPrincipal();
-            boolean state = questionService.eligibility(userDetail.getUsername());
+        } else if(!userIdSession.getAuthor().equals("ROLE_ANONYMOUS") && priority >= 1){
+            boolean state = questionService.eligibility(userIdSession.getName(), disease);
             if(!state) return "WrongUser";
         }
 
@@ -78,20 +71,20 @@ public class QuestionController {
         Question qTemp = questionService.searchQuestion(dTemp, priority);//해당 질병의 문항 번호를 읽어옴
 
         model.addAttribute("total_question", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
-        model.addAttribute("disease_name", dTemp.getDisease_name());
+        model.addAttribute("disease_name", dTemp.getDiseaseName());
         model.addAttribute("question", qTemp);
 
         if (qTemp.getType().equals("single")) {
             model.addAttribute("choices", qTemp.getChoiceSingle());//1대 n관계
-            model.addAttribute("isState", 0);//flag
+            model.addAttribute("isState", 0);//단일선택 객관식
         } else if (qTemp.getType().equals("multi")) {
             model.addAttribute("choices", qTemp.getChoiceMulti());
-            model.addAttribute("isState", 1);
+            model.addAttribute("isState", 1);//다중선택 객관식
         } else if (qTemp.getType().equals("write")) {
             model.addAttribute("choices", qTemp.getWrite());
-            model.addAttribute("isState", 2);
+            model.addAttribute("isState", 2);//주관식
         } else {
-            model.addAttribute("isState", 3);
+            model.addAttribute("isState", 3);//사진 문진
         }
 
         return "Question";
@@ -100,8 +93,7 @@ public class QuestionController {
     @GetMapping("/temp")
     public ModelAndView temp() {
         String url = "";
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(!authentication.isAuthenticated()){
+        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")){
             url = "login";
         }else{ url = "order"; }
 
@@ -110,19 +102,19 @@ public class QuestionController {
 
     @PostMapping("/response/single/{id}")
     @ResponseBody
-    public ResponseEntity<?> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpServletRequest request){
+    public ResponseEntity<ApiDtoSingle> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpServletRequest request){
         return questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, request.getCookies());
     }//single question's result save
 
     @PostMapping("/response/multi/{id}")
     @ResponseBody
-    public ResponseEntity<?> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter, HttpServletRequest request){
+    public ResponseEntity<ApiDtoMulti> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter, HttpServletRequest request){
         return questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter, request.getCookies());
     }//multi
 
     @PostMapping("/response/write")
     @ResponseBody
-    public ResponseEntity<?> saveWriteDB(@RequestBody ResultWriteAdapter resultWriteAdapter, HttpServletRequest request){
+    public ResponseEntity<ApiDtoWrite> saveWriteDB(@RequestBody ResultWriteAdapter resultWriteAdapter, HttpServletRequest request){
         return questionService.setInfoWrite(new ResultWrite(), resultWriteAdapter, request.getCookies());
     }//write
 }

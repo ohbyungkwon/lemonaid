@@ -13,22 +13,23 @@ import com.demo.lemonaid.demo.Dto.ApiDtoSingle;
 import com.demo.lemonaid.demo.Dto.ApiDtoWrite;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
+import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class QuestionService {
     private DiseaseRepository diseaseRepository;
     private QuestionRepository questionRepository;
+    private IntroRepository introRepository;
 
     private ChoiceSingleRepository choiceSingleRepository;
     private ChoiceMultiRepository choiceMultiRepository;
@@ -36,45 +37,48 @@ public class QuestionService {
     private ResultSingleRepository resultSingleRepository;
     private ResultMultiRepository resultMultiRepository;
     private ResultWriteRepository resultWriteRepository;
+
     private UserRepository userRepository;
+    private UserIdSession userIdSession;
 
     @Autowired
     public QuestionService(
             DiseaseRepository diseaseRepository,
             QuestionRepository questionRepository,
+            IntroRepository introRepository,
             ChoiceSingleRepository choiceSingleRepository,
             ChoiceMultiRepository choiceMultiRepository,
             ResultSingleRepository resultSingleRepository,
             ResultMultiRepository resultMultiRepository,
             ResultWriteRepository resultWriteRepository,
-            UserRepository userRepository){
+            UserRepository userRepository,
+            UserIdSession userIdSession){
         this.diseaseRepository = diseaseRepository;
         this.questionRepository = questionRepository;
+        this.introRepository = introRepository;
         this.choiceSingleRepository = choiceSingleRepository;
         this.choiceMultiRepository = choiceMultiRepository;
         this.resultSingleRepository = resultSingleRepository;
         this.resultMultiRepository = resultMultiRepository;
         this.resultWriteRepository = resultWriteRepository;
         this.userRepository=userRepository;
+        this.userIdSession=userIdSession;
     }
 
 
     @Transactional(readOnly = true)
     public Question searchQuestion(DiseaseService dTemp, int priority){
-        Question qTemp  = questionRepository.selectQuestion(dTemp.getId(), priority);//질병에 달린 질문
-        return  qTemp;
+        return questionRepository.selectQuestion(dTemp.getId(), priority);//질병에 달린 질문
     }
 
     @Transactional(readOnly = true)
     public DiseaseService searchDisease(String disease){
-        DiseaseService dTemp = diseaseRepository.selectFindById(disease);//질병 선택
-        return  dTemp;
+        return diseaseRepository.selectFindByName(disease);//질병 선택
     }
 
     @Transactional(readOnly = true)
     public int totalQuestion(DiseaseService dTemp){
-        int total = questionRepository.getCount(dTemp.getId());
-        return total;
+        return questionRepository.getCount(dTemp.getId());
     }
 
     @Transactional(readOnly = true)
@@ -85,10 +89,10 @@ public class QuestionService {
     }
 
 
-    public String findDeviceId(Cookie[] cookies){
+    private String findDeviceId(Cookie[] cookies){
         String deviceId = null;
         for(int i = 0; i <cookies.length; i++){
-            if(cookies[i].getName().equals("DeviceId")){
+            if(cookies[i].getName().equals("deviceId")){
                 deviceId = cookies[i].getValue();
             }
         }
@@ -98,16 +102,15 @@ public class QuestionService {
     //setting
 
     @Transactional
-    public ResponseEntity<?> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
+    public ResponseEntity<ApiDtoSingle> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication.getPrincipal().equals("anonymousUser")) {
+        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")) {
             String deviceId = findDeviceId(cookies);
             resultKeySingle.setUser_id(deviceId);
         }
         else {//프린스펄에서 찾아서 유저의 아이디를 넣은다.
-            resultKeySingle.setUser_id(getPrincipalCustom(authentication));
+            resultKeySingle.setUser_id(getPrincipalCustom(userIdSession.getAuthentication()));
         }
         resultKeySingle.setQuestion_id(getSingleQuestionId(resultSingleAdapter));
 
@@ -116,10 +119,8 @@ public class QuestionService {
         resultSingle.setExtra_info(resultSingleAdapter.getExtra_info());
         resultSingle.setChoice(resultSingleAdapter.getChoice());
 
-        ApiDtoSingle api;
-
         if(resultSingleRepository.save(resultSingle) != null){
-            api = ApiDtoSingle.builder()
+            ApiDtoSingle api = ApiDtoSingle.builder()
                     .question_id(resultSingle.getId().getQuestion_id())
                     .choice_id(resultSingle.getChoice_single_id())
                     .choices(resultSingle.getChoice())
@@ -127,14 +128,13 @@ public class QuestionService {
                     .build();
             return new ResponseEntity<ApiDtoSingle>(api, HttpStatus.OK);
         }else{
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<ApiDtoSingle>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @Transactional
-    public ResponseEntity<?> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie[] cookies){
+    public ResponseEntity<ApiDtoMulti> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie[] cookies){
         ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String []resultTemp = resultMultiAdapter.getChoice();
         String str="";
@@ -142,11 +142,11 @@ public class QuestionService {
         for(int i = 0; i < resultTemp.length; i++) {
             str += resultTemp[i] + ';';
         }
-        if(authentication.getPrincipal().equals("anonymousUser")) {
+        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")) {
             String deviceId = findDeviceId(cookies);
             resultKeyMulti.setUser_id(deviceId);//현재 세션에 저장된 id로 변경해야함.
         } else {
-            resultKeyMulti.setUser_id(getPrincipalCustom(authentication));//현재 세션에 저장된 id로 변경해야함.
+            resultKeyMulti.setUser_id(getPrincipalCustom(userIdSession.getAuthentication()));//현재 세션에 저장된 id로 변경해야함.
         }
 
         resultMulti.setChoice(str);
@@ -157,10 +157,8 @@ public class QuestionService {
 
         Map<String, Object> map = new HashMap<>();
 
-        ApiDtoMulti api;
-
         if(resultMultiRepository.save(resultMulti) != null){
-            api = ApiDtoMulti.builder()
+            ApiDtoMulti api = ApiDtoMulti.builder()
                     .question_id(resultMulti.getId().getQuestion_id())
                     .choice_id(resultMulti.getChoice_multi_id())
                     .choices(resultMulti.getChoice())
@@ -168,20 +166,19 @@ public class QuestionService {
                     .build();
             return new ResponseEntity<ApiDtoMulti>(api, HttpStatus.OK);
         }else{
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<ApiDtoMulti>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @Transactional
-    public ResponseEntity<?> setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
+    public ResponseEntity<ApiDtoWrite> setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
         ResultKeyWrite resultKeyWrite = new ResultKeyWrite();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication.getPrincipal().equals("anonymousUser")) {
+        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")) {
             String deviceId = findDeviceId(cookies);
             resultKeyWrite.setUser_id(deviceId);//현재 세션에 저장된 id로 변경해야함.
         }else {
-            resultKeyWrite.setUser_id(getPrincipalCustom(authentication));//현재 세션에 저장된 id로 변경해야함.
+            resultKeyWrite.setUser_id(getPrincipalCustom(userIdSession.getAuthentication()));//현재 세션에 저장된 id로 변경해야함.
         }
 
         resultKeyWrite.setQuestion_id(7);
@@ -192,15 +189,16 @@ public class QuestionService {
 
         Map<String, Object> map = new HashMap<>();
 
-        ApiDtoWrite api;
         if(resultWriteRepository.save(resultWrite) != null){
-            api = ApiDtoWrite.builder()
+            ApiDtoWrite api = ApiDtoWrite.builder()
                     .question_id(resultWrite.getId().getQuestion_id())
                     .write_id(resultWrite.getWrite_id())
                     .text(resultWrite.getText())
                     .build();
             return new ResponseEntity<ApiDtoWrite>(api, HttpStatus.OK);
-        }else{ return ResponseEntity.badRequest().build(); }
+        }else{
+            return new ResponseEntity<ApiDtoWrite>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     //find a question' id
@@ -215,21 +213,40 @@ public class QuestionService {
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
     public String TempUserValid(User user){
-        if(user.getPersonal_id() == "") return "생년월일을 입력해주세요";
+        if(user.getPersonalId().equals("")) return "생년월일을 입력해주세요";
+
         else if(user.getGender() == null) return "성별을 골라주세요";
-        else if(user.getGender().equals(Gender.WOMAN.toString())) return "남성만 참여가능합니다";
-        else{
+        else if(user.getGender().equals(Gender.WOMAN.toString())) {
+            return "참여 대상자가 아닙니다";
+        }else{
+
             return "설문을 시작합니다";
         }
-    }
+    }//TODO 비로그인시 적격판정
 
     @Transactional(readOnly = true)
-    public boolean eligibility(String username){
+    public boolean eligibility(String username, String disease){
         User user = userRepository.findUserByEmail(username);
+        DiseaseService diseaseService = diseaseRepository.selectFindByName(disease);
+
+        int birthYear = Integer.parseInt(user.getPersonalId().substring(0,2));
+        int birthMonthDate = Integer.parseInt(user.getPersonalId().substring(2,6));
+
+        SimpleDateFormat date = new SimpleDateFormat("YYMMdd");
+        int currentYear = Integer.parseInt(date.format(new Date()).substring(0,2));
+        int currentMonthDate = Integer.parseInt(date.format(new Date()).substring(2,6));
+
+        int age = (100 - birthYear + currentYear) + 1;
+        if(currentMonthDate > birthMonthDate){
+            age -= 1;
+        }else age -= 2;
+
         boolean state = false;
-        if(user.getGender().equals(Gender.MAN.toString()) || user.getGender() == null){
+        if((!user.getGender().equals(diseaseService.getExceptGender()) || user.getGender() == null)
+                && (diseaseService.getMaxAge() > age && diseaseService.getMinAge() < age)){
             state = true;
         }
+
         return state;
-    }
+    }//로그인시 적격판정
 }
