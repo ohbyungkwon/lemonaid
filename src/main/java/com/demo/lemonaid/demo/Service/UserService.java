@@ -81,7 +81,7 @@ public class UserService implements UserDetailsService {
             User user = new User();
             user.setId(DeviceId);
             user.setPersonalId("temp");
-            user.setGender(Gender.UNKOWN.toString());
+            user.setGender(Gender.UNKNOWN.toString());
             if(userRepository.save(user) != null) {
                 map.put("isSuccess", 1);//success
                 map.put("deviceId", DeviceId);

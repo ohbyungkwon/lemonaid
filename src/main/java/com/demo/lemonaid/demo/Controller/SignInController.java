@@ -38,59 +38,51 @@ public class SignInController {
     @GetMapping("/SignInSpec")
     public String signin2(){ return "SignInSpec"; }
 
-//    @PostMapping("/checkEmail")
-//    @ResponseBody
-//    public ResponseEntity<?> checkEmail(@RequestBody SiginInDto user){
-//        Map<String,Object> map = new HashMap<>();
-//        if(signInService.isDuplicate(user.getEmail()) != null){
-//            return new ResponseEntity<>()
-//        }
-//        if(signInService.checkEmailReg(user.getEmail())){
-//            return new ResponseEntity<String>("success", HttpStatus.OK);
-//        }
-//        return map;
-//    }
-
-    @PostMapping("/checkPwd")
+    @PostMapping("/api/checkEmail")
     @ResponseBody
-    public Map<String, Object> checkPwd(@RequestBody SiginInDto user){
-        Map<String,Object> map = new HashMap<>();
-
-        String comment = signInService.findPasswordReg(user.getPassword());
-        map.put("comment",comment);
-
-        return map;
+    public ResponseEntity<?> checkEmail(@RequestBody SiginInDto user){
+        if(signInService.isDuplicate(user.getEmail()) != null || !signInService.checkEmailReg(user.getEmail())){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/checkDuplicate")
+    @PostMapping("/api/checkPwd")
     @ResponseBody
-    public Map<String, Object> checkDuplicate(@RequestBody SiginInDto user){
-        Map<String,Object> map = new HashMap<>();
-        String comment = signInService.isSamePassword(user);
-        map.put("comment",comment);
-
-        return map;
+    public ResponseEntity<?> checkPwd(@RequestBody SiginInDto user){
+        if(!signInService.checkPasswordReg(user.getPassword()))
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/redirectNext")
+    @PostMapping("/api/checkDuplicate")
     @ResponseBody
-    public Map<String, Object> redirectNext(@RequestBody SiginInDto TempUser, HttpSession session){
-        Map<String,Object> map = new HashMap<>();
+    public ResponseEntity<?> checkDuplicate(@RequestBody SiginInDto user){
+        if(!signInService.isSamePassword(user))
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().build();
+    }
 
-        String comment = signInService.redirectNext(TempUser, session);
+    @PostMapping("/api/redirectNext")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> redirectNext(@RequestBody SiginInDto TempUser, HttpSession session){
+        int flag = signInService.redirectNext(TempUser, session);
+        Map<String, Object> map = new HashMap<>();
+        map.put("flag", flag);
 
-        map.put("comment",comment);
-        return map;
+        if(flag != 0) return new ResponseEntity<Map<String,Object>>(map, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
     }
 
     @PostMapping("/done")
     @ResponseBody
-    public Map<String, Object> done(@RequestBody SiginInDto TempUser, HttpServletRequest request){
+    public ResponseEntity<Map<String, Object>> done(@RequestBody SiginInDto TempUser, HttpServletRequest request){
+        int flag = signInService.doneAndValidate(TempUser,request);//validate
         Map<String, Object> map = new HashMap<>();
-        String comment = signInService.doneAndValidate(TempUser,request);//validate
+        map.put("flag", flag);
 
-        map.put("comment", comment);
-        return map;
+        if(flag != 0) return new ResponseEntity<Map<String,Object>>(map, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
     }
 
     @GetMapping("/authRandom")

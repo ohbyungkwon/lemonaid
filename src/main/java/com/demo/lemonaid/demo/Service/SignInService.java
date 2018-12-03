@@ -27,7 +27,7 @@ public class SignInService {
         this.session = session;
     }
 
-    public Boolean checkEmailReg(String userEmail) {
+    public boolean checkEmailReg(String userEmail) {
         String reg =  "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
 
         Pattern p = Pattern.compile(reg);
@@ -40,47 +40,45 @@ public class SignInService {
         return userRepository.findUserByEmail(userEmail);
     }
 
-    public String findPasswordReg(String userPassword){
-        if(userPassword.indexOf(" ") != -1) {
-            return "공백은 불가합니다.";
-        }else if(userPassword.indexOf(" ") == -1 && userPassword.length() < 6){
-            return "6자 이상 입력해주세요.";
+    public boolean checkPasswordReg(String userPassword){
+        if(userPassword.indexOf(" ") == -1 && userPassword.length() < 6){
+            return false;//"6자 이상 입력해주세요."
         }
-        else{ return ""; }
+        else{ return true; }
     }
 
-    public String isSamePassword(SiginInDto temp){
+    public boolean isSamePassword(SiginInDto temp){
         if(temp.getPassword().length() >= 6) {
             if (temp.getPassword().equals(temp.getCheckDuplicate())) {
-                return "비밀번호가 같습니다.";
+                return true;
             }
             else {
-                return "비밀번호가 다릅니다.";
+                return false;
             }
-        }else{ return ""; }
+        }else{ return false; }
     }
 
 
-    public String redirectNext(SiginInDto TempUser, HttpSession session){
+    public int redirectNext(SiginInDto TempUser, HttpSession session){
         if(TempUser.getPassword().indexOf(" ") != -1) {
-            return "공백은 불가합니다.";
+            return 1;//"공백은 불가합니다.";
         }else if(TempUser.getPassword().indexOf(" ") == -1 && TempUser.getPassword().length() < 6){
-            return "6자 이상 입력해주세요.";
+            return 2;//"6자 이상 입력해주세요.";
         }else if(!TempUser.isEmailCheck()){
-            return "이메일 중복 확인해주세요.";
+            return 3;//"이메일 중복 확인해주세요.";
         }else{
             if(TempUser.getCheckDuplicate().equals(TempUser.getPassword())){
                 session.setAttribute("email", TempUser.getEmail());
                 session.setAttribute("pwd", BCrypt.hashpw(TempUser.getPassword(),BCrypt.gensalt()));
-                return "다음으로 이동합니다.";
+                return 0;//"다음으로 이동합니다.";
             }
             else{
-                return "비밀번호를 다시한번 확인해주세요.";
+                return 4;//"비밀번호를 다시한번 확인해주세요.";
             }
         }
     }
 
-    public String doneAndValidate(SiginInDto tempUser, HttpServletRequest request){
+    public int doneAndValidate(SiginInDto tempUser, HttpServletRequest request){
         String telReg = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}";
         String nameReg = ".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*";
         String idReg = "\\d{6}[1-4]\\d{6}";
@@ -93,16 +91,16 @@ public class SignInService {
         Matcher mName = patternName.matcher(tempUser.getName());
         Matcher mId = patternId.matcher(tempUser.getPersonalId());
 
-        if(tempUser.getName().equals("")) return "이름을 입력하세요";
-        else if(tempUser.getPersonalId().equals("")) return "주민등록번호를 입력하세요";
-        else if(tempUser.getGender() == null) return "성별을 선택하세요";
-        else if(tempUser.getTel().equals("")) return "핸드폰번호를 입력하세요";
-        else if(tempUser.getAddr().equals("")) return "주소를 입력하세요";
-        else if(!tempUser.isCheckAgree()) return "동의 여부를 체크해주세요";
-        else if(!tempUser.isAuth()) return "인증을 진행해주세요";
-        else if(!mTel.matches()) return "휴대폰번호 형식이 잘못되었습니다";
-        else if(!mName.matches()) return "이름 형식이 잘못되었습니다.";
-        else if(!mId.matches()) return "주민등록번호 형식이 잘못되었습니다.";
+        if(tempUser.getName().equals("")) return 1;//"이름을 입력하세요";
+        else if(tempUser.getPersonalId().equals("")) return 2;//"주민등록번호를 입력하세요";
+        else if(tempUser.getGender() == null) return 3;//"성별을 선택하세요";
+        else if(tempUser.getTel().equals("")) return 4;//"핸드폰번호를 입력하세요";
+        else if(tempUser.getAddr().equals("")) return 5;//"주소를 입력하세요";
+        else if(!tempUser.isCheckAgree()) return 6;//"동의 여부를 체크해주세요";
+        else if(!tempUser.isAuth()) return 7;//"인증을 진행해주세요";
+        else if(!mTel.matches()) return 8;//"휴대폰번호 형식이 잘못되었습니다";
+        else if(!mName.matches()) return 9;//"이름 형식이 잘못되었습니다.";
+        else if(!mId.matches()) return 10;//"주민등록번호 형식이 잘못되었습니다.";
         else {
             User user = new User();
 
@@ -124,8 +122,8 @@ public class SignInService {
             user.setUserType("1");
 
             if(userRepository.save(user) != null){
-                return "가입 완료";
-            }else return "가입 실패";
+                return 0;//"가입 완료";
+            }else return 11;//"가입 실패";
         }
     }
 }

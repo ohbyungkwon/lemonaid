@@ -60,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .ignoringAntMatchers(
                         "/api/**",
-                        "jwt/**"
+                        "/jwt/**"
                 )
                     .and()
                 .httpBasic()

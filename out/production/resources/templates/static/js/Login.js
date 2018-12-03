@@ -11,7 +11,6 @@ window.onload = function () {
 
 
     $("button[name='button']").click(function () {
-        console.log("click btn");
         $("#loginForm").submit();
     });
 
@@ -19,23 +18,22 @@ window.onload = function () {
         email = $("input[name='username']").val();
 
         method = "POST";
-        url = "/checkEmail";
+        url = "/api/checkEmail";
         data = {"email": email};
 
         $.ajax({
             url: url,
             method: method,
-            dataType: 'json',
+            dataType: 'text',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function (data) {
-                if(data.comment === "사용 가능한 아이디입니다."){
-                    flag = true;
-                }else flag = false;
-
-                console.log(flag);
-
-                alert(data.comment);
+            success: function () {
+                flag=true;
+                alert("사용 가능한 아이디입니다.");
+            },
+            error: function(){
+                flag=false;
+                alert("사용 불가한 아이디입니다.");
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
@@ -48,32 +46,34 @@ window.onload = function () {
         pwd = $("input[name='password']").val();
 
         method = "POST";
-        url = "/checkPwd";
+        url = "/api/checkPwd";
 
         data = {"password": pwd};
 
         $.ajax({
             url: url,
             method: method,
-            dataType: 'json',
+            dataType: 'text',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function (data) {
-                $("#passwordComment").text(data.comment);
-
+            success: function () {
+                $("#passwordComment").text("양식과 일치합니다.");
+            },
+            error: function(){
+                $("#passwordComment").text("6자 이상 입력해주세요.");
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     $("input[name='password_check']").keyup(function () {
         pwd = $("input[name='password']").val();
         DuplicatePwd = $("input[name='password_check']").val();
 
         method = "POST";
-        url = "/checkDuplicate";
+        url = "/api/checkDuplicate";
         data = {
             "password": pwd,
             "checkDuplicate": DuplicatePwd
@@ -82,17 +82,20 @@ window.onload = function () {
         $.ajax({
             url: url,
             method: method,
-            dataType: 'json',
+            dataType: 'text',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function (data) {
-                $("#duplicateComment").text(data.comment);
+            success: function () {
+                $("#duplicateComment").text("비밀번호가 같습니다.");
+            },
+            error: function(){
+                $("#duplicateComment").text("비밀번호가 다릅니다.");
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     $("#continueBtn").click(function () {
         email = $("input[name='username']").val();
@@ -105,67 +108,68 @@ window.onload = function () {
             "emailCheck" : flag
         };
 
-        console.log(data);
 
         $.ajax({
-            url: "/redirectNext",
+            url: "/api/redirectNext",
             method: "POST",
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function (data) {
-                if (data.comment === "다음으로 이동합니다." && flag === true) {
-                    alert(data.comment);
+            success: function () {
+                if (flag === true) {
+                    alert("다음으로 이동합니다.");
                     window.location.href = "/SignInSpec";
-                } else {
-                    alert(data.comment);
                 }
+            },
+            error: function(data){
+                if(data.responseJSON.flag === 1) alert("공백은 불가합니다.");
+                else if(data.responseJSON.flag === 2) alert("6자 이상 입력해주세요.");
+                else if(data.responseJSON.flag === 3) alert("이메일 중복 확인해주세요.");
+                else if(data.responseJSON.flag === 4) alert("비밀번호를 다시한번 확인해주세요.");
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     var gender = null;
     $("#womanBtn").click(function () {
         gender = "WOMAN";
-        console.log("woman");
         $(this).css("background", "orange");
         $("#manBtn").css("background", "darkgray")
-    })
+    });
     $("#manBtn").click(function () {
         gender = "MAN";
-        console.log("man");
         $(this).css("background", "orange");
         $("#womanBtn").css("background", "darkgray")
-    })
+    });
 
 
     $("#telCompany").change(function () {
         TelCompany = $(":selected").text();
-    })
+    });
 
     $("#auth").click(function () {
-        if ($("input[name='tel']").val() !== "" && TelCompany !== "") {
+        var telNum = $("input[name='tel']").val().trim();
+        if (telNum !== "" && TelCompany !== "") {
             $.ajax({
                 url: "/authRandom",
                 method: "GET",
                 success: function (data) {
                     $("input[name='authNum']").val(Math.floor(data.num));
                     isAuth = true;
-                    console.log(isAuth);
                 },
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
             })
-        } else if ($("input[name='tel']").val() === "") {
+        } else if (telNum === "") {
             alert("연락처를 입력해주세요.");
         } else if (TelCompany === "") {
             alert("통신사를 선택해주세요.");
         }
-    })
+    });
 
     $("#SignedBtn").click(function () {
         data = {
@@ -177,31 +181,50 @@ window.onload = function () {
             "checkAgree": $("input[name='agree']").is(":checked"),
             "auth": isAuth
         };
-        console.log(data.auth);
+
         $.ajax({
             url: "/done",
             method: "POST",
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function (data) {
-                if (data.comment === "가입 완료") {
-                    alert(data.comment);
+            success: function () {
+                    alert("가입 완료");
                     window.location.href = "/login";
-                } else {
-                    alert(data.comment);
-                }
+            },
+            error: function(data){
+                if(data.responseJSON.flag === 1)
+                    alert("이름을 입력하세요.");
+                else if(data.responseJSON.flag === 2)
+                    alert("주민등록번호를 입력하세요.");
+                else if(data.responseJSON.flag === 3)
+                    alert("성별을 입력하세요.");
+                else if(data.responseJSON.flag === 4)
+                    alert("핸드폰번호를 입력하세요.");
+                else if(data.responseJSON.flag === 5)
+                    alert("주소를 입력하세요.");
+                else if(data.responseJSON.flag === 6)
+                    alert("동의 여부를 체크해주세요.");
+                else if(data.responseJSON.flag === 7)
+                    alert("인증을 진행해주세요.");
+                else if(data.responseJSON.flag === 8)
+                    alert("휴대폰번호 형식이 잘못되었습니다.");
+                else if(data.responseJSON.flag === 9)
+                    alert("이름 형식이 잘못되었습니다.");
+                else if(data.responseJSON.flag === 10)
+                    alert("주민등록번호 형식이 잘못되었습니다.");
+                else if(data.responseJSON.flag === 11)
+                    alert("가입 실패");
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     $("input[name='front']").keyup(function () {
         if ($(this).val().length > this.maxLength) {
             $(this).val($(this).val().slice(0, this.maxLength));
-            console.log("access");
         }
     })
-}
+};
