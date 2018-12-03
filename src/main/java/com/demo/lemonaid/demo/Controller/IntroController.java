@@ -28,11 +28,15 @@ public class IntroController {
 
     @GetMapping("/api/disease")
     @ResponseBody
-    public Map<String, Object> disease(){
+    public ResponseEntity<Map<String, Object>> disease(){
         Map<String, Object> map = new HashMap<>();
         List<DiseaseService> disease= introService.findAllDiseaseList();
+
+        if(disease.size() == 0)
+            return ResponseEntity.badRequest().build();
+
         map.put("disease",disease);
-        return map;
+        return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
     }
 
     @GetMapping("/api/intro")
