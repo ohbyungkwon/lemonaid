@@ -7,22 +7,15 @@ import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyMulti;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeySingle;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyWrite;
-import com.demo.lemonaid.demo.Domain.Enums.Gender;
-import com.demo.lemonaid.demo.Dto.ApiDtoMulti;
-import com.demo.lemonaid.demo.Dto.ApiDtoSingle;
-import com.demo.lemonaid.demo.Dto.ApiDtoWrite;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
-import javax.xml.transform.Result;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -30,7 +23,6 @@ import java.util.*;
 public class QuestionService {
     private DiseaseRepository diseaseRepository;
     private QuestionRepository questionRepository;
-    private IntroRepository introRepository;
 
     private ChoiceSingleRepository choiceSingleRepository;
     private ChoiceMultiRepository choiceMultiRepository;
@@ -46,7 +38,6 @@ public class QuestionService {
     public QuestionService(
             DiseaseRepository diseaseRepository,
             QuestionRepository questionRepository,
-            IntroRepository introRepository,
             ChoiceSingleRepository choiceSingleRepository,
             ChoiceMultiRepository choiceMultiRepository,
             ResultSingleRepository resultSingleRepository,
@@ -56,7 +47,6 @@ public class QuestionService {
             UserIdSession userIdSession){
         this.diseaseRepository = diseaseRepository;
         this.questionRepository = questionRepository;
-        this.introRepository = introRepository;
         this.choiceSingleRepository = choiceSingleRepository;
         this.choiceMultiRepository = choiceMultiRepository;
         this.resultSingleRepository = resultSingleRepository;
@@ -101,7 +91,6 @@ public class QuestionService {
     }
 
     //setting
-
     @Transactional
     public ResultSingle setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
@@ -180,22 +169,22 @@ public class QuestionService {
         return choiceMultiRepository.selectChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
-    public String TempUserValid(User user, String disease){
+    public int TempUserValid(User user, String disease){
         DiseaseService diseaseService = diseaseRepository.selectFindByName(disease);
 
-        int age = getAge(user);
+        int age = 0;
+        if(user.getPersonalId() != "") age = getAge(user);
 
-        if(user.getPersonalId().equals("")) return "생년월일을 입력해주세요";
-        else if(user.getGender() == null) return "성별을 골라주세요";
+        if(age == 0) return 1;//"생년월일을 입력해주세요";
+        else if(user.getGender() == null) return 2;//"성별을 골라주세요";
         else if(user.getGender().equals(diseaseService.getExceptGender())) {
-            return "참여 대상자가 아닙니다";
+            return 3;//"참여 대상자가 아닙니다";
         }else if(age > diseaseService.getMaxAge() || age < diseaseService.getMinAge()){
-            return "참여 대상자가 아닙니다.";
+            return 3;//"참여 대상자가 아닙니다.";
         }else{
-
-            return "설문을 시작합니다";
+            return 0;//"설문을 시작합니다";
         }
-    }//TODO 비로그인시 적격판정
+    }//비로그인시 적격판정
 
     @Transactional(readOnly = true)
     public boolean eligibility(String username, String disease){
@@ -213,7 +202,7 @@ public class QuestionService {
         return state;
     }//로그인시 적격판정
 
-    public int getAge(User user){
+    private int getAge(User user){
         int birthYear = Integer.parseInt(user.getPersonalId().substring(0,2));
         int birthMonthDate = Integer.parseInt(user.getPersonalId().substring(2,6));
 

@@ -41,12 +41,23 @@ window.onload = function(){
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(data),
             success: function(data){
-                alert(data.comment);
-                if(data.comment === "설문을 시작합니다" && disease === "탈모"){
+                alert("설문을 시작합니다.");
+                console.log(disease);
+                console.log(data);
+
+                if(data.flag === 0 && disease === "탈모"){
                     window.location.href="/question?disease_name=탈모&priority=1&isLogin=1";
-                }else if(data.comment === "설문을 시작합니다" && disease === "발기부전"){
+                }else if(data.flag === 0 && disease === "발기부전"){
                     window.location.href="/question?disease_name=발기부전&priority=1&isLogin=1";
-                }else if(data.comment === "남성만 참여가능합니다"){
+                }
+            },
+            error: function(data){
+                if(data.responseJSON.flag === 1)
+                    alert("생년월일을 입력해주세요.");
+                else if(data.responseJSON.flag === 2)
+                    alert("성별을 골라주세요.");
+                else if(data.responseJSON.flag === 3) {
+                    alert("참여 대상자가 아닙니다.");
                     window.location.href="/WrongUser";
                 }
             },

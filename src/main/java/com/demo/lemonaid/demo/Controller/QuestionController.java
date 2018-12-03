@@ -44,10 +44,13 @@ public class QuestionController {
 
     @PostMapping("/TempUserSet")
     @ResponseBody
-    public Map<String, Object> GiveUserID(@RequestBody User user, @RequestParam(value = "disease_name") String disease){
+    public ResponseEntity<Map<String, Object>> GiveUserID(@RequestBody User user, @RequestParam(value = "disease_name") String disease){
         Map<String, Object> map = new HashMap<>();
-        map.put("comment", questionService.TempUserValid(user, disease));
-        return map;
+        int flag = questionService.TempUserValid(user, disease);
+        map.put("flag", flag);
+
+        if(flag != 0){ return new ResponseEntity<Map<String, Object>>(map,HttpStatus.BAD_REQUEST); }
+        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
     }//비로그인에만 출력, 적격판정의 결과 알람
 
     @GetMapping("/question")
@@ -146,6 +149,6 @@ public class QuestionController {
                 .write_id(resultWrite.getWrite_id())
                 .text(resultWrite.getText())
                 .build();
-        return new ResponseEntity<ApiDtoWrite>(api,HttpStatus.OK);
+        return new ResponseEntity<ApiDtoWrite>(api, HttpStatus.OK);
     }//write
 }
