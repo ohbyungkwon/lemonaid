@@ -24,8 +24,4 @@ public class DiseaseService {
 
     @Column(name = "except_gender", nullable=false)
     private String exceptGender;
-
-//    @OneToMany(cascade= CascadeType.ALL, targetEntity = Question.class)
-//    @JoinColumn(name = "disease_service_id", referencedColumnName = "id")
-//    private Collection<Question> question;
 }

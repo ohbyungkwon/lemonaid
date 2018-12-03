@@ -2,6 +2,8 @@ package com.demo.lemonaid.demo.Controller;
 
 import com.demo.lemonaid.demo.Dto.SiginInDto;
 import com.demo.lemonaid.demo.Service.SignInService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,14 +38,18 @@ public class SignInController {
     @GetMapping("/SignInSpec")
     public String signin2(){ return "SignInSpec"; }
 
-    @PostMapping("/checkEmail")
-    @ResponseBody
-    public Map<String, Object> checkEmail(@RequestBody SiginInDto user){
-        Map<String,Object> map = new HashMap<>();
-        String comment = signInService.findDuplicate(user.getEmail());
-        map.put("comment",comment);
-        return map;
-    }
+//    @PostMapping("/checkEmail")
+//    @ResponseBody
+//    public ResponseEntity<?> checkEmail(@RequestBody SiginInDto user){
+//        Map<String,Object> map = new HashMap<>();
+//        if(signInService.isDuplicate(user.getEmail()) != null){
+//            return new ResponseEntity<>()
+//        }
+//        if(signInService.checkEmailReg(user.getEmail())){
+//            return new ResponseEntity<String>("success", HttpStatus.OK);
+//        }
+//        return map;
+//    }
 
     @PostMapping("/checkPwd")
     @ResponseBody

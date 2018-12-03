@@ -27,15 +27,14 @@ public class UserController {
 
     @PostMapping("/api/receiveId")
     @ResponseBody
-    public Map<String, Object> firstVisit(HttpSession session){
+    public ResponseEntity<Map<String, Object>> firstVisit(){
         String deviceId = userService.randomDeviceId();
 
         if(userService.findDuplicate(deviceId) != null){
             throw new DuplicateUserIdException("유저 아이디가 겹칩니다.");
         }
 
-        session.setAttribute("deviceId",deviceId);
-        return userService.deviceIdMap(deviceId);
+        return new ResponseEntity<Map<String, Object>>(userService.deviceIdMap(deviceId), HttpStatus.OK);
     }//첫 방문
 
     @GetMapping("/login")

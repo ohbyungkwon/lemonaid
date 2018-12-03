@@ -9,21 +9,18 @@ window.onload = function(){
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
 
-
     var gender = null;
 
     $("#womanBtn").click(function () {
         gender = "WOMAN";
-        console.log("woman");
         $(this).css("background","orange");
         $("#manBtn").css("background","darkgray")
-    })
+    });
     $("#manBtn").click(function () {
         gender = "MAN";
-        console.log("man");
         $(this).css("background","orange");
         $("#womanBtn").css("background","darkgray")
-    })
+    });
 
     $("#nextBtn").click(function () {
         var data = {
@@ -45,7 +42,6 @@ window.onload = function(){
             data: JSON.stringify(data),
             success: function(data){
                 alert(data.comment);
-                console.log(link);
                 if(data.comment === "설문을 시작합니다" && disease === "탈모"){
                     window.location.href="/question?disease_name=탈모&priority=1&isLogin=1";
                 }else if(data.comment === "설문을 시작합니다" && disease === "발기부전"){
@@ -58,7 +54,7 @@ window.onload = function(){
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     $("button[name='pre']").click(function(){
         if($(".hidden-text1").text() !== 1) {//첫 페이지에서는 이동 x
@@ -81,7 +77,6 @@ window.onload = function(){
                 "extra_info" : $("#extra_info").val()
             };
             urlTemp = "/response/single/" + $(".hidden-text1").text();
-            console.log(data.choice);
             if(radio_choice_priority == null){
                 alert("해당 문진을 완료해주세요.");
                 return false;
@@ -109,11 +104,6 @@ window.onload = function(){
         }else if(questionType === 'write') {
             var Systolic = $("#Systolic").val();
             var Diastolic = $("#Diastolic").val();
-            console.log(Systolic);
-            console.log(Systolic);
-            console.log(Diastolic);
-            console.log($("#ReSystolic").val());
-            console.log($("#ReDiastolic").val());
 
             if (Systolic === '' || Diastolic === '') {
                 alert("혈압을 입력해주세요.");
@@ -160,7 +150,7 @@ window.onload = function(){
                 xhr.setRequestHeader(header, token);
             },
         })//db 저장 후 페이지 이동
-    })//next btn
+    });//next btn
 
 
     $("input[type=radio]").each(function(){
@@ -200,9 +190,9 @@ window.onload = function(){
 
     $("#goCashView").click(function () {
         window.location.href="/cash";
-    })
+    });
 
     $("#goEndView").click(function () {
         window.location.href="/end";
-    })
-}
+    });
+};

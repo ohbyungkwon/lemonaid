@@ -11,7 +11,6 @@ window.onload = function () {
 
 
     $("button[name='button']").click(function () {
-        console.log("click btn");
         $("#loginForm").submit();
     });
 
@@ -32,8 +31,6 @@ window.onload = function () {
                 if(data.comment === "사용 가능한 아이디입니다."){
                     flag = true;
                 }else flag = false;
-
-                console.log(flag);
 
                 alert(data.comment);
             },
@@ -66,7 +63,7 @@ window.onload = function () {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     $("input[name='password_check']").keyup(function () {
         pwd = $("input[name='password']").val();
@@ -92,7 +89,7 @@ window.onload = function () {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     $("#continueBtn").click(function () {
         email = $("input[name='username']").val();
@@ -105,7 +102,6 @@ window.onload = function () {
             "emailCheck" : flag
         };
 
-        console.log(data);
 
         $.ajax({
             url: "/redirectNext",
@@ -125,26 +121,24 @@ window.onload = function () {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     var gender = null;
     $("#womanBtn").click(function () {
         gender = "WOMAN";
-        console.log("woman");
         $(this).css("background", "orange");
         $("#manBtn").css("background", "darkgray")
-    })
+    });
     $("#manBtn").click(function () {
         gender = "MAN";
-        console.log("man");
         $(this).css("background", "orange");
         $("#womanBtn").css("background", "darkgray")
-    })
+    });
 
 
     $("#telCompany").change(function () {
         TelCompany = $(":selected").text();
-    })
+    });
 
     $("#auth").click(function () {
         if ($("input[name='tel']").val() !== "" && TelCompany !== "") {
@@ -154,7 +148,6 @@ window.onload = function () {
                 success: function (data) {
                     $("input[name='authNum']").val(Math.floor(data.num));
                     isAuth = true;
-                    console.log(isAuth);
                 },
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
@@ -165,7 +158,7 @@ window.onload = function () {
         } else if (TelCompany === "") {
             alert("통신사를 선택해주세요.");
         }
-    })
+    });
 
     $("#SignedBtn").click(function () {
         data = {
@@ -177,7 +170,7 @@ window.onload = function () {
             "checkAgree": $("input[name='agree']").is(":checked"),
             "auth": isAuth
         };
-        console.log(data.auth);
+
         $.ajax({
             url: "/done",
             method: "POST",
@@ -196,12 +189,11 @@ window.onload = function () {
                 xhr.setRequestHeader(header, token);
             },
         })
-    })
+    });
 
     $("input[name='front']").keyup(function () {
         if ($(this).val().length > this.maxLength) {
             $(this).val($(this).val().slice(0, this.maxLength));
-            console.log("access");
         }
     })
-}
+};

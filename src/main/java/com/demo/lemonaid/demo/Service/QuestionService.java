@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
+import javax.xml.transform.Result;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -102,7 +103,7 @@ public class QuestionService {
     //setting
 
     @Transactional
-    public ResponseEntity<ApiDtoSingle> setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
+    public ResultSingle setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
 
         if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")) {
@@ -119,21 +120,11 @@ public class QuestionService {
         resultSingle.setExtra_info(resultSingleAdapter.getExtra_info());
         resultSingle.setChoice(resultSingleAdapter.getChoice());
 
-        if(resultSingleRepository.save(resultSingle) != null){
-            ApiDtoSingle api = ApiDtoSingle.builder()
-                    .question_id(resultSingle.getId().getQuestion_id())
-                    .choice_id(resultSingle.getChoice_single_id())
-                    .choices(resultSingle.getChoice())
-                    .extra_info(resultSingle.getExtra_info())
-                    .build();
-            return new ResponseEntity<ApiDtoSingle>(api, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<ApiDtoSingle>(HttpStatus.BAD_REQUEST);
-        }
+        return resultSingleRepository.save(resultSingle);
     }
 
     @Transactional
-    public ResponseEntity<ApiDtoMulti> setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie[] cookies){
+    public ResultMulti setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie[] cookies){
         ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
 
         String []resultTemp = resultMultiAdapter.getChoice();
@@ -155,23 +146,11 @@ public class QuestionService {
         resultKeyMulti.setQuestion_id(getMultiQuestionId(resultMulti));
         resultMulti.setId(resultKeyMulti);
 
-        Map<String, Object> map = new HashMap<>();
-
-        if(resultMultiRepository.save(resultMulti) != null){
-            ApiDtoMulti api = ApiDtoMulti.builder()
-                    .question_id(resultMulti.getId().getQuestion_id())
-                    .choice_id(resultMulti.getChoice_multi_id())
-                    .choices(resultMulti.getChoice())
-                    .extra_info(resultMulti.getExtra_info())
-                    .build();
-            return new ResponseEntity<ApiDtoMulti>(api, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<ApiDtoMulti>(HttpStatus.BAD_REQUEST);
-        }
+        return resultMultiRepository.save(resultMulti);
     }
 
     @Transactional
-    public ResponseEntity<ApiDtoWrite> setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
+    public ResultWrite setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
         ResultKeyWrite resultKeyWrite = new ResultKeyWrite();
 
         if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")) {
@@ -187,18 +166,7 @@ public class QuestionService {
         resultWrite.setText(resultWriteAdapter.getText());
         resultWrite.setWrite_id(resultWriteAdapter.getWrite_id());
 
-        Map<String, Object> map = new HashMap<>();
-
-        if(resultWriteRepository.save(resultWrite) != null){
-            ApiDtoWrite api = ApiDtoWrite.builder()
-                    .question_id(resultWrite.getId().getQuestion_id())
-                    .write_id(resultWrite.getWrite_id())
-                    .text(resultWrite.getText())
-                    .build();
-            return new ResponseEntity<ApiDtoWrite>(api, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<ApiDtoWrite>(HttpStatus.BAD_REQUEST);
-        }
+        return resultWriteRepository.save(resultWrite);
     }
 
     //find a question' id
@@ -212,12 +180,17 @@ public class QuestionService {
         return choiceMultiRepository.selectChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
-    public String TempUserValid(User user){
-        if(user.getPersonalId().equals("")) return "생년월일을 입력해주세요";
+    public String TempUserValid(User user, String disease){
+        DiseaseService diseaseService = diseaseRepository.selectFindByName(disease);
 
+        int age = getAge(user);
+
+        if(user.getPersonalId().equals("")) return "생년월일을 입력해주세요";
         else if(user.getGender() == null) return "성별을 골라주세요";
-        else if(user.getGender().equals(Gender.WOMAN.toString())) {
+        else if(user.getGender().equals(diseaseService.getExceptGender())) {
             return "참여 대상자가 아닙니다";
+        }else if(age > diseaseService.getMaxAge() || age < diseaseService.getMinAge()){
+            return "참여 대상자가 아닙니다.";
         }else{
 
             return "설문을 시작합니다";
@@ -229,6 +202,18 @@ public class QuestionService {
         User user = userRepository.findUserByEmail(username);
         DiseaseService diseaseService = diseaseRepository.selectFindByName(disease);
 
+        int age = getAge(user);
+
+        boolean state = false;
+        if((!user.getGender().equals(diseaseService.getExceptGender()) || user.getGender() == null)
+                && (diseaseService.getMaxAge() > age || diseaseService.getMinAge() < age)){
+            state = true;
+        }
+
+        return state;
+    }//로그인시 적격판정
+
+    public int getAge(User user){
         int birthYear = Integer.parseInt(user.getPersonalId().substring(0,2));
         int birthMonthDate = Integer.parseInt(user.getPersonalId().substring(2,6));
 
@@ -241,12 +226,6 @@ public class QuestionService {
             age -= 1;
         }else age -= 2;
 
-        boolean state = false;
-        if((!user.getGender().equals(diseaseService.getExceptGender()) || user.getGender() == null)
-                && (diseaseService.getMaxAge() > age && diseaseService.getMinAge() < age)){
-            state = true;
-        }
-
-        return state;
-    }//로그인시 적격판정
+        return age;
+    }
 }

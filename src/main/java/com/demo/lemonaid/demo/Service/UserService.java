@@ -83,10 +83,10 @@ public class UserService implements UserDetailsService {
             user.setPersonalId("temp");
             user.setGender(Gender.UNKOWN.toString());
             if(userRepository.save(user) != null) {
-                map.put("isState", 1);
+                map.put("isSuccess", 1);//success
                 map.put("deviceId", DeviceId);
             }else{
-                map.put("isState",-1);
+                map.put("isSuccess",-1);//fail
             }
         }
         return map;

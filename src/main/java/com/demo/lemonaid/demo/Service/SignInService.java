@@ -22,22 +22,22 @@ public class SignInService {
 
     @Autowired
     SignInService(UserRepository userRepository,
-                  HttpSession session){
+                  HttpSession session) {
         this.userRepository = userRepository;
         this.session = session;
     }
 
-    public String findDuplicate(String userEmail){
+    public Boolean checkEmailReg(String userEmail) {
         String reg =  "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
 
         Pattern p = Pattern.compile(reg);
         Matcher m = p.matcher(userEmail);
-        if(userRepository.findUserByEmail(userEmail) == null && m.matches()){
-            return "사용 가능한 아이디입니다.";
-        }
-        else {
-            return "사용 불가한 아이디입니다.";
-        }
+
+       return m.matches();
+    }
+
+    public User isDuplicate(String userEmail){
+        return userRepository.findUserByEmail(userEmail);
     }
 
     public String findPasswordReg(String userPassword){

@@ -10,6 +10,7 @@ import com.demo.lemonaid.demo.Dto.ApiDtoWrite;
 import com.demo.lemonaid.demo.Service.QuestionService;
 import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,7 +46,7 @@ public class QuestionController {
     @ResponseBody
     public Map<String, Object> GiveUserID(@RequestBody User user, @RequestParam(value = "disease_name") String disease){
         Map<String, Object> map = new HashMap<>();
-        map.put("comment", questionService.TempUserValid(user));
+        map.put("comment", questionService.TempUserValid(user, disease));
         return map;
     }//비로그인에만 출력, 적격판정의 결과 알람
 
@@ -103,18 +104,48 @@ public class QuestionController {
     @PostMapping("/response/single/{id}")
     @ResponseBody
     public ResponseEntity<ApiDtoSingle> saveSingleDB(@PathVariable int id, @RequestBody ResultSingleAdapter resultSingleAdapter, HttpServletRequest request){
-        return questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, request.getCookies());
+        ResultSingle resultSingle = questionService.setInfoSingle(new ResultSingle(), resultSingleAdapter, request.getCookies());
+        if(resultSingle == null){
+            return ResponseEntity.badRequest().build();
+        }
+        ApiDtoSingle api = ApiDtoSingle.builder()
+                .question_id(resultSingle.getId().getQuestion_id())
+                .choice_id(resultSingle.getChoice_single_id())
+                .choices(resultSingle.getChoice())
+                .extra_info(resultSingle.getExtra_info())
+                .build();
+        return new ResponseEntity<ApiDtoSingle>(api, HttpStatus.OK);
     }//single question's result save
 
     @PostMapping("/response/multi/{id}")
     @ResponseBody
     public ResponseEntity<ApiDtoMulti> saveMultiDB(@PathVariable int id, @RequestBody ResultMultiAdapter resultMultiAdapter, HttpServletRequest request){
-        return questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter, request.getCookies());
+        ResultMulti resultMulti = questionService.setInfoMulti(new ResultMulti(), resultMultiAdapter, request.getCookies());
+        if(resultMulti == null){
+            return ResponseEntity.badRequest().build();
+        }
+
+        ApiDtoMulti api = ApiDtoMulti.builder()
+                .question_id(resultMulti.getId().getQuestion_id())
+                .choice_id(resultMulti.getChoice_multi_id())
+                .choices(resultMulti.getChoice())
+                .extra_info(resultMulti.getExtra_info())
+                .build();
+        return new ResponseEntity<ApiDtoMulti>(api, HttpStatus.OK);
     }//multi
 
     @PostMapping("/response/write")
     @ResponseBody
     public ResponseEntity<ApiDtoWrite> saveWriteDB(@RequestBody ResultWriteAdapter resultWriteAdapter, HttpServletRequest request){
-        return questionService.setInfoWrite(new ResultWrite(), resultWriteAdapter, request.getCookies());
+        ResultWrite resultWrite = questionService.setInfoWrite(new ResultWrite(), resultWriteAdapter, request.getCookies());
+        if(resultWrite == null){
+            return ResponseEntity.badRequest().build();
+        }
+        ApiDtoWrite api = ApiDtoWrite.builder()
+                .question_id(resultWrite.getId().getQuestion_id())
+                .write_id(resultWrite.getWrite_id())
+                .text(resultWrite.getText())
+                .build();
+        return new ResponseEntity<ApiDtoWrite>(api,HttpStatus.OK);
     }//write
 }
