@@ -1,6 +1,5 @@
 package com.demo.lemonaid.demo.session;
 
-import com.demo.lemonaid.demo.Domain.User;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
@@ -9,8 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 @Component
 @Data

@@ -44,12 +44,9 @@ public class SignInController {
     @PostMapping("/api/checkEmail")
     @ResponseBody
     public ResponseEntity<SimpleDto> checkEmail(@RequestBody SiginInDto user){
-        if(signInService.isDuplicate(user.getEmail()) != null || !signInService.checkEmailReg(user.getEmail())){
-            SimpleDto simpleDto = SimpleDto.builder()
-                    .status("fail")
-                    .build();
-            return new ResponseEntity<>(simpleDto, HttpStatus.BAD_REQUEST);
-        }
+        if(signInService.isDuplicate(user.getEmail()) != null || !signInService.checkEmailReg(user.getEmail()))
+            return ResponseEntity.badRequest().build();
+
         SimpleDto simpleDto = SimpleDto.builder()
                 .status("success")
                 .build();
@@ -69,12 +66,9 @@ public class SignInController {
     @PostMapping("/api/checkDuplicate")
     @ResponseBody
     public ResponseEntity<SimpleDto> checkDuplicate(@RequestBody SiginInDto user){
-        if(!signInService.isSamePassword(user)) {
-            SimpleDto simpleDto = SimpleDto.builder()
-                    .status("fail")
-                    .build();
-            return new ResponseEntity<>(simpleDto, HttpStatus.BAD_REQUEST);
-        }
+        if(!signInService.isSamePassword(user))
+           ResponseEntity.badRequest().build();
+
         SimpleDto simpleDto = SimpleDto.builder()
                 .status("success")
                 .build();

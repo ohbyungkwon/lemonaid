@@ -119,9 +119,7 @@ public class QuestionService {
         ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
 
         List<String> resultTemp = resultMultiAdapter.getChoice();
-        String str="";
-
-        str = StringUtils.join(resultTemp,";");
+        String str = StringUtils.join(resultTemp,";");
 
         if(userIdSession.isAnonymouse()) {
             String deviceId = findDeviceId(cookies);

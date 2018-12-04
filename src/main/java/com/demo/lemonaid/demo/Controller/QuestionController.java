@@ -93,7 +93,7 @@ public class QuestionController {
 
     @GetMapping("/temp")
     public ModelAndView temp() {
-        String url = "";
+        String url;
         if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")){
             url = "login";
         }else{ url = "order"; }

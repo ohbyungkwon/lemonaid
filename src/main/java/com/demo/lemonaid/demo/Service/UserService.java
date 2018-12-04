@@ -3,7 +3,6 @@ package com.demo.lemonaid.demo.Service;
 import com.demo.lemonaid.demo.Domain.Enums.Gender;
 import com.demo.lemonaid.demo.Domain.Pharmacy;
 import com.demo.lemonaid.demo.Domain.User;
-import com.demo.lemonaid.demo.Dto.SimpleDto;
 import com.demo.lemonaid.demo.Exception.CantFindUserException;
 import com.demo.lemonaid.demo.Repository.PharmacyRepository;
 import com.demo.lemonaid.demo.Repository.UserRepository;
@@ -38,7 +37,7 @@ public class UserService implements UserDetailsService {
     }
 
     private UserDetail createUser(User user) {
-        String author = "";
+        String author;
         switch (user.getUserType()) {
             case "3":
                 author = "ROLE_ADMIN";
@@ -61,11 +60,11 @@ public class UserService implements UserDetailsService {
             switch (rIndex) {
                 case 0:
                     // a-z
-                    temp.append((char) ((int) (rnd.nextInt(26)) + 97));
+                    temp.append((char) ((rnd.nextInt(26)) + 97));
                     break;
                 case 1:
                     // A-Z
-                    temp.append((char) ((int) (rnd.nextInt(26)) + 65));
+                    temp.append((char) ((rnd.nextInt(26)) + 65));
                     break;
                 case 2:
                     // 0-9
@@ -77,7 +76,7 @@ public class UserService implements UserDetailsService {
     }
 
     public String sha256(String str){
-        String SHA = "";
+        String SHA;
         try{
             MessageDigest sh = MessageDigest.getInstance("SHA-256");
             sh.update(str.getBytes());
