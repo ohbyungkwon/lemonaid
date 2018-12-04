@@ -7,9 +7,11 @@ import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyMulti;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeySingle;
 import com.demo.lemonaid.demo.Domain.Embeded.ResultKeyWrite;
+import com.demo.lemonaid.demo.Domain.Enums.SurveyMessage;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
+import com.sun.deploy.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -95,7 +97,7 @@ public class QuestionService {
     public ResultSingle setInfoSingle(ResultSingle resultSingle, ResultSingleAdapter resultSingleAdapter, Cookie []cookies){
         ResultKeySingle resultKeySingle = new ResultKeySingle();
 
-        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")) {
+        if(userIdSession.isAnonymouse()) {
             String deviceId = findDeviceId(cookies);
             resultKeySingle.setUser_id(deviceId);
         }
@@ -116,13 +118,12 @@ public class QuestionService {
     public ResultMulti setInfoMulti(ResultMulti resultMulti, ResultMultiAdapter resultMultiAdapter, Cookie[] cookies){
         ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
 
-        String []resultTemp = resultMultiAdapter.getChoice();
+        List<String> resultTemp = resultMultiAdapter.getChoice();
         String str="";
 
-        for(int i = 0; i < resultTemp.length; i++) {
-            str += resultTemp[i] + ';';
-        }
-        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")) {
+        str = StringUtils.join(resultTemp,";");
+
+        if(userIdSession.isAnonymouse()) {
             String deviceId = findDeviceId(cookies);
             resultKeyMulti.setUser_id(deviceId);//현재 세션에 저장된 id로 변경해야함.
         } else {
@@ -142,7 +143,7 @@ public class QuestionService {
     public ResultWrite setInfoWrite(ResultWrite resultWrite, ResultWriteAdapter resultWriteAdapter, Cookie []cookies){
         ResultKeyWrite resultKeyWrite = new ResultKeyWrite();
 
-        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS")) {
+        if(userIdSession.isAnonymouse()) {
             String deviceId = findDeviceId(cookies);
             resultKeyWrite.setUser_id(deviceId);//현재 세션에 저장된 id로 변경해야함.
         }else {
@@ -169,20 +170,20 @@ public class QuestionService {
         return choiceMultiRepository.selectChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
-    public int TempUserValid(User user, String disease){
+    public SurveyMessage TempUserValid(User user, String disease){
         DiseaseService diseaseService = diseaseRepository.selectFindByName(disease);
 
         int age = 0;
-        if(user.getPersonalId() != "") age = getAge(user);
+        if(!user.getPersonalId().equals("")) age = getAge(user);
 
-        if(age == 0) return 1;//"생년월일을 입력해주세요";
-        else if(user.getGender() == null) return 2;//"성별을 골라주세요";
+        if(age == 0) return SurveyMessage.ERR_BIRTH;//"생년월일을 입력해주세요";
+        else if(user.getGender() == null) return SurveyMessage.ERR_GENDER;//"성별을 골라주세요";
         else if(user.getGender().equals(diseaseService.getExceptGender())) {
-            return 3;//"참여 대상자가 아닙니다";
+            return SurveyMessage.ERR_EXCEPT_GENDER;//"참여 대상자가 아닙니다";
         }else if(age > diseaseService.getMaxAge() || age < diseaseService.getMinAge()){
-            return 3;//"참여 대상자가 아닙니다.";
+            return SurveyMessage.ERR_EXCEPT_AGE;//"참여 대상자가 아닙니다.";
         }else{
-            return 0;//"설문을 시작합니다";
+            return SurveyMessage.CONTINUE;//"설문을 시작합니다";
         }
     }//비로그인시 적격판정
 

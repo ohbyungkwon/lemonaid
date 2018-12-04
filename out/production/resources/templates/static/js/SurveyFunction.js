@@ -24,7 +24,6 @@ window.onload = function(){
 
     $("#nextBtn").click(function () {
         var data = {
-            "id" : $("#userID").val(),
             "personalId" :  $("input[name='birth']").val(),
             "gender" : gender
         };
@@ -35,28 +34,26 @@ window.onload = function(){
         }else disease="발기부전";
 
         $.ajax({
-            url: '/TempUserSet?disease_name='+disease,
+            url: '/api/TempUserSet?disease_name='+disease,
             method: 'POST',
             dataType: "json",
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(data),
             success: function(data){
                 alert("설문을 시작합니다.");
-                console.log(disease);
-                console.log(data);
-
-                if(data.flag === 0 && disease === "탈모"){
+                if(data === "CONTINUE" && disease === "탈모"){
                     window.location.href="/question?disease_name=탈모&priority=1&isLogin=1";
-                }else if(data.flag === 0 && disease === "발기부전"){
+                }else if(data === "CONTINUE" && disease === "발기부전"){
                     window.location.href="/question?disease_name=발기부전&priority=1&isLogin=1";
                 }
             },
             error: function(data){
-                if(data.responseJSON.flag === 1)
+                console.log(data);
+                if(data.responseJSON === "ERR_BIRTH")
                     alert("생년월일을 입력해주세요.");
-                else if(data.responseJSON.flag === 2)
+                else if(data.responseJSON === "ERR_GENDER")
                     alert("성별을 골라주세요.");
-                else if(data.responseJSON.flag === 3) {
+                else if(data.responseJSON === "ERR_EXCEPT_GENDER" || data.responseJSON === "ERR_EXCEPT_AGE") {
                     alert("참여 대상자가 아닙니다.");
                     window.location.href="/WrongUser";
                 }

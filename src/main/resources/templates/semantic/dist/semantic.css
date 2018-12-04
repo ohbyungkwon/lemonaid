@@ -25915,7 +25915,7 @@ Floated Menu / Item
          Site Overrides
 *******************************/
 /*!
- * # Semantic UI 2.4.0 - Message
+ * # Semantic UI 2.4.0 - SurveyMessage
  * http://github.com/semantic-org/semantic-ui/
  *
  *
@@ -25925,7 +25925,7 @@ Floated Menu / Item
  */
 
 /*******************************
-            Message
+            SurveyMessage
 *******************************/
 
 .ui.message {
@@ -32341,7 +32341,7 @@ body.dimmable > .dimmer {
 }
 
 /*-----------------
-       Message
+       SurveyMessage
 -------------------*/
 
 .ui.dropdown .menu > .message {
@@ -32576,7 +32576,7 @@ select.ui.dropdown {
 }
 
 /*--------------
-    Message
+    SurveyMessage
 ---------------*/
 
 .ui.selection.dropdown .menu > .message {
@@ -36622,7 +36622,7 @@ a.ui.nag {
 }
 
 /*--------------
-    Message
+    SurveyMessage
 ---------------*/
 
 .ui.search > .results > .message {

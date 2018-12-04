@@ -4,6 +4,7 @@ import com.demo.lemonaid.demo.Domain.DiseaseService;
 import com.demo.lemonaid.demo.Domain.Intro;
 import com.demo.lemonaid.demo.Dto.IntroDto;
 import com.demo.lemonaid.demo.Domain.Review;
+import com.demo.lemonaid.demo.Dto.SimpleDto;
 import com.demo.lemonaid.demo.Service.IntroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class IntroController {
@@ -28,20 +27,22 @@ public class IntroController {
 
     @GetMapping("/api/disease")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> disease(){
-        Map<String, Object> map = new HashMap<>();
+    public ResponseEntity<SimpleDto.DiseaseMap> disease(){
         List<DiseaseService> disease= introService.findAllDiseaseList();
 
         if(disease.size() == 0)
             return ResponseEntity.badRequest().build();
 
-        map.put("disease",disease);
-        return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+        SimpleDto.DiseaseMap diseaseMap = SimpleDto.DiseaseMap.builder()
+                                    .disease(disease)
+                                    .build();
+
+        return new ResponseEntity<>(diseaseMap, HttpStatus.OK);
     }
 
     @GetMapping("/api/intro")
     @ResponseBody
-    public ResponseEntity<?> diseaseChoice(@RequestParam String disease_name){
+    public ResponseEntity<IntroDto> diseaseChoice(@RequestParam String disease_name){
         Intro intro = introService.findByDiseaseName(disease_name);
         String[] tokens = intro.getExceptService().split(";");
 
@@ -60,15 +61,16 @@ public class IntroController {
                 .guideStart(intro.getGuideStart())
                 .build();
 
-        return new ResponseEntity<IntroDto>(introDto, HttpStatus.OK);
+        return new ResponseEntity<>(introDto, HttpStatus.OK);
     }
 
     @GetMapping("/api/review")
     @ResponseBody
-    public Map<String, Object> review(){
-        Map<String, Object> map = new HashMap<>();
+    public ResponseEntity<SimpleDto.ReviewMap> review(){
         List<Review> reviews = introService.findAllReviewList();
-        map.put("review",reviews);
-        return map;
+        SimpleDto.ReviewMap reviewMap = SimpleDto.ReviewMap.builder()
+                .review(reviews)
+                .build();
+        return new ResponseEntity<>(reviewMap, HttpStatus.OK);
     }
 }

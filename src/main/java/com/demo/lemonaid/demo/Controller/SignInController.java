@@ -1,6 +1,9 @@
 package com.demo.lemonaid.demo.Controller;
 
+import com.demo.lemonaid.demo.Domain.Enums.SignInBasicMessage;
+import com.demo.lemonaid.demo.Domain.Enums.SignInSpecMessage;
 import com.demo.lemonaid.demo.Dto.SiginInDto;
+import com.demo.lemonaid.demo.Dto.SimpleDto;
 import com.demo.lemonaid.demo.Service.SignInService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +30,7 @@ public class SignInController {
     }
 
     @GetMapping("/SignInBasic")
-    public String signin1(HttpServletResponse response, HttpServletRequest request){
+    public String signin1(HttpServletResponse response){
         response.setHeader("Location", "signIn");
         Cookie cookie = new Cookie("state","signIn");
         response.addCookie(cookie);
@@ -40,52 +43,63 @@ public class SignInController {
 
     @PostMapping("/api/checkEmail")
     @ResponseBody
-    public ResponseEntity<?> checkEmail(@RequestBody SiginInDto user){
+    public ResponseEntity<SimpleDto> checkEmail(@RequestBody SiginInDto user){
         if(signInService.isDuplicate(user.getEmail()) != null || !signInService.checkEmailReg(user.getEmail())){
-            return ResponseEntity.badRequest().build();
+            SimpleDto simpleDto = SimpleDto.builder()
+                    .status("fail")
+                    .build();
+            return new ResponseEntity<>(simpleDto, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok().build();
+        SimpleDto simpleDto = SimpleDto.builder()
+                .status("success")
+                .build();
+        return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
 
     @PostMapping("/api/checkPwd")
     @ResponseBody
-    public ResponseEntity<?> checkPwd(@RequestBody SiginInDto user){
-        if(!signInService.checkPasswordReg(user.getPassword()))
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SignInBasicMessage> checkPwd(@RequestBody SiginInDto user){
+         SignInBasicMessage flag = signInService.checkPasswordReg(user.getPassword());
+         if(flag != SignInBasicMessage.NEXT)
+            return new ResponseEntity<>(flag, HttpStatus.BAD_REQUEST);
+
+         return new ResponseEntity<>(flag, HttpStatus.OK);
     }
 
     @PostMapping("/api/checkDuplicate")
     @ResponseBody
-    public ResponseEntity<?> checkDuplicate(@RequestBody SiginInDto user){
-        if(!signInService.isSamePassword(user))
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SimpleDto> checkDuplicate(@RequestBody SiginInDto user){
+        if(!signInService.isSamePassword(user)) {
+            SimpleDto simpleDto = SimpleDto.builder()
+                    .status("fail")
+                    .build();
+            return new ResponseEntity<>(simpleDto, HttpStatus.BAD_REQUEST);
+        }
+        SimpleDto simpleDto = SimpleDto.builder()
+                .status("success")
+                .build();
+        return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
 
     @PostMapping("/api/redirectNext")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> redirectNext(@RequestBody SiginInDto TempUser, HttpSession session){
-        int flag = signInService.redirectNext(TempUser, session);
-        Map<String, Object> map = new HashMap<>();
-        map.put("flag", flag);
+    public ResponseEntity<SignInBasicMessage> redirectNext(@RequestBody SiginInDto TempUser, HttpSession session){
+        SignInBasicMessage flag = signInService.redirectNext(TempUser, session);
 
-        if(flag != 0) return new ResponseEntity<Map<String,Object>>(map, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        if(flag != SignInBasicMessage.NEXT) return new ResponseEntity<>(flag, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(flag, HttpStatus.OK);
     }
 
-    @PostMapping("/done")
+    @PostMapping("/api/done")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> done(@RequestBody SiginInDto TempUser, HttpServletRequest request){
-        int flag = signInService.doneAndValidate(TempUser,request);//validate
-        Map<String, Object> map = new HashMap<>();
-        map.put("flag", flag);
+    public ResponseEntity<SignInSpecMessage> done(@RequestBody SiginInDto TempUser, HttpServletRequest request){
+        SignInSpecMessage flag = signInService.doneAndValidate(TempUser, request);//validate
 
-        if(flag != 0) return new ResponseEntity<Map<String,Object>>(map, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        if(flag != SignInSpecMessage.SUCCESS) return new ResponseEntity<>(flag, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(flag, HttpStatus.OK);
     }
 
-    @GetMapping("/authRandom")
+    @GetMapping("/api/authRandom")
     @ResponseBody
     public Map<String, Object> random(){
         Map<String, Object> map = new HashMap<>();

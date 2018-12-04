@@ -53,14 +53,18 @@ window.onload = function () {
         $.ajax({
             url: url,
             method: method,
-            dataType: 'text',
+            dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
             success: function () {
                 $("#passwordComment").text("양식과 일치합니다.");
             },
-            error: function(){
-                $("#passwordComment").text("6자 이상 입력해주세요.");
+            error: function(data){
+                console.log(data);
+                if(data.responseJSON === "SHORT_PASSWORD")
+                    $("#passwordComment").text("6자 이상 입력해주세요.");
+                else if(data.responseJSON === "INCLUDE_SPACE_PASSWORD")
+                    $("#passwordComment").text("공백은 불가합니다.");
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
@@ -115,17 +119,17 @@ window.onload = function () {
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function () {
+            success: function (data) {
                 if (flag === true) {
                     alert("다음으로 이동합니다.");
                     window.location.href = "/SignInSpec";
                 }
             },
             error: function(data){
-                if(data.responseJSON.flag === 1) alert("공백은 불가합니다.");
-                else if(data.responseJSON.flag === 2) alert("6자 이상 입력해주세요.");
-                else if(data.responseJSON.flag === 3) alert("이메일 중복 확인해주세요.");
-                else if(data.responseJSON.flag === 4) alert("비밀번호를 다시한번 확인해주세요.");
+                if(data.responseJSON === "INCLUDE_SPACE_PASSWORD") alert("공백은 불가합니다.");
+                else if(data.responseJSON === "SHORT_PASSWORD") alert("6자 이상 입력해주세요.");
+                else if(data.responseJSON === "CHECK_DUPLICATE_EMAIL") alert("이메일 중복 확인해주세요.");
+                else if(data.responseJSON === "CHECK_PASSWORD") alert("비밀번호를 다시한번 확인해주세요.");
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
@@ -154,7 +158,7 @@ window.onload = function () {
         var telNum = $("input[name='tel']").val().trim();
         if (telNum !== "" && TelCompany !== "") {
             $.ajax({
-                url: "/authRandom",
+                url: "/api/authRandom",
                 method: "GET",
                 success: function (data) {
                     $("input[name='authNum']").val(Math.floor(data.num));
@@ -183,7 +187,7 @@ window.onload = function () {
         };
 
         $.ajax({
-            url: "/done",
+            url: "/api/done",
             method: "POST",
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
@@ -193,27 +197,27 @@ window.onload = function () {
                     window.location.href = "/login";
             },
             error: function(data){
-                if(data.responseJSON.flag === 1)
+                if(data.responseJSON === "EMPTY_NAME")
                     alert("이름을 입력하세요.");
-                else if(data.responseJSON.flag === 2)
+                else if(data.responseJSON === "EMPTY_PERSONAL_ID")
                     alert("주민등록번호를 입력하세요.");
-                else if(data.responseJSON.flag === 3)
+                else if(data.responseJSON === "EMPTY_GENDER")
                     alert("성별을 입력하세요.");
-                else if(data.responseJSON.flag === 4)
+                else if(data.responseJSON === "EMPTY_TEL")
                     alert("핸드폰번호를 입력하세요.");
-                else if(data.responseJSON.flag === 5)
+                else if(data.responseJSON === "EMPTY_ADDR")
                     alert("주소를 입력하세요.");
-                else if(data.responseJSON.flag === 6)
+                else if(data.responseJSON === "EMPTY_AGREE")
                     alert("동의 여부를 체크해주세요.");
-                else if(data.responseJSON.flag === 7)
+                else if(data.responseJSON === "REG_AUTH")
                     alert("인증을 진행해주세요.");
-                else if(data.responseJSON.flag === 8)
+                else if(data.responseJSON === "REG_TEL")
                     alert("휴대폰번호 형식이 잘못되었습니다.");
-                else if(data.responseJSON.flag === 9)
+                else if(data.responseJSON === "REG_NAME")
                     alert("이름 형식이 잘못되었습니다.");
-                else if(data.responseJSON.flag === 10)
+                else if(data.responseJSON === "REG_PERSONAL_ID")
                     alert("주민등록번호 형식이 잘못되었습니다.");
-                else if(data.responseJSON.flag === 11)
+                else if(data.responseJSON === "FAIL")
                     alert("가입 실패");
             },
             beforeSend: function (xhr) {

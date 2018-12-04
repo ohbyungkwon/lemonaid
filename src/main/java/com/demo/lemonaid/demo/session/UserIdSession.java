@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -28,5 +29,8 @@ public class UserIdSession {
 
     public String getAuthor(){
         return String.valueOf(authentication.getAuthorities().toArray()[0]);
+    }
+    public boolean isAnonymouse(){
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
     }
 }

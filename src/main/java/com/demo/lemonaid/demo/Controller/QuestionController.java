@@ -4,6 +4,7 @@ import com.demo.lemonaid.demo.Adapter.ResultMultiAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultSingleAdapter;
 import com.demo.lemonaid.demo.Adapter.ResultWriteAdapter;
 import com.demo.lemonaid.demo.Domain.*;
+import com.demo.lemonaid.demo.Domain.Enums.SurveyMessage;
 import com.demo.lemonaid.demo.Dto.ApiDtoMulti;
 import com.demo.lemonaid.demo.Dto.ApiDtoSingle;
 import com.demo.lemonaid.demo.Dto.ApiDtoWrite;
@@ -21,8 +22,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class QuestionController {
@@ -42,15 +41,13 @@ public class QuestionController {
         return "WrongUser";
     }
 
-    @PostMapping("/TempUserSet")
+    @PostMapping("/api/TempUserSet")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> GiveUserID(@RequestBody User user, @RequestParam(value = "disease_name") String disease){
-        Map<String, Object> map = new HashMap<>();
-        int flag = questionService.TempUserValid(user, disease);
-        map.put("flag", flag);
+    public ResponseEntity<SurveyMessage> GiveUserID(@RequestBody User user, @RequestParam(value = "disease_name") String disease){
+        SurveyMessage flag = questionService.TempUserValid(user, disease);
 
-        if(flag != 0){ return new ResponseEntity<Map<String, Object>>(map,HttpStatus.BAD_REQUEST); }
-        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        if(flag != SurveyMessage.CONTINUE){ return new ResponseEntity<>(flag, HttpStatus.BAD_REQUEST); }
+        return new ResponseEntity<>(flag, HttpStatus.OK);
     }//비로그인에만 출력, 적격판정의 결과 알람
 
     @GetMapping("/question")
@@ -64,9 +61,9 @@ public class QuestionController {
         Cookie cookie = new Cookie("state","survey");
         response.addCookie(cookie);//For Android
 
-        if(userIdSession.getAuthor().equals("ROLE_ANONYMOUS") && login == 0){
+        if(userIdSession.isAnonymouse() && login == 0){
             return "NonLoginUser";
-        } else if(!userIdSession.getAuthor().equals("ROLE_ANONYMOUS") && priority >= 1){
+        } else if(!userIdSession.isAnonymouse() && priority >= 1){
             boolean state = questionService.eligibility(userIdSession.getName(), disease);
             if(!state) return "WrongUser";
         }
@@ -117,7 +114,7 @@ public class QuestionController {
                 .choices(resultSingle.getChoice())
                 .extra_info(resultSingle.getExtra_info())
                 .build();
-        return new ResponseEntity<ApiDtoSingle>(api, HttpStatus.OK);
+        return new ResponseEntity<>(api, HttpStatus.OK);
     }//single question's result save
 
     @PostMapping("/response/multi/{id}")
@@ -134,7 +131,7 @@ public class QuestionController {
                 .choices(resultMulti.getChoice())
                 .extra_info(resultMulti.getExtra_info())
                 .build();
-        return new ResponseEntity<ApiDtoMulti>(api, HttpStatus.OK);
+        return new ResponseEntity<>(api, HttpStatus.OK);
     }//multi
 
     @PostMapping("/response/write")
@@ -149,6 +146,6 @@ public class QuestionController {
                 .write_id(resultWrite.getWrite_id())
                 .text(resultWrite.getText())
                 .build();
-        return new ResponseEntity<ApiDtoWrite>(api, HttpStatus.OK);
+        return new ResponseEntity<>(api, HttpStatus.OK);
     }//write
 }

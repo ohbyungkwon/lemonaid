@@ -1,5 +1,7 @@
 package com.demo.lemonaid.demo.Service;
 
+import com.demo.lemonaid.demo.Domain.Enums.SignInBasicMessage;
+import com.demo.lemonaid.demo.Domain.Enums.SignInSpecMessage;
 import com.demo.lemonaid.demo.Domain.User;
 import com.demo.lemonaid.demo.Dto.SiginInDto;
 import com.demo.lemonaid.demo.Repository.UserRepository;
@@ -40,45 +42,41 @@ public class SignInService {
         return userRepository.findUserByEmail(userEmail);
     }
 
-    public boolean checkPasswordReg(String userPassword){
-        if(userPassword.indexOf(" ") == -1 && userPassword.length() < 6){
-            return false;//"6자 이상 입력해주세요."
-        }
-        else{ return true; }
+    public SignInBasicMessage checkPasswordReg(String userPassword){
+        if(userPassword.contains(" ")){
+            return SignInBasicMessage.INCLUDE_SPACE_PASSWORD;
+        } else if(userPassword.length() < 6){
+            return SignInBasicMessage.SHORT_PASSWORD;//"6자 이상 입력해주세요."
+        } else{ return SignInBasicMessage.NEXT; }
     }
 
     public boolean isSamePassword(SiginInDto temp){
         if(temp.getPassword().length() >= 6) {
-            if (temp.getPassword().equals(temp.getCheckDuplicate())) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return temp.getPassword().equals(temp.getCheckDuplicate());
         }else{ return false; }
     }
 
 
-    public int redirectNext(SiginInDto TempUser, HttpSession session){
-        if(TempUser.getPassword().indexOf(" ") != -1) {
-            return 1;//"공백은 불가합니다.";
-        }else if(TempUser.getPassword().indexOf(" ") == -1 && TempUser.getPassword().length() < 6){
-            return 2;//"6자 이상 입력해주세요.";
+    public SignInBasicMessage redirectNext(SiginInDto TempUser, HttpSession session){
+        if(TempUser.getPassword().contains(" ")) {
+            return SignInBasicMessage.INCLUDE_SPACE_PASSWORD;//"공백은 불가합니다.";
+        }else if(!TempUser.getPassword().contains(" ") && TempUser.getPassword().length() < 6){
+            return SignInBasicMessage.SHORT_PASSWORD;//"6자 이상 입력해주세요.";
         }else if(!TempUser.isEmailCheck()){
-            return 3;//"이메일 중복 확인해주세요.";
+            return SignInBasicMessage.CHECK_DUPLICATE_EMAIL;//"이메일 중복 확인해주세요.";
         }else{
             if(TempUser.getCheckDuplicate().equals(TempUser.getPassword())){
                 session.setAttribute("email", TempUser.getEmail());
                 session.setAttribute("pwd", BCrypt.hashpw(TempUser.getPassword(),BCrypt.gensalt()));
-                return 0;//"다음으로 이동합니다.";
+                return SignInBasicMessage.NEXT;//"다음으로 이동합니다.";
             }
             else{
-                return 4;//"비밀번호를 다시한번 확인해주세요.";
+                return SignInBasicMessage.CHECK_PASSWORD;//"비밀번호를 다시한번 확인해주세요.";
             }
         }
     }
 
-    public int doneAndValidate(SiginInDto tempUser, HttpServletRequest request){
+    public SignInSpecMessage doneAndValidate(SiginInDto tempUser, HttpServletRequest request){
         String telReg = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}";
         String nameReg = ".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*";
         String idReg = "\\d{6}[1-4]\\d{6}";
@@ -91,16 +89,16 @@ public class SignInService {
         Matcher mName = patternName.matcher(tempUser.getName());
         Matcher mId = patternId.matcher(tempUser.getPersonalId());
 
-        if(tempUser.getName().equals("")) return 1;//"이름을 입력하세요";
-        else if(tempUser.getPersonalId().equals("")) return 2;//"주민등록번호를 입력하세요";
-        else if(tempUser.getGender() == null) return 3;//"성별을 선택하세요";
-        else if(tempUser.getTel().equals("")) return 4;//"핸드폰번호를 입력하세요";
-        else if(tempUser.getAddr().equals("")) return 5;//"주소를 입력하세요";
-        else if(!tempUser.isCheckAgree()) return 6;//"동의 여부를 체크해주세요";
-        else if(!tempUser.isAuth()) return 7;//"인증을 진행해주세요";
-        else if(!mTel.matches()) return 8;//"휴대폰번호 형식이 잘못되었습니다";
-        else if(!mName.matches()) return 9;//"이름 형식이 잘못되었습니다.";
-        else if(!mId.matches()) return 10;//"주민등록번호 형식이 잘못되었습니다.";
+        if(tempUser.getName().equals("")) return SignInSpecMessage.EMPTY_NAME;//"이름을 입력하세요";
+        else if(tempUser.getPersonalId().equals("")) return SignInSpecMessage.EMPTY_PERSONAL_ID;//"주민등록번호를 입력하세요";
+        else if(tempUser.getGender() == null) return SignInSpecMessage.EMPTY_GENDER;//"성별을 선택하세요";
+        else if(tempUser.getTel().equals("")) return SignInSpecMessage.EMPTY_TEL;//"핸드폰번호를 입력하세요";
+        else if(tempUser.getAddr().equals("")) return SignInSpecMessage.EMPTY_ADDR;//"주소를 입력하세요";
+        else if(!tempUser.isCheckAgree()) return SignInSpecMessage.EMPTY_AGREE;//"동의 여부를 체크해주세요";
+        else if(!tempUser.isAuth()) return SignInSpecMessage.REG_AUTH;//"인증을 진행해주세요";
+        else if(!mTel.matches()) return SignInSpecMessage.REG_TEL;//"휴대폰번호 형식이 잘못되었습니다";
+        else if(!mName.matches()) return SignInSpecMessage.REG_NAME;//"이름 형식이 잘못되었습니다.";
+        else if(!mId.matches()) return SignInSpecMessage.REG_PERSONAL_ID;//"주민등록번호 형식이 잘못되었습니다.";
         else {
             User user = new User();
 
@@ -122,8 +120,8 @@ public class SignInService {
             user.setUserType("1");
 
             if(userRepository.save(user) != null){
-                return 0;//"가입 완료";
-            }else return 11;//"가입 실패";
+                return SignInSpecMessage.SUCCESS;//"가입 완료";
+            }else return SignInSpecMessage.FAIL;//"가입 실패";
         }
     }
 }

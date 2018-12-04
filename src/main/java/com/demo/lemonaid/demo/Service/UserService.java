@@ -3,6 +3,7 @@ package com.demo.lemonaid.demo.Service;
 import com.demo.lemonaid.demo.Domain.Enums.Gender;
 import com.demo.lemonaid.demo.Domain.Pharmacy;
 import com.demo.lemonaid.demo.Domain.User;
+import com.demo.lemonaid.demo.Dto.SimpleDto;
 import com.demo.lemonaid.demo.Exception.CantFindUserException;
 import com.demo.lemonaid.demo.Repository.PharmacyRepository;
 import com.demo.lemonaid.demo.Repository.UserRepository;
@@ -14,8 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 @Service(value = "UserService")
@@ -75,21 +76,33 @@ public class UserService implements UserDetailsService {
         return temp.toString();
     }
 
-    public Map<String, Object> deviceIdMap(String DeviceId){
-        Map<String, Object> map = new HashMap<>();
-        if(userRepository.findUserById(DeviceId) == null){
-            User user = new User();
-            user.setId(DeviceId);
-            user.setPersonalId("temp");
-            user.setGender(Gender.UNKNOWN.toString());
-            if(userRepository.save(user) != null) {
-                map.put("isSuccess", 1);//success
-                map.put("deviceId", DeviceId);
-            }else{
-                map.put("isSuccess",-1);//fail
+    public String sha256(String str){
+        String SHA = "";
+        try{
+            MessageDigest sh = MessageDigest.getInstance("SHA-256");
+            sh.update(str.getBytes());
+
+            byte byteData[] = sh.digest();
+            StringBuffer sb = new StringBuffer();
+
+            for(int i = 0 ; i < byteData.length ; i++){
+                sb.append(Integer.toString((byteData[i]&0xff) + 0x100, 16).substring(1));
             }
+            SHA = sb.toString();
+        }catch(NoSuchAlgorithmException e){
+            e.printStackTrace();
+            SHA = null;
         }
-        return map;
+        return SHA;
+    }
+
+    public User saveUser(String deviceId){
+        User user = new User();
+        user.setId(deviceId);
+        user.setPersonalId("temp");
+        user.setGender(Gender.UNKNOWN.toString());
+
+        return userRepository.save(user);
     }
 
     public Pharmacy savePharmacy(String deviceId, Pharmacy pharmacy){

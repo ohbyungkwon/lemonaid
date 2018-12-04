@@ -2,6 +2,7 @@ package com.demo.lemonaid.demo.Controller;
 
 import com.demo.lemonaid.demo.Domain.Pharmacy;
 import com.demo.lemonaid.demo.Dto.ApiSavePharmacy;
+import com.demo.lemonaid.demo.Dto.SimpleDto;
 import com.demo.lemonaid.demo.Exception.DuplicateUserIdException;
 import com.demo.lemonaid.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,21 @@ public class UserController {
 
     @PostMapping("/api/receiveId")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> firstVisit(){
-        String deviceId = userService.randomDeviceId();
+    public ResponseEntity<SimpleDto.ReciveMap> firstVisit(){
+        String randomDeviceId = userService.randomDeviceId();
+        String deviceId = userService.sha256(randomDeviceId);
 
         if(userService.findDuplicate(deviceId) != null){
             throw new DuplicateUserIdException("유저 아이디가 겹칩니다.");
         }
 
-        return new ResponseEntity<Map<String, Object>>(userService.deviceIdMap(deviceId), HttpStatus.OK);
+        userService.saveUser(deviceId);
+        SimpleDto.ReciveMap reciveMap = SimpleDto.ReciveMap.builder()
+                .isSuccess(1)
+                .reciveId(deviceId)
+                .build();
+
+        return new ResponseEntity<>(reciveMap, HttpStatus.OK);
     }//첫 방문
 
     @GetMapping("/login")
@@ -42,7 +50,6 @@ public class UserController {
         response.setHeader("Location", "login");
 
         Cookie cookie = new Cookie("state","login");
-        cookie.setMaxAge(60*60*24);
         response.addCookie(cookie);
         return "Login";
     }//access to survey
@@ -64,7 +71,7 @@ public class UserController {
                     .lon(pharmacy.getLon())
                     .deviceId(deviceId)
                     .build();
-            return new ResponseEntity<ApiSavePharmacy>(api, HttpStatus.OK);
+            return new ResponseEntity<>(api, HttpStatus.OK);
         }else {
             return ResponseEntity.badRequest().build();
         }
