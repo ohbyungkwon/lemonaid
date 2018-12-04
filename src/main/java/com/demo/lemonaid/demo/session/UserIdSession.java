@@ -27,6 +27,7 @@ public class UserIdSession {
     public String getAuthor(){
         return String.valueOf(authentication.getAuthorities().toArray()[0]);
     }
+
     public boolean isAnonymouse(){
         return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
     }

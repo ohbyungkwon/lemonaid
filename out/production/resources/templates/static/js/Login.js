@@ -119,7 +119,7 @@ window.onload = function () {
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function (data) {
+            success: function () {
                 if (flag === true) {
                     alert("다음으로 이동합니다.");
                     window.location.href = "/SignInSpec";

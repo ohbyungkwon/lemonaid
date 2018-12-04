@@ -27,4 +27,9 @@ public class SimpleDto {
     public static class ReviewMap{
         private List<Review> review;
     }
+    @Data
+    @Builder
+    public static class Refund{
+        private boolean isNeedRefund;
+    }
 }

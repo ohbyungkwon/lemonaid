@@ -40,4 +40,7 @@ public class User {
     @Column(name="reg_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date regDate = new Date();
+
+    @Column(name = "is_need_refund")
+    private boolean isNeedRefund;
 }

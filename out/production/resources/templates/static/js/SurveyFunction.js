@@ -8,6 +8,7 @@ window.onload = function(){
 
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
+    var radio = $("input[type=radio]");
 
     var gender = null;
 
@@ -65,8 +66,9 @@ window.onload = function(){
     });
 
     $("button[name='pre']").click(function(){
-        if($(".hidden-text1").text() !== 1) {//첫 페이지에서는 이동 x
-            var num = Number($(".hidden-text1").text()) - 1;
+        var priority = $(".hidden-text1").text();
+        if(priority !== 1) {//첫 페이지에서는 이동 x
+            var num = Number(priority) - 1;
             window.location.href = "/question?disease_name=" + $(".card-title").text() + "&priority=" + num + "&isLogin=1";
         }else{
             alert("안내로 이동하시겠습니까?");
@@ -134,18 +136,22 @@ window.onload = function(){
             dataType: "json",
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(data),
-            success: function(data){
-                if($(".card-title").text() === "발기부전"){
-                    if($(".hidden-text1").text() !== "30") {//마지막 페이지에서는 이동 x
-                        var num = Number($(".hidden-text1").text()) + 1;
-                        window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
+            success: function(){
+                var diseaseName = $(".card-title").text();
+                var priority = $(".hidden-text1").text();
+                var num;
+
+                if(diseaseName === "발기부전"){
+                    if(priority !== "30") {//마지막 페이지에서는 이동 x
+                        num = Number(priority) + 1;
+                        window.location.href = "/question?disease_name="+diseaseName+"&priority="+ num + "&isLogin=1";
                     }else{
                         window.location.href="/temp";
                     }
                 }else {
-                    if($(".hidden-text1").text() !== "2") {//마지막 페이지에서는 이동 x
-                        var num = Number($(".hidden-text1").text()) + 1;
-                        window.location.href = "/question?disease_name="+$(".card-title").text()+"&priority="+ num + "&isLogin=1";
+                    if(priority !== "2") {//마지막 페이지에서는 이동 x
+                        num = Number(priority) + 1;
+                        window.location.href = "/question?disease_name="+diseaseName+"&priority="+ num + "&isLogin=1";
                     }else{
                         window.location.href="/temp";
                     }
@@ -161,7 +167,7 @@ window.onload = function(){
     });//next btn
 
 
-    $("input[type=radio]").each(function(){
+    radio.each(function(){
         var chk = $(this).is(":checked");
         var name = $(this).attr('name');
         if(chk === true) {
@@ -169,7 +175,7 @@ window.onload = function(){
         }
     });//init
 
-    $("input[type=radio]").click(function(){
+    radio.click(function(){
         var pre = $(this).data("previous");
         var chk = $(this).is(":checked");
         var name = $(this).attr('name');

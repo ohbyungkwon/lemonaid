@@ -1,8 +1,10 @@
 package com.demo.lemonaid.demo.Controller;
 
 import com.demo.lemonaid.demo.Domain.Pharmacy;
+import com.demo.lemonaid.demo.Domain.User;
 import com.demo.lemonaid.demo.Dto.ApiSavePharmacy;
 import com.demo.lemonaid.demo.Dto.SimpleDto;
+import com.demo.lemonaid.demo.Exception.CantFindUserException;
 import com.demo.lemonaid.demo.Exception.DuplicateUserIdException;
 import com.demo.lemonaid.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,5 +75,33 @@ public class UserController {
         }else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/api/setRefund")
+    @ResponseBody
+    public ResponseEntity<SimpleDto> setRefund(@RequestBody User user, HttpServletRequest request){
+        String deviceId = request.getHeader("Authorization");
+
+        userService.setUserRefund(user, deviceId);
+
+        SimpleDto simpleDto = SimpleDto.builder()
+                .status("success")
+                .build();
+
+        return new ResponseEntity<>(simpleDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/getRefund")
+    @ResponseBody
+    public ResponseEntity<SimpleDto.Refund> getRefund(HttpServletRequest request){
+        String deviceId = request.getHeader("Authorization");
+
+        boolean isNeedRefund = userService.getUserRefund(deviceId).isNeedRefund();
+
+        SimpleDto.Refund refund = SimpleDto.Refund.builder()
+                .isNeedRefund(isNeedRefund)
+                .build();
+        
+        return new ResponseEntity<>(refund, HttpStatus.OK);
     }
 }
