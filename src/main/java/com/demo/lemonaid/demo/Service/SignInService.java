@@ -118,6 +118,7 @@ public class SignInService {
             user.setTel(tempUser.getTel());
             user.setAddr(tempUser.getAddr());
             user.setUserType("1");
+            user.setNeedRefund(false);
 
             if(userRepository.save(user) != null){
                 return SignInSpecMessage.SUCCESS;//"가입 완료";

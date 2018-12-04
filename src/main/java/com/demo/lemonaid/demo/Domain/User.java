@@ -42,5 +42,5 @@ public class User {
     private Date regDate = new Date();
 
     @Column(name = "is_need_refund")
-    private boolean isNeedRefund;
+    private boolean needRefund;
 }

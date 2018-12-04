@@ -61,7 +61,7 @@ window.onload = function(){
             },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader(header, token);
-            },
+            }
         })
     });
 
@@ -162,7 +162,7 @@ window.onload = function(){
             },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader(header, token);
-            },
+            }
         })//db 저장 후 페이지 이동
     });//next btn
 

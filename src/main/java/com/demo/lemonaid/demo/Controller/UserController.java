@@ -33,16 +33,16 @@ public class UserController {
         String deviceId = userService.sha256(randomDeviceId);
 
         if(userService.findDuplicate(deviceId) != null){
-            throw new DuplicateUserIdException("유저 아이디가 겹칩니다.");
+            // throw new DuplicateUserIdException("유저 아이디가 겹칩니다.");
         }
 
         userService.saveUser(deviceId);
-        SimpleDto.ReciveMap reciveMap = SimpleDto.ReciveMap.builder()
+        SimpleDto.ReciveMap receiveMap = SimpleDto.ReciveMap.builder()
                 .isSuccess(1)
                 .reciveId(deviceId)
                 .build();
 
-        return new ResponseEntity<>(reciveMap, HttpStatus.OK);
+        return new ResponseEntity<>(receiveMap, HttpStatus.OK);
     }//첫 방문
 
     @GetMapping("/login")
@@ -101,7 +101,7 @@ public class UserController {
         SimpleDto.Refund refund = SimpleDto.Refund.builder()
                 .isNeedRefund(isNeedRefund)
                 .build();
-        
+
         return new ResponseEntity<>(refund, HttpStatus.OK);
     }
 }

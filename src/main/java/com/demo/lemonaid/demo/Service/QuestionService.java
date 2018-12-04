@@ -129,7 +129,7 @@ public class QuestionService {
         }
 
         resultMulti.setChoice(str);
-        resultMulti.setExtra_info(resultMultiAdapter.getExtra_info());
+        resultMulti.setExtra_info(resultMultiAdapter.getExtra_info());// TODO: aaa
         resultMulti.setChoice_multi_id(resultMultiAdapter.getChoice_multi_id());
         resultKeyMulti.setQuestion_id(getMultiQuestionId(resultMulti));
         resultMulti.setId(resultKeyMulti);

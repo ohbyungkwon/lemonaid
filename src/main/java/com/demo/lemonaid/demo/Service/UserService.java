@@ -120,18 +120,19 @@ public class UserService implements UserDetailsService {
 
     public User setUserRefund(User user, String deviceId){
         User userTemp = userRepository.findUserById(deviceId);
-        if(userTemp == null)
+        if(userTemp == null) {
             throw new CantFindUserException("해당 유저는 존재하지 않음");
-
+        }
         userTemp.setId(deviceId);
         userTemp.setNeedRefund(true);
         return userRepository.save(user);
     }
 
-    public User getUserRefund(String deviceId){
+    public User getUserRefund(String deviceId) {
         User userTemp = userRepository.findUserById(deviceId);
-        if(userTemp == null)
+        if (userTemp == null){
             throw new CantFindUserException("해당 유저는 존재하지 않음");
+        }
         return userTemp;
     }
 }
