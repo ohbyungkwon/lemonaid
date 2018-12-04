@@ -16,16 +16,16 @@ public class ChoiceSingle {
     private int id;
 
     @Column(name = "question_id", nullable = false)
-    private int question_id;
+    private int questionId;
 
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "extra_info", nullable = false)
-    private String extra_info;
+    @Column(name = "extra_Info", nullable = false)
+    private String extraInfo;
 
     @Column(name = "is_need_extra", nullable = false)
-    private boolean is_need_extra;
+    private boolean isNeedExtra;
 
     @Column(name = "priority", nullable = false)
     private int priority;

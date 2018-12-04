@@ -4,13 +4,13 @@ import lombok.Data;
 
 @Data
 public class ResultSingleAdapter {
-    private int question_id;
+    private int questionId;
 
-    private int choice_single_id;
+    private int choiceSingleId;
 
     private int choice;
 
-    private String extra_info;
+    private String extraInfo;
 
-    private String user_id;
+    private String userId;
 }

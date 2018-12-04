@@ -10,9 +10,9 @@ import java.io.Serializable;
 @Embeddable
 public class ResultKeyWrite implements Serializable {
     @Column(name = "write_question_id")
-    private int question_id;
+    private int questionId;
 
     @Column(name = "user_id")
-    private String user_id;
+    private String userId;
 }
 

@@ -16,11 +16,11 @@ public class ResultSingle {
     private ResultKeySingle id;
 
     @Column(name = "choice_single_id")
-    private int choice_single_id;
+    private int choiceSingleId;
 
     @Column(name = "choice")
     private int choice;
 
     @Column(name = "extra_info")
-    private String extra_info;
+    private String extraInfo;
 }

@@ -14,7 +14,7 @@ public class Question {
     private int id;
 
     @Column(name = "disease_service_id", nullable = false)
-    private int disease_service_id;
+    private int diseaseServiceId;
 
     @Column(name = "content", nullable = false)
     private String content;

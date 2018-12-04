@@ -71,8 +71,8 @@ public class QuestionController {
         DiseaseService dTemp = questionService.searchDisease(disease);//질병 선택
         Question qTemp = questionService.searchQuestion(dTemp, priority);//해당 질병의 문항 번호를 읽어옴
 
-        model.addAttribute("total_question", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
-        model.addAttribute("disease_name", dTemp.getDiseaseName());
+        model.addAttribute("totalQuestion", questionService.totalQuestion(dTemp));//해당 질병의 마지막 id = 전체 문제 수
+        model.addAttribute("diseaseName", dTemp.getDiseaseName());
         model.addAttribute("question", qTemp);
 
         if (qTemp.getType().equals("single")) {
@@ -109,10 +109,10 @@ public class QuestionController {
             return ResponseEntity.badRequest().build();
         }
         ApiDtoSingle api = ApiDtoSingle.builder()
-                .question_id(resultSingle.getId().getQuestion_id())
-                .choice_id(resultSingle.getChoice_single_id())
+                .question_id(resultSingle.getId().getQuestionId())
+                .choice_id(resultSingle.getChoiceSingleId())
                 .choices(resultSingle.getChoice())
-                .extra_info(resultSingle.getExtra_info())
+                .extra_info(resultSingle.getExtraInfo())
                 .build();
         return new ResponseEntity<>(api, HttpStatus.OK);
     }//single question's result save
@@ -126,10 +126,10 @@ public class QuestionController {
         }
 
         ApiDtoMulti api = ApiDtoMulti.builder()
-                .question_id(resultMulti.getId().getQuestion_id())
-                .choice_id(resultMulti.getChoice_multi_id())
+                .question_id(resultMulti.getId().getQuestionId())
+                .choice_id(resultMulti.getChoiceMultiId())
                 .choices(resultMulti.getChoice())
-                .extra_info(resultMulti.getExtra_info())
+                .extra_info(resultMulti.getExtraInfo())
                 .build();
         return new ResponseEntity<>(api, HttpStatus.OK);
     }//multi
@@ -142,8 +142,8 @@ public class QuestionController {
             return ResponseEntity.badRequest().build();
         }
         ApiDtoWrite api = ApiDtoWrite.builder()
-                .question_id(resultWrite.getId().getQuestion_id())
-                .write_id(resultWrite.getWrite_id())
+                .question_id(resultWrite.getId().getQuestionId())
+                .write_id(resultWrite.getWriteId())
                 .text(resultWrite.getText())
                 .build();
         return new ResponseEntity<>(api, HttpStatus.OK);

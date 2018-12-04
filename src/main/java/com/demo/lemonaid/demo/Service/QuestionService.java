@@ -11,7 +11,6 @@ import com.demo.lemonaid.demo.Domain.Enums.SurveyMessage;
 import com.demo.lemonaid.demo.Repository.*;
 import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
-import com.sun.deploy.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -99,16 +98,16 @@ public class QuestionService {
 
         if(userIdSession.isAnonymouse()) {
             String deviceId = findDeviceId(cookies);
-            resultKeySingle.setUser_id(deviceId);
+            resultKeySingle.setUserId(deviceId);
         }
         else {//프린스펄에서 찾아서 유저의 아이디를 넣은다.
-            resultKeySingle.setUser_id(getPrincipalCustom(userIdSession.getAuthentication()));
+            resultKeySingle.setUserId(getPrincipalCustom(userIdSession.getAuthentication()));
         }
-        resultKeySingle.setQuestion_id(getSingleQuestionId(resultSingleAdapter));
+        resultKeySingle.setQuestionId(getSingleQuestionId(resultSingleAdapter));
 
         resultSingle.setId(resultKeySingle);
-        resultSingle.setChoice_single_id(resultSingleAdapter.getChoice_single_id());
-        resultSingle.setExtra_info(resultSingleAdapter.getExtra_info());
+        resultSingle.setChoiceSingleId(resultSingleAdapter.getChoiceSingleId());
+        resultSingle.setExtraInfo(resultSingleAdapter.getExtraInfo());
         resultSingle.setChoice(resultSingleAdapter.getChoice());
 
         return resultSingleRepository.save(resultSingle);
@@ -119,19 +118,24 @@ public class QuestionService {
         ResultKeyMulti resultKeyMulti = new ResultKeyMulti();
 
         List<String> resultTemp = resultMultiAdapter.getChoice();
-        String str = StringUtils.join(resultTemp,";");
+//        String str = StringUtils.join(resultTemp,";");
+
+        String str = "";
+        for(int i = 0; i< resultTemp.size(); i++){
+            str += resultTemp.get(i) + ";";
+        }
 
         if(userIdSession.isAnonymouse()) {
             String deviceId = findDeviceId(cookies);
-            resultKeyMulti.setUser_id(deviceId);//현재 세션에 저장된 id로 변경해야함.
+            resultKeyMulti.setUserId(deviceId);//현재 세션에 저장된 id로 변경해야함.
         } else {
-            resultKeyMulti.setUser_id(getPrincipalCustom(userIdSession.getAuthentication()));//현재 세션에 저장된 id로 변경해야함.
+            resultKeyMulti.setUserId(getPrincipalCustom(userIdSession.getAuthentication()));//현재 세션에 저장된 id로 변경해야함.
         }
 
         resultMulti.setChoice(str);
-        resultMulti.setExtra_info(resultMultiAdapter.getExtra_info());// TODO: aaa
-        resultMulti.setChoice_multi_id(resultMultiAdapter.getChoice_multi_id());
-        resultKeyMulti.setQuestion_id(getMultiQuestionId(resultMulti));
+        resultMulti.setExtraInfo(resultMultiAdapter.getExtraInfo());
+        resultMulti.setChoiceMultiId(resultMultiAdapter.getChoiceMultiId());
+        resultKeyMulti.setQuestionId(getMultiQuestionId(resultMulti));
         resultMulti.setId(resultKeyMulti);
 
         return resultMultiRepository.save(resultMulti);
@@ -143,16 +147,16 @@ public class QuestionService {
 
         if(userIdSession.isAnonymouse()) {
             String deviceId = findDeviceId(cookies);
-            resultKeyWrite.setUser_id(deviceId);//현재 세션에 저장된 id로 변경해야함.
+            resultKeyWrite.setUserId(deviceId);//현재 세션에 저장된 id로 변경해야함.
         }else {
-            resultKeyWrite.setUser_id(getPrincipalCustom(userIdSession.getAuthentication()));//현재 세션에 저장된 id로 변경해야함.
+            resultKeyWrite.setUserId(getPrincipalCustom(userIdSession.getAuthentication()));//현재 세션에 저장된 id로 변경해야함.
         }
 
-        resultKeyWrite.setQuestion_id(7);
+        resultKeyWrite.setQuestionId(7);
 
         resultWrite.setId(resultKeyWrite);
         resultWrite.setText(resultWriteAdapter.getText());
-        resultWrite.setWrite_id(resultWriteAdapter.getWrite_id());
+        resultWrite.setWriteId(resultWriteAdapter.getWriteId());
 
         return resultWriteRepository.save(resultWrite);
     }
@@ -160,12 +164,12 @@ public class QuestionService {
     //find a question' id
     @Transactional(readOnly = true)
     public int getSingleQuestionId(ResultSingleAdapter resultSingle){
-        return choiceSingleRepository.selectChoicesById(resultSingle.getChoice_single_id()).getQuestion_id();
+        return choiceSingleRepository.selectChoicesById(resultSingle.getChoiceSingleId()).getQuestionId();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
     @Transactional(readOnly = true)
     public int getMultiQuestionId(ResultMulti resultMulti){
-        return choiceMultiRepository.selectChoiceMulti(resultMulti.getChoice_multi_id()).getQuestion_id();
+        return choiceMultiRepository.selectChoiceMulti(resultMulti.getChoiceMultiId()).getQuestionId();
     }//응답 결과가 어떤 질문에 대한 결과인지 알기 위해 question을 search.
 
     public SurveyMessage TempUserValid(User user, String disease){

@@ -4,11 +4,11 @@ import lombok.Data;
 
 @Data
 public class ResultWriteAdapter {
-    private int question_id;
+    private int questionId;
 
-    private int write_id;
+    private int writeId;
 
     private String text;
 
-    private String user_id;
+    private String userId;
 }

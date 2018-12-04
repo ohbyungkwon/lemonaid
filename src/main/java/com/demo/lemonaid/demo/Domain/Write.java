@@ -16,7 +16,7 @@ public class Write {
     private int id;
 
     @Column(name = "question_id", nullable = false)
-    private int question_id;
+    private int questionId;
 
     @Column(name = "conetent", nullable = false)
     private int content;

@@ -52,49 +52,6 @@ public class UserService implements UserDetailsService {
         return new UserDetail(user.getEmail(), user.getPassword(), author);
     }
 
-    public String randomDeviceId(){
-        StringBuffer temp = new StringBuffer();
-        Random rnd = new Random();
-        for (int i = 0; i < 20; i++) {
-            int rIndex = rnd.nextInt(3);
-            switch (rIndex) {
-                case 0:
-                    // a-z
-                    temp.append((char) ((rnd.nextInt(26)) + 97));
-                    break;
-                case 1:
-                    // A-Z
-                    temp.append((char) ((rnd.nextInt(26)) + 65));
-                    break;
-                case 2:
-                    // 0-9
-                    temp.append((rnd.nextInt(10)));
-                    break;
-            }
-        }
-        return temp.toString();
-    }
-
-    public String sha256(String str){
-        String SHA;
-        try{
-            MessageDigest sh = MessageDigest.getInstance("SHA-256");
-            sh.update(str.getBytes());
-
-            byte byteData[] = sh.digest();
-            StringBuffer sb = new StringBuffer();
-
-            for(int i = 0 ; i < byteData.length ; i++){
-                sb.append(Integer.toString((byteData[i]&0xff) + 0x100, 16).substring(1));
-            }
-            SHA = sb.toString();
-        }catch(NoSuchAlgorithmException e){
-            e.printStackTrace();
-            SHA = null;
-        }
-        return SHA;
-    }
-
     public User saveUser(String deviceId){
         User user = new User();
         user.setId(deviceId);

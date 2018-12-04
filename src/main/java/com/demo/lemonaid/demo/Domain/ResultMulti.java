@@ -13,11 +13,11 @@ public class ResultMulti {
     private ResultKeyMulti id;
 
     @Column(name = "choice_multi_id")
-    private int choice_multi_id;
+    private int choiceMultiId;
 
     @Column(name = "choice")
     private String choice;
 
-    @Column(name = "extra_info")
-    private String extra_info;
+    @Column(name = "extra_Info")
+    private String extraInfo;
 }

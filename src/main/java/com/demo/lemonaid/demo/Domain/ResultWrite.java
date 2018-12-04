@@ -13,7 +13,7 @@ public class ResultWrite {
     private ResultKeyWrite id;
 
     @Column(name = "write_id")
-    private int write_id;
+    private int writeId;
 
     @Column(name = "text")
     private String text;

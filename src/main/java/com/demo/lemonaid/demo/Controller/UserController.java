@@ -4,8 +4,6 @@ import com.demo.lemonaid.demo.Domain.Pharmacy;
 import com.demo.lemonaid.demo.Domain.User;
 import com.demo.lemonaid.demo.Dto.ApiSavePharmacy;
 import com.demo.lemonaid.demo.Dto.SimpleDto;
-import com.demo.lemonaid.demo.Exception.CantFindUserException;
-import com.demo.lemonaid.demo.Exception.DuplicateUserIdException;
 import com.demo.lemonaid.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -29,11 +28,10 @@ public class UserController {
     @PostMapping("/api/receiveId")
     @ResponseBody
     public ResponseEntity<SimpleDto.ReciveMap> firstVisit(){
-        String randomDeviceId = userService.randomDeviceId();
-        String deviceId = userService.sha256(randomDeviceId);
+        String deviceId = UUID.randomUUID().toString();
 
         if(userService.findDuplicate(deviceId) != null){
-            // throw new DuplicateUserIdException("유저 아이디가 겹칩니다.");
+            deviceId = UUID.randomUUID().toString();
         }
 
         userService.saveUser(deviceId);

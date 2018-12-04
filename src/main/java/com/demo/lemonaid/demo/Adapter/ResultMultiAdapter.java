@@ -6,14 +6,14 @@ import java.util.List;
 
 @Data
 public class ResultMultiAdapter {
-    private int question_id;
+    private int questionId;
 
-    private int choice_multi_id;
+    private int choiceMultiId;
 
     private List<String> choice;
 
-    private String extra_info;
+    private String extraInfo;
 
-    private String user_id;
+    private String userId;
 }
 

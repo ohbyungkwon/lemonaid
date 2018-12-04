@@ -82,9 +82,9 @@ window.onload = function(){
         var data;
         if(questionType === 'single'){
             data = {
-                "choice_single_id" : radio_choice_id,
+                "choiceSingleId" : radio_choice_id,
                 "choice" : radio_choice_priority,
-                "extra_info" : $("#extra_info").val()
+                "extraInfo" : $("#extra_info").val()
             };
             urlTemp = "/response/single/" + $(".hidden-text1").text();
             if(radio_choice_priority == null){
@@ -101,9 +101,9 @@ window.onload = function(){
 
             //보기 중 선택한 만큼의 id와 priority를 갖고 있어야한다.
             data = {
-                "choice_multi_id" : radio_choice_id,
+                "choiceMultiId" : radio_choice_id,
                 "choice" : checkedRadioId,
-                "extra_info" : $("#extra_info").val()
+                "extraInfo" : $("#extra_info").val()
             };
 
             if(data.choice.length === 0){
@@ -123,7 +123,7 @@ window.onload = function(){
                 return false;
             }
             data = {
-                "write_id" : 1,
+                "writeId" : 1,
                 "text" : Systolic +";"+Diastolic
             };
 
