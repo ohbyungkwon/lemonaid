@@ -9,6 +9,7 @@ import com.demo.lemonaid.demo.Dto.ApiDtoMulti;
 import com.demo.lemonaid.demo.Dto.ApiDtoSingle;
 import com.demo.lemonaid.demo.Dto.ApiDtoWrite;
 import com.demo.lemonaid.demo.Service.QuestionService;
+import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,15 +78,15 @@ public class QuestionController {
 
         if (qTemp.getType().equals("single")) {
             model.addAttribute("choices", qTemp.getChoiceSingle());//1대 n관계
-            model.addAttribute("isState", 0);//단일선택 객관식
+            model.addAttribute("isState", "single");//단일선택 객관식
         } else if (qTemp.getType().equals("multi")) {
             model.addAttribute("choices", qTemp.getChoiceMulti());
-            model.addAttribute("isState", 1);//다중선택 객관식
+            model.addAttribute("isState", "multi");//다중선택 객관식
         } else if (qTemp.getType().equals("write")) {
             model.addAttribute("choices", qTemp.getWrite());
-            model.addAttribute("isState", 2);//주관식
+            model.addAttribute("isState", "write");//주관식
         } else {
-            model.addAttribute("isState", 3);//사진 문진
+            model.addAttribute("isState", "picture");//사진 문진
         }
 
         return "Question";

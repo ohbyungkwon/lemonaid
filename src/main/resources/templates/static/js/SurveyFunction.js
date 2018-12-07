@@ -86,6 +86,7 @@ window.onload = function(){
                 "choice" : radio_choice_priority,
                 "extraInfo" : $("#extra_info").val()
             };
+
             urlTemp = "/response/single/" + $(".hidden-text1").text();
             if(radio_choice_priority == null){
                 alert("해당 문진을 완료해주세요.");
@@ -118,10 +119,11 @@ window.onload = function(){
             if (Systolic === '' || Diastolic === '') {
                 alert("혈압을 입력해주세요.");
                 return false;
-            } else if (Systolic !== $("#ReSystolic").val() && Diastolic !== $("#ReDiastolic")) {
+            } else if (Systolic !== $("#ReSystolic").val() || Diastolic !== $("#ReDiastolic")) {
                 alert("혈압을 확인해주세요.");
                 return false;
             }
+
             data = {
                 "writeId" : 1,
                 "text" : Systolic +";"+Diastolic

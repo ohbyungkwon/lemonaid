@@ -14,8 +14,8 @@ public class SimpleDto {
     @Data
     @Builder
     public static class ReciveMap{
-        private int isSuccess;
-        private String reciveId;
+        private int isState;
+        private String deviceId;
     }
     @Data
     @Builder

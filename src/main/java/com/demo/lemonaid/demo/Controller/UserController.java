@@ -1,10 +1,10 @@
 package com.demo.lemonaid.demo.Controller;
 
 import com.demo.lemonaid.demo.Domain.Pharmacy;
-import com.demo.lemonaid.demo.Domain.User;
 import com.demo.lemonaid.demo.Dto.ApiSavePharmacy;
 import com.demo.lemonaid.demo.Dto.SimpleDto;
 import com.demo.lemonaid.demo.Service.UserService;
+import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,20 +14,23 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 @Controller
 public class UserController {
     private UserService userService;
+    private UserIdSession userIdSession;
 
     @Autowired
-    UserController(UserService userService){
+    UserController(UserService userService, UserIdSession userIdSession){
         this.userService = userService;
+        this.userIdSession = userIdSession;
     }
 
     @PostMapping("/api/receiveId")
     @ResponseBody
-    public ResponseEntity<SimpleDto.ReciveMap> firstVisit(){
+    public ResponseEntity<SimpleDto.ReciveMap> firstVisit(HttpSession session){
         String deviceId = UUID.randomUUID().toString();
 
         if(userService.findDuplicate(deviceId) != null){
@@ -36,17 +39,17 @@ public class UserController {
 
         userService.saveUser(deviceId);
         SimpleDto.ReciveMap receiveMap = SimpleDto.ReciveMap.builder()
-                .isSuccess(1)
-                .reciveId(deviceId)
+                .isState(1)
+                .deviceId(deviceId)
                 .build();
 
+        session.setAttribute("deviceId", deviceId);
         return new ResponseEntity<>(receiveMap, HttpStatus.OK);
     }//첫 방문
 
     @GetMapping("/login")
     public String login(HttpServletResponse response) {
         response.setHeader("Location", "login");
-
         Cookie cookie = new Cookie("state","login");
         response.addCookie(cookie);
         return "Login";
@@ -77,29 +80,32 @@ public class UserController {
 
     @GetMapping("/api/setRefund")
     @ResponseBody
-    public ResponseEntity<SimpleDto> setRefund(@RequestBody User user, HttpServletRequest request){
-        String deviceId = request.getHeader("Authorization");
+    public ResponseEntity<SimpleDto> setRefund(@RequestParam(name = "isNeedRefund") boolean isNeedRefund, HttpServletRequest request){
+        if(!userIdSession.isAnonymouse())
+            return ResponseEntity.badRequest().build();
 
-        userService.setUserRefund(user, deviceId);
+        userService.setUserRefund(isNeedRefund, userIdSession.getName());
 
         SimpleDto simpleDto = SimpleDto.builder()
                 .status("success")
                 .build();
 
+        request.setAttribute("isNeedRefund", isNeedRefund);
         return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
-
-    @GetMapping("/api/getRefund")
-    @ResponseBody
-    public ResponseEntity<SimpleDto.Refund> getRefund(HttpServletRequest request){
-        String deviceId = request.getHeader("Authorization");
-
-        boolean isNeedRefund = userService.getUserRefund(deviceId).isNeedRefund();
-
-        SimpleDto.Refund refund = SimpleDto.Refund.builder()
-                .isNeedRefund(isNeedRefund)
-                .build();
-
-        return new ResponseEntity<>(refund, HttpStatus.OK);
-    }
+//
+//    @GetMapping("/api/getRefund")
+//    @ResponseBody
+//    public ResponseEntity<SimpleDto.Refund> getRefund(){
+//        if(!userIdSession.isAnonymouse())
+//            return ResponseEntity.badRequest().build();
+//
+//        boolean isNeedRefund = userService.getUserRefund(userIdSession.getName()).isNeedRefund();
+//
+//        SimpleDto.Refund refund = SimpleDto.Refund.builder()
+//                .isNeedRefund(isNeedRefund)
+//                .build();
+//
+//        return new ResponseEntity<>(refund, HttpStatus.OK);
+//    }
 }

@@ -32,30 +32,30 @@
                             <p class="hidden-text2" style="display: none">${question.type}</p>
                             <hr class="line_color">
                             <div class="ui form">
-                                <#if isState == 0>
+                                <#if isState == "single">
                                     <#list choices as choice>
                                         <div class="ui radio checkbox">
                                             <input id="${choice.getPriority()}" class="radio_j" type="radio" name="choice" value="${choice.getId()}">
                                             <label for="${choice.getPriority()}">${choice.getContent()}</label>
                                             <#if choice.isNeedExtra() == true>
-                                                <input id="extra_info" name=${choice.getId()} type="text" placeholder="더 자세히 설명해 주세요." style="display: none">
+                                                <input id="extra_info" name=${choice.getId()} type="text" placeholder="더 자세히 설명해 주세요." style="display: none" required>
                                             </#if>
                                         <#--널이 아닐때만 라디오 클릭시 텍스트 출력-->
                                         </div>
                                         <hr class="line_color">
                                     </#list>
-                                <#elseIf isState == 1>
+                                <#elseIf isState == "multi">
                                     <#list choices as choice>
                                         <div class="ui radio checkbox">
                                             <input id="${choice.getPriority()}" class="radio_j" type="radio" name="choice_${choice.getPriority()}" value="${choice.getId()}">
                                             <label for="${choice.getPriority()}" name="choice_${choice.getPriority()}">${choice.getContent()}</label>
                                             <#if choice.isNeedExtra() == true>
-                                                    <input name=${choice.getId()} type="text" placeholder="더 자세히 설명해 주세요." style="display: none">
+                                                    <input name=${choice.getId()} type="text" placeholder="더 자세히 설명해 주세요." style="display: none" required>
                                             </#if>
                                         </div>
                                         <hr class="line_color">
                                     </#list>
-                                <#elseIf isState == 2>
+                                <#elseIf isState == "write">
                                     <div style="margin-top: 30px;" class="row justify-content-center">
                                         <div class="ui input focus">
                                             <input id="Systolic" type="number" placeholder="Systolic" autofocus>

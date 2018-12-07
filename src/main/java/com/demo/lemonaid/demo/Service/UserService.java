@@ -13,26 +13,33 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Random;
+import javax.servlet.http.HttpSession;
 
 @Service(value = "UserService")
-@Transactional
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private PharmacyRepository pharmacyRepository;
+    private HttpSession session;
 
     @Autowired
-    public UserService(UserRepository userRepository, PharmacyRepository pharmacyRepository){
+    public UserService(UserRepository userRepository, PharmacyRepository pharmacyRepository, HttpSession session){
         this.userRepository = userRepository;
         this.pharmacyRepository = pharmacyRepository;
+        this.session = session;
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(username);
 
+        String deviceId = session.getAttribute("deviceId").toString();
+        User userTemp = userRepository.findUserById(deviceId);
+
+        if(!user.getId().equals(deviceId)){
+            userRepository.delete(user);
+            user.setId(deviceId);
+            userRepository.delete(userTemp);
+            userRepository.save(user);
+        }
         return createUser(user);
     }
 
@@ -75,18 +82,18 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserById(deviceId);
     }
 
-    public User setUserRefund(User user, String deviceId){
-        User userTemp = userRepository.findUserById(deviceId);
+    public User setUserRefund(boolean isNeedRefund, String userEmail){
+        User userTemp = userRepository.findUserByEmail(userEmail);
         if(userTemp == null) {
             throw new CantFindUserException("해당 유저는 존재하지 않음");
         }
-        userTemp.setId(deviceId);
-        userTemp.setNeedRefund(true);
-        return userRepository.save(user);
+
+        userTemp.setNeedRefund(isNeedRefund);
+        return userRepository.save(userTemp);
     }
 
-    public User getUserRefund(String deviceId) {
-        User userTemp = userRepository.findUserById(deviceId);
+    public User getUserRefund(String userEmail) {
+        User userTemp = userRepository.findUserByEmail(userEmail);
         if (userTemp == null){
             throw new CantFindUserException("해당 유저는 존재하지 않음");
         }

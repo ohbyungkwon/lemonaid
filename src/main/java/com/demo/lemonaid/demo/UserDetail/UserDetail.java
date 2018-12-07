@@ -19,6 +19,4 @@ public class UserDetail extends User {
     public UserDetail(String username, String password, String s) {
         super(username, password, AuthorityUtils.createAuthorityList(s));
     }
-
-
 }
