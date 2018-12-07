@@ -1,6 +1,6 @@
 package com.demo.lemonaid.demo.session;
 
-import com.demo.lemonaid.demo.UserDetail.UserDetail;
+import com.demo.lemonaid.demo.userDetail.UserDetail;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;

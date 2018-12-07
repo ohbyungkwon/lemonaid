@@ -300,7 +300,7 @@
   border-color: #D5C315 !important;
 }
 
-/* Dto */
+/* dto */
 .ui.form .error.error input:-webkit-autofill {
   -webkit-box-shadow: 0px 0px 0px 100px #FFFAF0 inset !important;
           box-shadow: 0px 0px 0px 100px #FFFAF0 inset !important;
@@ -332,7 +332,7 @@
   color: rgba(115, 115, 115, 0.87);
 }
 
-/* Dto Placeholder */
+/* dto Placeholder */
 .ui.form .error ::-webkit-input-placeholder {
   color: #e7bdbc;
 }
@@ -422,7 +422,7 @@
 }
 
 /*--------------------
-        Dto
+        dto
 ---------------------*/
 
 
@@ -514,7 +514,7 @@
 }
 
 /*------------------
-    Dropdown Dto
+    Dropdown dto
 --------------------*/
 
 .ui.form .fields.error .field .ui.dropdown,
@@ -562,7 +562,7 @@
 }
 
 /*--------------------
-    Checkbox Dto
+    Checkbox dto
 ---------------------*/
 
 .ui.form .fields.error .field .checkbox:not(.toggle):not(.slider) label,

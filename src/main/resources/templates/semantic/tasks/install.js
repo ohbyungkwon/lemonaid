@@ -343,7 +343,7 @@ gulp.task('create install files', function(callback) {
   wrench.copyDirSyncRecursive(source.site, installPaths.site, settings.wrench.merge);
 
   /*--------------
-    Theme Config
+    Theme config
   ---------------*/
 
   gulp.task('create theme.config', function() {
