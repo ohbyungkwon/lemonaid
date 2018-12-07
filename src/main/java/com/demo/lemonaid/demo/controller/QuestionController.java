@@ -54,7 +54,7 @@ public class QuestionController {
     public String question(Model model,
                            @RequestParam(value = "disease_name") String disease,
                            @RequestParam(value = "priority") int priority,
-                           @RequestParam(value = "isLogin", defaultValue = "0", required = false) int login,
+                           @RequestParam(value = "is_login", defaultValue = "0", required = false) int login,
                            HttpServletResponse response){
         response.setHeader("Location","survey");//For IOS
 

@@ -80,7 +80,7 @@ public class UserController {
 
     @GetMapping("/api/setRefund")
     @ResponseBody
-    public ResponseEntity<SimpleDto> setRefund(@RequestParam(name = "isNeedRefund") boolean isNeedRefund, HttpSession session){
+    public ResponseEntity<SimpleDto> setRefund(@RequestParam(name = "is_need_refund") boolean isNeedRefund, HttpSession session){
         if(!userIdSession.isAnonymouse())
             return ResponseEntity.badRequest().build();
 
