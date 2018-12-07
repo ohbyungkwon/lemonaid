@@ -107,7 +107,6 @@ public class SignInService {
             for(int i = 0; i< cookies.length; i++){
                 if(cookies[i].getName().equals("DeviceId"))
                     deviceId = cookies[i].getValue();
-                System.out.println(deviceId);
             }
 
             user.setId(deviceId);

@@ -9,7 +9,6 @@ import com.demo.lemonaid.demo.Dto.ApiDtoMulti;
 import com.demo.lemonaid.demo.Dto.ApiDtoSingle;
 import com.demo.lemonaid.demo.Dto.ApiDtoWrite;
 import com.demo.lemonaid.demo.Service.QuestionService;
-import com.demo.lemonaid.demo.UserDetail.UserDetail;
 import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
