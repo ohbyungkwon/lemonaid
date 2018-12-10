@@ -44,17 +44,18 @@ public class SignInController {
     @PostMapping("/api/checkEmail")
     @ResponseBody
     public ResponseEntity<SimpleDto> checkEmail(@RequestBody SiginInDto user){
-        String msg;
+        SignInBasicMessage flag;
         if(signInService.isDuplicate(user.getEmail()) != null) {
-            msg = SignInBasicMessage.FAIL_CHECK_DUPLICATE_EMAIL.getMessage();
+            flag = SignInBasicMessage.FAIL_CHECK_DUPLICATE_EMAIL;
         } else if(!signInService.checkEmailReg(user.getEmail())) {
-            msg = SignInBasicMessage.FAIL_REG_EMAIL.getMessage();
+            flag = SignInBasicMessage.FAIL_REG_EMAIL;
         } else{
-            msg = SignInBasicMessage.SUCCESS_EMAIL.getMessage();
+            flag = SignInBasicMessage.SUCCESS_EMAIL;
         }
 
         SimpleDto simpleDto = SimpleDto.builder()
-                .message(msg)
+                .message(flag.getMessage())
+                .code(flag.getId())
                 .build();
         return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
@@ -65,6 +66,7 @@ public class SignInController {
          SignInBasicMessage flag = signInService.checkPasswordReg(user.getPassword());
          SimpleDto simpleDto = SimpleDto.builder()
                  .message(flag.getMessage())
+                 .code(flag.getId())
                  .build();
 
          return new ResponseEntity<>(simpleDto, HttpStatus.OK);
@@ -73,14 +75,15 @@ public class SignInController {
     @PostMapping("/api/checkDuplicate")
     @ResponseBody
     public ResponseEntity<SimpleDto> checkDuplicate(@RequestBody SiginInDto user){
-        String msg = null;
+        SignInBasicMessage flag;
 
         if(!signInService.isSamePassword(user))
-           msg = SignInBasicMessage.FAIL_DIFFERENCE_PASSWORD.getMessage();
-        else msg = SignInBasicMessage.SUCCESS_CHECK_PASSWORD.getMessage();
+            flag = SignInBasicMessage.FAIL_DIFFERENCE_PASSWORD;
+        else flag = SignInBasicMessage.SUCCESS_CHECK_PASSWORD;
 
         SimpleDto simpleDto = SimpleDto.builder()
-                .message(msg)
+                .message(flag.getMessage())
+                .code(flag.getId())
                 .build();
         return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
@@ -91,6 +94,7 @@ public class SignInController {
         SignInBasicMessage flag = signInService.redirectNext(TempUser, session);
 
         SimpleDto simpleDto = SimpleDto.builder()
+                .code(flag.getId())
                 .message(flag.getMessage())
                 .build();
 
@@ -104,6 +108,7 @@ public class SignInController {
         SignInSpecMessage flag = signInService.doneAndValidate(TempUser, request);//validate
 
         SimpleDto simpleDto = SimpleDto.builder()
+                .code(flag.getId())
                 .message(flag.getMessage())
                 .build();
 

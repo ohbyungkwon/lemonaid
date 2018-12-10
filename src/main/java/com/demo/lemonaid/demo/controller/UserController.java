@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping("/api/receiveId")
     @ResponseBody
-    public ResponseEntity<SimpleDto.ReciveMap> firstVisit(){
+    public ResponseEntity<SimpleDto.ReciveMap> firstVisit(HttpServletResponse response){
         String deviceId = UUID.randomUUID().toString();
 
         if(userService.findDuplicate(deviceId) != null){
@@ -42,6 +42,10 @@ public class UserController {
                 .isState(1)
                 .deviceId(deviceId)
                 .build();
+
+//        Cookie cookie = new Cookie("deviceId", deviceId);
+//        cookie.setPath("/");
+//        response.addCookie(cookie);
 
         return new ResponseEntity<>(receiveMap, HttpStatus.OK);
     }//첫 방문

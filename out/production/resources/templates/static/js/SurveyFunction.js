@@ -43,9 +43,9 @@ window.onload = function(){
             success: function(data){
                 alert("설문을 시작합니다.");
                 if(data === "CONTINUE" && disease === "탈모"){
-                    window.location.href="/question?disease_name=탈모&priority=1&isLogin=1";
+                    window.location.href="/question?disease_name=탈모&priority=1&is_login=1";
                 }else if(data === "CONTINUE" && disease === "발기부전"){
-                    window.location.href="/question?disease_name=발기부전&priority=1&isLogin=1";
+                    window.location.href="/question?disease_name=발기부전&priority=1&is_login=1";
                 }
             },
             error: function(data){
@@ -69,10 +69,10 @@ window.onload = function(){
         var priority = $(".hidden-text1").text();
         if(priority !== 1) {//첫 페이지에서는 이동 x
             var num = Number(priority) - 1;
-            window.location.href = "/question?disease_name=" + $(".card-title").text() + "&priority=" + num + "&isLogin=1";
+            window.location.href = "/question?disease_name=" + $(".card-title").text() + "&priority=" + num + "&is_login=1";
         }else{
             alert("안내로 이동하시겠습니까?");
-            window.location.href="/question?isLogin=0";
+            window.location.href="/question?is_login=0";
         }
     });//back btn
 
@@ -146,14 +146,14 @@ window.onload = function(){
                 if(diseaseName === "발기부전"){
                     if(priority !== "30") {//마지막 페이지에서는 이동 x
                         num = Number(priority) + 1;
-                        window.location.href = "/question?disease_name="+diseaseName+"&priority="+ num + "&isLogin=1";
+                        window.location.href = "/question?disease_name="+diseaseName+"&priority="+ num + "&is_login=1";
                     }else{
                         window.location.href="/temp";
                     }
                 }else {
                     if(priority !== "2") {//마지막 페이지에서는 이동 x
                         num = Number(priority) + 1;
-                        window.location.href = "/question?disease_name="+diseaseName+"&priority="+ num + "&isLogin=1";
+                        window.location.href = "/question?disease_name="+diseaseName+"&priority="+ num + "&is_login=1";
                     }else{
                         window.location.href="/temp";
                     }

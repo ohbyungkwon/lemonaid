@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Builder
 public class SimpleDto {
+    private int code;
     private String message;
     @Data
     @Builder

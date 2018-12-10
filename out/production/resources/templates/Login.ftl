@@ -22,7 +22,7 @@
     <div class="row justify-content-sm-center">
         <div class="card card-center">
             <div class="card-body">
-                <form id="loginForm" method="post" action="j_spring_security_check">
+                <form id="loginForm" method="post" action="/j_spring_security_check">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <input name="j_username" type="text" class="form-control" placeholder="Email">
                     <input name="j_password" type="password" class="form-control" placeholder="Password">

@@ -28,7 +28,9 @@ window.onload = function () {
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
             success: function (data) {
-                flag=true;
+                if(data.code === 10)
+                    flag = true;
+
                 alert(data.message);
             },
             beforeSend: function (xhr) {

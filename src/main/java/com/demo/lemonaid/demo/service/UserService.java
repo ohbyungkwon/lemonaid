@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CookieValue;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Service(value = "UserService")
 public class UserService implements UserDetailsService {
@@ -32,7 +31,7 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(username);
+        User user = userRepository.findUserByEmail(username);//기존 정보
 
         String deviceId = null;
 
@@ -44,13 +43,12 @@ public class UserService implements UserDetailsService {
         if(deviceId == null)
             throw new CantFindUserException("유저를 찾을 수 없음");
 
-        User userTemp = userRepository.findUserById(deviceId);
-
         if(!user.getId().equals(deviceId)){
-            userRepository.delete(user);
-            user.setId(deviceId);
-            userRepository.delete(userTemp);
-            userRepository.save(user);
+            User userTemp = user;
+            userRepository.delete(user);//기존 유저를 지움
+
+            userTemp.setId(deviceId);
+            userRepository.save(userTemp);
         }
         return createUser(user);
     }
