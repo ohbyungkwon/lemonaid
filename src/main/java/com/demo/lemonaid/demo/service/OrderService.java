@@ -2,7 +2,6 @@ package com.demo.lemonaid.demo.service;
 
 import com.demo.lemonaid.demo.domain.User;
 import com.demo.lemonaid.demo.repository.UserRepository;
-import com.demo.lemonaid.demo.session.UserIdSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

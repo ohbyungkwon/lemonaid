@@ -22,10 +22,6 @@ public class OrderController {
 
     @GetMapping("/order")
     public String OrderView(HttpServletResponse response){
-        response.setHeader("isLogin","onLogin");
-        response.setHeader("Location", "order");
-        Cookie cookie = new Cookie("state","order");
-        response.addCookie(cookie);
         return "Order";
     }
 
