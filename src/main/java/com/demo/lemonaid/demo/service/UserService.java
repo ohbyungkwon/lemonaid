@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -102,11 +101,11 @@ public class UserService implements UserDetailsService {
         return userRepository.save(userTemp);
     }
 
-    public User getUserRefund(String userId) {
-        User userTemp = userRepository.findUserById(userId);
-        if (userTemp == null){
-            throw new CantFindUserException("해당 유저는 존재하지 않음");
-        }
-        return userTemp;
-    }
+//    public User getUserRefund(String userId) {
+//        User userTemp = userRepository.findUserById(userId);
+//        if (userTemp == null){
+//            throw new CantFindUserException("해당 유저는 존재하지 않음");
+//        }
+//        return userTemp;
+//    }
 }

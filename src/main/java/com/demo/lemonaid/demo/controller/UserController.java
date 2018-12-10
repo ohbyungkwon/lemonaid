@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 @Controller
@@ -37,15 +36,15 @@ public class UserController {
             deviceId = UUID.randomUUID().toString();
         }
 
+//        Cookie kc = new Cookie("deviceId", null);
+//        kc.setMaxAge(0);
+//        response.addCookie(kc);
+
         userService.saveUser(deviceId);
         SimpleDto.ReciveMap receiveMap = SimpleDto.ReciveMap.builder()
                 .isState(1)
                 .deviceId(deviceId)
                 .build();
-
-//        Cookie cookie = new Cookie("deviceId", deviceId);
-//        cookie.setPath("/");
-//        response.addCookie(cookie);
 
         return new ResponseEntity<>(receiveMap, HttpStatus.OK);
     }//첫 방문
@@ -83,11 +82,10 @@ public class UserController {
 
     @GetMapping("/api/setRefund")
     @ResponseBody
-    public ResponseEntity<SimpleDto> setRefund(@RequestParam(name = "is_need_refund") boolean isNeedRefund, HttpSession session){
+    public ResponseEntity<SimpleDto> setRefund(@RequestParam(name = "is_need_refund") boolean isNeedRefund, @CookieValue("deviceId") String deviceId){
         if(!userIdSession.isAnonymouse())
             return ResponseEntity.badRequest().build();
 
-        String deviceId = session.getAttribute("deviceId").toString();
         userService.setUserRefund(isNeedRefund, deviceId);
 
         SimpleDto simpleDto = SimpleDto.builder()
@@ -97,19 +95,19 @@ public class UserController {
         return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
 
-    @GetMapping("/api/getRefund")
-    @ResponseBody
-    public ResponseEntity<SimpleDto.Refund> getRefund(HttpSession session){
-        if(!userIdSession.isAnonymouse())
-            return ResponseEntity.badRequest().build();
-
-        String deviceId = session.getAttribute("deviceId").toString();
-        boolean isNeedRefund = userService.getUserRefund(deviceId).isNeedRefund();
-
-        SimpleDto.Refund refund = SimpleDto.Refund.builder()
-                .isNeedRefund(isNeedRefund)
-                .build();
-
-        return new ResponseEntity<>(refund, HttpStatus.OK);
-    }
+//    @GetMapping("/api/getRefund")
+//    @ResponseBody
+//    public ResponseEntity<SimpleDto.Refund> getRefund(HttpSession session){
+//        if(!userIdSession.isAnonymouse())
+//            return ResponseEntity.badRequest().build();
+//
+//        String deviceId = session.getAttribute("deviceId").toString();
+//        boolean isNeedRefund = userService.getUserRefund(deviceId).isNeedRefund();
+//
+//        SimpleDto.Refund refund = SimpleDto.Refund.builder()
+//                .isNeedRefund(isNeedRefund)
+//                .build();
+//
+//        return new ResponseEntity<>(refund, HttpStatus.OK);
+//    }
 }
