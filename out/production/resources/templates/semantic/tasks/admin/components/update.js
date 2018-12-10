@@ -174,7 +174,7 @@ module.exports = function(callback) {
       setConfig();
     }
     else {
-      console.error('Repository must be setup before running update components');
+      console.error('repository must be setup before running update components');
     }
 
   };

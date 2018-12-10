@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping("/api/receiveId")
     @ResponseBody
-    public ResponseEntity<SimpleDto.ReciveMap> firstVisit(HttpSession session){
+    public ResponseEntity<SimpleDto.ReciveMap> firstVisit(){
         String deviceId = UUID.randomUUID().toString();
 
         if(userService.findDuplicate(deviceId) != null){
@@ -43,7 +43,6 @@ public class UserController {
                 .deviceId(deviceId)
                 .build();
 
-        session.setAttribute("deviceId", deviceId);
         return new ResponseEntity<>(receiveMap, HttpStatus.OK);
     }//첫 방문
 
@@ -88,7 +87,7 @@ public class UserController {
         userService.setUserRefund(isNeedRefund, deviceId);
 
         SimpleDto simpleDto = SimpleDto.builder()
-                .status("success")
+                .message("success")
                 .build();
 
         return new ResponseEntity<>(simpleDto, HttpStatus.OK);

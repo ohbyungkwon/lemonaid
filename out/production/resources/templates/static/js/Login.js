@@ -24,16 +24,12 @@ window.onload = function () {
         $.ajax({
             url: url,
             method: method,
-            dataType: 'text',
+            dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function () {
+            success: function (data) {
                 flag=true;
-                alert("사용 가능한 아이디입니다.");
-            },
-            error: function(){
-                flag=false;
-                alert("사용 불가한 아이디입니다.");
+                alert(data.message);
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
@@ -56,15 +52,8 @@ window.onload = function () {
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function () {
-                $("#passwordComment").text("양식과 일치합니다.");
-            },
-            error: function(data){
-                console.log(data);
-                if(data.responseJSON === "SHORT_PASSWORD")
-                    $("#passwordComment").text("6자 이상 입력해주세요.");
-                else if(data.responseJSON === "INCLUDE_SPACE_PASSWORD")
-                    $("#passwordComment").text("공백은 불가합니다.");
+            success: function (data) {
+                $("#passwordComment").text(data.message);
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
@@ -86,14 +75,11 @@ window.onload = function () {
         $.ajax({
             url: url,
             method: method,
-            dataType: 'text',
+            dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function () {
-                $("#duplicateComment").text("비밀번호가 같습니다.");
-            },
-            error: function(){
-                $("#duplicateComment").text("비밀번호가 다릅니다.");
+            success: function (data) {
+                $("#duplicateComment").text(data.message);
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
@@ -119,17 +105,14 @@ window.onload = function () {
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function () {
+            success: function (data) {
                 if (flag === true) {
-                    alert("다음으로 이동합니다.");
+                    alert(data.message);
                     window.location.href = "/SignInSpec";
                 }
             },
             error: function(data){
-                if(data.responseJSON === "INCLUDE_SPACE_PASSWORD") alert("공백은 불가합니다.");
-                else if(data.responseJSON === "SHORT_PASSWORD") alert("6자 이상 입력해주세요.");
-                else if(data.responseJSON === "CHECK_DUPLICATE_EMAIL") alert("이메일 중복 확인해주세요.");
-                else if(data.responseJSON === "CHECK_PASSWORD") alert("비밀번호를 다시한번 확인해주세요.");
+                alert(data.responseJSON.message);
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);
@@ -192,33 +175,13 @@ window.onload = function () {
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data),
-            success: function () {
-                    alert("가입 완료");
+            success: function (data) {
+                    alert(data.message);
                     window.location.href = "/login";
             },
             error: function(data){
-                if(data.responseJSON === "EMPTY_NAME")
-                    alert("이름을 입력하세요.");
-                else if(data.responseJSON === "EMPTY_PERSONAL_ID")
-                    alert("주민등록번호를 입력하세요.");
-                else if(data.responseJSON === "EMPTY_GENDER")
-                    alert("성별을 입력하세요.");
-                else if(data.responseJSON === "EMPTY_TEL")
-                    alert("핸드폰번호를 입력하세요.");
-                else if(data.responseJSON === "EMPTY_ADDR")
-                    alert("주소를 입력하세요.");
-                else if(data.responseJSON === "EMPTY_AGREE")
-                    alert("동의 여부를 체크해주세요.");
-                else if(data.responseJSON === "REG_AUTH")
-                    alert("인증을 진행해주세요.");
-                else if(data.responseJSON === "REG_TEL")
-                    alert("휴대폰번호 형식이 잘못되었습니다.");
-                else if(data.responseJSON === "REG_NAME")
-                    alert("이름 형식이 잘못되었습니다.");
-                else if(data.responseJSON === "REG_PERSONAL_ID")
-                    alert("주민등록번호 형식이 잘못되었습니다.");
-                else if(data.responseJSON === "FAIL")
-                    alert("가입 실패");
+                console.log(data);
+                alert(data.responseJSON.message);
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token);

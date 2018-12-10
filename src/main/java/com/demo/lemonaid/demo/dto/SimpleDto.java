@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Builder
 public class SimpleDto {
-    private String status;
+    private String message;
     @Data
     @Builder
     public static class ReciveMap{

@@ -12,25 +12,38 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CookieValue;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Service(value = "UserService")
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private PharmacyRepository pharmacyRepository;
-    private HttpSession session;
+    private HttpServletRequest request;
 
     @Autowired
-    public UserService(UserRepository userRepository, PharmacyRepository pharmacyRepository, HttpSession session){
+    public UserService(UserRepository userRepository, PharmacyRepository pharmacyRepository, HttpServletRequest request){
         this.userRepository = userRepository;
         this.pharmacyRepository = pharmacyRepository;
-        this.session = session;
+        this.request = request;
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(username);
 
-        String deviceId = session.getAttribute("deviceId").toString();
+        String deviceId = null;
+
+        Cookie[] cookies = request.getCookies();
+        for(int i =0; i < cookies.length; i++){
+            if(cookies[i].getName().equals("deviceId"))
+                deviceId = cookies[i].getValue();
+        }
+        if(deviceId == null)
+            throw new CantFindUserException("유저를 찾을 수 없음");
+
         User userTemp = userRepository.findUserById(deviceId);
 
         if(!user.getId().equals(deviceId)){

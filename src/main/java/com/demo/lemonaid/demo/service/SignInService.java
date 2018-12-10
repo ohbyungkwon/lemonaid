@@ -44,10 +44,10 @@ public class SignInService {
 
     public SignInBasicMessage checkPasswordReg(String userPassword){
         if(userPassword.contains(" ")){
-            return SignInBasicMessage.INCLUDE_SPACE_PASSWORD;
+            return SignInBasicMessage.FAIL_INCLUDE_SPACE_PASSWORD;
         } else if(userPassword.length() < 6){
-            return SignInBasicMessage.SHORT_PASSWORD;//"6자 이상 입력해주세요."
-        } else{ return SignInBasicMessage.NEXT; }
+            return SignInBasicMessage.FAIL_SHORT_PASSWORD;//"6자 이상 입력해주세요."
+        } else{ return SignInBasicMessage.SUCCESS_PASSWORD; }
     }
 
     public boolean isSamePassword(SiginInDto temp){
@@ -58,12 +58,12 @@ public class SignInService {
 
 
     public SignInBasicMessage redirectNext(SiginInDto TempUser, HttpSession session){
-        if(TempUser.getPassword().contains(" ")) {
-            return SignInBasicMessage.INCLUDE_SPACE_PASSWORD;//"공백은 불가합니다.";
+        if(!TempUser.isEmailCheck()){
+            return SignInBasicMessage.FAIL_IS_CHECK_EMAIL_REG;//"이메일 중복 확인해주세요.";
+        } else if(TempUser.getPassword().contains(" ")) {
+            return SignInBasicMessage.FAIL_INCLUDE_SPACE_PASSWORD;//"공백은 불가합니다.";
         }else if(!TempUser.getPassword().contains(" ") && TempUser.getPassword().length() < 6){
-            return SignInBasicMessage.SHORT_PASSWORD;//"6자 이상 입력해주세요.";
-        }else if(!TempUser.isEmailCheck()){
-            return SignInBasicMessage.CHECK_DUPLICATE_EMAIL;//"이메일 중복 확인해주세요.";
+            return SignInBasicMessage.FAIL_SHORT_PASSWORD;//"6자 이상 입력해주세요.";
         }else{
             if(TempUser.getCheckDuplicate().equals(TempUser.getPassword())){
                 session.setAttribute("email", TempUser.getEmail());
@@ -71,7 +71,7 @@ public class SignInService {
                 return SignInBasicMessage.NEXT;//"다음으로 이동합니다.";
             }
             else{
-                return SignInBasicMessage.CHECK_PASSWORD;//"비밀번호를 다시한번 확인해주세요.";
+                return SignInBasicMessage.FAIL_CHECK_PASSWORD;//"비밀번호를 다시한번 확인해주세요.";
             }
         }
     }

@@ -44,53 +44,71 @@ public class SignInController {
     @PostMapping("/api/checkEmail")
     @ResponseBody
     public ResponseEntity<SimpleDto> checkEmail(@RequestBody SiginInDto user){
-        if(signInService.isDuplicate(user.getEmail()) != null || !signInService.checkEmailReg(user.getEmail()))
-            return ResponseEntity.badRequest().build();
+        String msg;
+        if(signInService.isDuplicate(user.getEmail()) != null) {
+            msg = SignInBasicMessage.FAIL_CHECK_DUPLICATE_EMAIL.getMessage();
+        } else if(!signInService.checkEmailReg(user.getEmail())) {
+            msg = SignInBasicMessage.FAIL_REG_EMAIL.getMessage();
+        } else{
+            msg = SignInBasicMessage.SUCCESS_EMAIL.getMessage();
+        }
 
         SimpleDto simpleDto = SimpleDto.builder()
-                .status("success")
+                .message(msg)
                 .build();
         return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
 
     @PostMapping("/api/checkPwd")
     @ResponseBody
-    public ResponseEntity<SignInBasicMessage> checkPwd(@RequestBody SiginInDto user){
+    public ResponseEntity<SimpleDto> checkPwd(@RequestBody SiginInDto user){
          SignInBasicMessage flag = signInService.checkPasswordReg(user.getPassword());
-         if(flag != SignInBasicMessage.NEXT)
-            return new ResponseEntity<>(flag, HttpStatus.BAD_REQUEST);
+         SimpleDto simpleDto = SimpleDto.builder()
+                 .message(flag.getMessage())
+                 .build();
 
-         return new ResponseEntity<>(flag, HttpStatus.OK);
+         return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
 
     @PostMapping("/api/checkDuplicate")
     @ResponseBody
     public ResponseEntity<SimpleDto> checkDuplicate(@RequestBody SiginInDto user){
+        String msg = null;
+
         if(!signInService.isSamePassword(user))
-           ResponseEntity.badRequest().build();
+           msg = SignInBasicMessage.FAIL_DIFFERENCE_PASSWORD.getMessage();
+        else msg = SignInBasicMessage.SUCCESS_CHECK_PASSWORD.getMessage();
 
         SimpleDto simpleDto = SimpleDto.builder()
-                .status("success")
+                .message(msg)
                 .build();
         return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
 
     @PostMapping("/api/redirectNext")
     @ResponseBody
-    public ResponseEntity<SignInBasicMessage> redirectNext(@RequestBody SiginInDto TempUser, HttpSession session){
+    public ResponseEntity<SimpleDto> redirectNext(@RequestBody SiginInDto TempUser, HttpSession session){
         SignInBasicMessage flag = signInService.redirectNext(TempUser, session);
 
-        if(flag != SignInBasicMessage.NEXT) return new ResponseEntity<>(flag, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(flag, HttpStatus.OK);
+        SimpleDto simpleDto = SimpleDto.builder()
+                .message(flag.getMessage())
+                .build();
+
+        if(flag != SignInBasicMessage.NEXT) return new ResponseEntity<>(simpleDto, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
 
     @PostMapping("/api/done")
     @ResponseBody
-    public ResponseEntity<SignInSpecMessage> done(@RequestBody SiginInDto TempUser, HttpServletRequest request){
+    public ResponseEntity<SimpleDto> done(@RequestBody SiginInDto TempUser, HttpServletRequest request){
         SignInSpecMessage flag = signInService.doneAndValidate(TempUser, request);//validate
 
-        if(flag != SignInSpecMessage.SUCCESS) return new ResponseEntity<>(flag, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(flag, HttpStatus.OK);
+        SimpleDto simpleDto = SimpleDto.builder()
+                .message(flag.getMessage())
+                .build();
+
+        if(flag != SignInSpecMessage.SUCCESS) return new ResponseEntity<>(simpleDto, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(simpleDto, HttpStatus.OK);
     }
 
     @GetMapping("/api/authRandom")

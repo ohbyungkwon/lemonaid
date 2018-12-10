@@ -169,7 +169,7 @@ module.exports = function(callback) {
       setConfig();
     }
     else {
-      console.error('Repository must be setup before running update distributions');
+      console.error('repository must be setup before running update distributions');
     }
 
   };
