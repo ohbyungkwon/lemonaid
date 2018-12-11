@@ -68,5 +68,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/login")
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"));//기본적으로 시큐리티의 로그아웃은 포스트만 지원을한다. 그렇기 때문에 마지막 줄을 추가하여 get을 지원하게함.
+
+        http.sessionManagement()
+                .invalidSessionUrl("/login")
+                .maximumSessions(1)
+                .expiredUrl("/login");
     }
 }

@@ -56,17 +56,19 @@ public class QuestionController {
                            @RequestParam(value = "priority") int priority,
                            @RequestParam(value = "is_login", defaultValue = "0", required = false) int login,
                            HttpServletResponse response){
+        if(userIdSession.isAnonymouse() && login == 0){//비로그인 적격판정
+            return "NonLoginUser";
+        } else if(!userIdSession.isAnonymouse() && priority == 1){//비적격 유저
+            boolean state = questionService.eligibility(userIdSession.getName(), disease);
+            if(!state){
+                return "WrongUser";
+            }
+        }
+
         response.setHeader("Location","survey");//For IOS
 
         Cookie cookie = new Cookie("state","survey");
         response.addCookie(cookie);//For Android
-
-        if(userIdSession.isAnonymouse() && login == 0){
-            return "NonLoginUser";
-        } else if(!userIdSession.isAnonymouse() && priority >= 1){
-            boolean state = questionService.eligibility(userIdSession.getName(), disease);
-            if(!state) return "WrongUser";
-        }
 
         DiseaseService dTemp = questionService.searchDisease(disease);//질병 선택
         Question qTemp = questionService.searchQuestion(dTemp, priority);//해당 질병의 문항 번호를 읽어옴

@@ -23,11 +23,6 @@ public class OrderInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         String deviceId = null;
         Cookie[] cookies = request.getCookies();
         for(int i = 0; i<cookies.length; i++){
@@ -53,6 +48,11 @@ public class OrderInterceptor implements HandlerInterceptor {
             out.println("<script>alert('처방 도중 앱이 예기치 못하게 종료되어 자동 환불처리되었습니다.')</script>");
             out.flush();
         }
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
     }
 
     @Override
