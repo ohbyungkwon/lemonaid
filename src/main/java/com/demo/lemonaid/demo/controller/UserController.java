@@ -36,10 +36,6 @@ public class UserController {
             deviceId = UUID.randomUUID().toString();
         }
 
-//        Cookie kc = new Cookie("deviceId", null);
-//        kc.setMaxAge(0);
-//        response.addCookie(kc);
-
         userService.saveUser(deviceId);
         SimpleDto.ReciveMap receiveMap = SimpleDto.ReciveMap.builder()
                 .isState(1)

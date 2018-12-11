@@ -23,5 +23,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(orderInterceptor)
                 .addPathPatterns("/order");
 //                .excludePathPatterns("/**");
+
+        registry.addInterceptor(wrongUserInterceptor)
+                .addPathPatterns("/WrongUser");
     }
 }

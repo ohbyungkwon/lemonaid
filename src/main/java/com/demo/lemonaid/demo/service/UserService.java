@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
             throw new CantFindUserException("유저를 찾을 수 없음");
 
         if(!user.getId().equals(deviceId)){
-            User userTemp = user;
+            User userTemp = userRepository.findUserById(deviceId);
             userRepository.delete(user);//기존 유저를 지움
 
             userTemp.setId(deviceId);

@@ -20,10 +20,6 @@ public class WrongUserInterceptor implements HandlerInterceptor {
         response.addCookie(cookie);
 
         response.setContentType("text/html; charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        out.println("<script>alert('서비스 비적합 대상입니다.')</script>");
-        out.flush();
-
         return false;
     }
 
